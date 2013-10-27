@@ -12,12 +12,15 @@ endif
 ""
 execute pathogen#infect()
 
-
-
 " .vimrc.after is loaded after the plugins have loaded
 "
 if filereadable(expand("~/.vim/vimrcs/vimrc.after"))
   source ~/.vim/vimrcs/vimrc.after
 endif
 
+" .vimrc.custom is loaded after the 'after' have loaded
+"
+if filereadable(expand("~/.vim/vimrcs/vimrc.custom"))
+  source ~/.vim/vimrcs/vimrc.custom
+endif
 

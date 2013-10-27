@@ -1,89 +1,18 @@
 " .vimrc.after
 "
-" Gustavo Picon - https://tabo.pe/
+" Panos-Mike
 "
-" This file is adapted from the old .vimrc I've been maintaining since the late
-" 90s. I switched to Janus in 2012, and this is where I'm personalizing and
-" fixing Janus' defaults.
-"
-" Share and enjoy.
     
-let g:solarized_termcolors=256
-syntax enable
-set background=dark
-colorscheme solarized
-
-
-" we like security
-set nomodeline
-" abbrev. of messages (avoids 'hit enter')
-set shortmess+=a
-" display the current mode
-set showmode
-" min num of lines to keep above/below the cursor
-set scrolloff=2
-" disable the line numbering column
-set nonumber
-
-" also ignore these while opening and filtering
-set wildignore+=.hg,*.pyc
-
-" a tab is 4 spaces
-set tabstop=4
-
-" autoindent is 4 spaces
-set shiftwidth=4
-
-" the text width
-set textwidth=79
-
-" wrap long lines
-set wrap
-
-set foldmethod=indent
-set foldlevel=99
-
-set cursorline
-map <C-\> :NERDTreeToggle
-set textwidth=0 
-set wrapmargin=0
-
 if has('gui_running')
-    " really, no numbers
-    set nonumber
-
     " remove the toolbar
     set guioptions-=T
 
-    " highlight the current line
-    set cursorline
-
-    " disable janus cmd/ctrl-t mappings for ctrlp.vim
-    unmap <D-t>
-    iunmap <D-t>
-    map <silent><D-t> :tabnew<CR>
-    set guifont=Consolas:h14
-    "set fu
-    color zenburn
-    map <C-\> :NERDTreeToggle
-    highlight CursorLine  term=underline  guibg=#555555  cterm=underline
-
-    highlight ExtraWhitespace ctermbg=red guibg=red
-    match ExtraWhitespace /\s\+$/
-    autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-    autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-    autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-    autocmd BufWinLeave * call clearmatches()
     autocmd FileType python set ft=python.django " For SnipMate
     autocmd FileType html set ft=htmldjango.html " For SnipMate
     let g:ragtag_global_maps = 1 
     setfiletype htmldjango
     highlight SpellBad term=underline gui=undercurl guisp=Orange
     export DJANGO_SETTINGS_MODULE=project.settings
-else
-    " disable janus cmd/ctrl-t mappings for ctrlp.vim
-    unmap <C-t>
-    iunmap <C-t>
 endif
 
 au FileType python set omnifunc=pythoncomplete#Complete
@@ -94,7 +23,4 @@ nmap <silent> <D-Down> :wincmd j<CR>
 nmap <silent> <D-Up> :wincmd k<CR>
 nmap <silent> <D-Right> :wincmd l<CR>
 nmap <silent> <D-w> :bd
-" remove trailing spaces
-autocmd BufWritePre *.py :%s/\s\+$//e
-" when yanking keep the original string on clipboard (multiple paste)
-xnoremap p pgvy
+
