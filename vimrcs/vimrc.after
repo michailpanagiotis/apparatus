@@ -2,20 +2,14 @@
 "
 " Panos-Mike
 "
-    
+
 if has('gui_running')
     " remove the toolbar
     set guioptions-=T
 
-    autocmd FileType python set ft=python.django " For SnipMate
-    autocmd FileType html set ft=htmldjango.html " For SnipMate
-    let g:ragtag_global_maps = 1 
-    setfiletype htmldjango
-    highlight SpellBad term=underline gui=undercurl guisp=Orange
-    export DJANGO_SETTINGS_MODULE=project.settings
+    let g:ragtag_global_maps = 1
 endif
 
-au FileType python set omnifunc=pythoncomplete#Complete
 let g:SuperTabDefaultCompletionType = "context"
 set completeopt=menuone,longest,preview
 nmap <silent> <D-Left> :wincmd h<CR>
