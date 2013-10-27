@@ -37,16 +37,9 @@ autocmd BufWritePre * :%s/\s\+$//e
 " when yanking keep the original string on clipboard (multiple paste)
 xnoremap p pgvy
 
-map <C-n> :NERDTreeToggle<CR>
-
 
 " filetypes
 
 autocmd FileType python set ft=python.django " For SnipMate
 autocmd FileType html set ft=htmldjango.html " For SnipMate
 autocmd BufRead,BufNewFile *.py set filetype=python
-let g:airline#extensions#branch#enabled = 1
-let g:airline_section_y = ''
-"let g:airline#extensions#virtualenv#enabled = 1
-"let g:airline#extensions#whitespace#enabled = 1
-"let g:airline#extensions#whitespace#symbol = '!
