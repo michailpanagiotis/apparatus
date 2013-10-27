@@ -7,3 +7,13 @@ colorscheme solarized
 if (has('gui_running'))
 	set guifont=Consolas:h14
 endif
+
+highlight CursorLine  term=underline  guibg=#555555  cterm=underline
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
+
+

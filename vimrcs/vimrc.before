@@ -1,3 +1,6 @@
+filetype on
+filetype plugin on
+
 " we like security
 set nomodeline
 " abbrev. of messages (avoids 'hit enter')
@@ -21,21 +24,15 @@ set textwidth=79
 " wrap long lines
 set wrap
 
+" unlimited undo saved on file
+set undofile
+
 set foldmethod=indent
 set foldlevel=99
 
 set cursorline
 set textwidth=0
 set wrapmargin=0
-
-highlight CursorLine  term=underline  guibg=#555555  cterm=underline
-
-highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\s\+$/
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd BufWinLeave * call clearmatches()
 
 " remove trailing spaces
 autocmd BufWritePre * :%s/\s\+$//e
@@ -44,3 +41,9 @@ xnoremap p pgvy
 
 map <C-n> :NERDTreeToggle<CR>
 
+
+" filetypes
+
+autocmd FileType python set ft=python.django " For SnipMate
+autocmd FileType html set ft=htmldjango.html " For SnipMate
+autocmd BufRead,BufNewFile *.py set filetype=python
