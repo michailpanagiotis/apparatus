@@ -1,0 +1,23 @@
+
+""
+"" Customisations
+""
+
+if filereadable(expand("~/.vim/vimrcs/vimrc.before"))
+  source ~/.vim/vimrcs/vimrc.before
+endif
+
+""
+"" Pathogen setup
+""
+execute pathogen#infect()
+
+
+
+" .vimrc.after is loaded after the plugins have loaded
+"
+if filereadable(expand("~/.vim/vimrcs/vimrc.after"))
+  source ~/.vim/vimrcs/vimrc.after
+endif
+
+
