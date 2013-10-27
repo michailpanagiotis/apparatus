@@ -2,7 +2,6 @@
 ""
 "" Customisations
 ""
-
 if filereadable(expand("~/.vim/vimrcs/vimrc.before"))
   source ~/.vim/vimrcs/vimrc.before
 endif

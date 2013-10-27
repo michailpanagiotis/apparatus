@@ -25,7 +25,7 @@ set foldmethod=indent
 set foldlevel=99
 
 set cursorline
-set textwidth=0 
+set textwidth=0
 set wrapmargin=0
 
 highlight CursorLine  term=underline  guibg=#555555  cterm=underline
@@ -41,3 +41,6 @@ autocmd BufWinLeave * call clearmatches()
 autocmd BufWritePre * :%s/\s\+$//e
 " when yanking keep the original string on clipboard (multiple paste)
 xnoremap p pgvy
+
+map <C-n> :NERDTreeToggle<CR>
+
