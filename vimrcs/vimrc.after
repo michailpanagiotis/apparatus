@@ -5,17 +5,18 @@
 
 if has('gui_running')
     " remove the toolbar
-    set guioptions-=T
+    " set guioptions-=T
 
     autocmd FileType python set ft=python.django " For SnipMate
     autocmd FileType html set ft=htmldjango.html " For SnipMate
     let g:ragtag_global_maps = 1
     setfiletype htmldjango
-    highlight SpellBad term=underline gui=undercurl guisp=Orange
     export DJANGO_SETTINGS_MODULE=project.settings
     let g:ragtag_global_maps = 1
 endif
 
+
+highlight SpellBad term=undercurl ctermfg=202 ctermbg=052  gui=undercurl guisp=Orange
 
 let g:SuperTabDefaultCompletionType = "context"
 set completeopt=menuone,longest,preview
@@ -25,7 +26,6 @@ nmap <silent> <D-Up> :wincmd k<CR>
 nmap <silent> <D-Right> :wincmd l<CR>
 nmap <silent> <D-w> :bd
 highlight CursorLine  term=underline  guibg=#555555  cterm=underline
-
 highlight ExtraWhitespace ctermbg=red guibg=red
 
 map <C-n> :NERDTreeToggle<CR>
