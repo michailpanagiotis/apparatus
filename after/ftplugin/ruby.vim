@@ -11,3 +11,12 @@ set background=dark
 " a tab is 2 spaces
 set tabstop=2
 set shiftwidth=2
+
+" Turn off vi compatibility
+set nocompatible
+
+set smartindent
+set autoindent
+
+" load indent file for the current filetype
+filetype indent on
