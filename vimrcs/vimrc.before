@@ -34,13 +34,15 @@ set wrapmargin=0
 
 " remove trailing spaces
 autocmd BufWritePre * :%s/\s\+$//e
+" Auto indent entire buffer
+map <F7> mzgg=G`z<CR>
 " when yanking keep the original string on clipboard (multiple paste)
 xnoremap p pgvy
 
 
 " filetypes
-
 autocmd FileType python set ft=python.django " For SnipMate
 autocmd FileType html set ft=htmldjango" For SnipMate
 autocmd BufRead,BufNewFile *.py set filetype=python
 au BufReadPost *.html set syntax=htmldjango
+autocmd BufRead,BufNewFile *.rb set filetype=ruby
