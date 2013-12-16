@@ -34,3 +34,6 @@
 [submodule "bundle/sort-python-imports"]
 	path = bundle/sort-python-imports
 	url = https://github.com/vim-scripts/sort-python-imports.git
+[submodule "bundle/node"]
+	path = bundle/node
+	url = https://github.com/moll/vim-node.git
