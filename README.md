@@ -21,24 +21,24 @@ Obtain the tools:
 
 Clone the repository:
 
-    git clone https://github.com/michailpanagiotis/vimconfig.git $HOME/.myconfig
+    git clone https://github.com/michailpanagiotis/vimconfig.git $HOME/.apparatus
 
 
 Fetch the submodules:
 
-    cd $HOME/.myconfig/
+    cd $HOME/.apparatus/
     git submodule init
     git submodule update
 
 Set the configuration for *vim*:
 
-    ln -s $HOME/.myconfig/vim/vimrcs/vimrc.base $HOME/.vimrc
-    ln -s $HOME/.myconfig/vim $HOME/.vim
+    ln -s $HOME/.apparatus/vim/vimrcs/vimrc.base $HOME/.vimrc
+    ln -s $HOME/.apparatus/vim $HOME/.vim
 
 Set the configuration for *tmux*:
 
-    ln -s $HOME/.myconfig/tmux/tmux.conf $HOME/.tmux.conf
+    ln -s $HOME/.apparatus/tmux/tmux.conf $HOME/.tmux.conf
 
 Set the configuration for *git*:
 
-    ln -s $HOME/.myconfig/git/gitconfig $HOME/.gitconfig
+    ln -s $HOME/.apparatus/git/gitconfig $HOME/.gitconfig
