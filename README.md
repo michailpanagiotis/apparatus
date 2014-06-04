@@ -7,10 +7,10 @@ Before Installing
 -----------------
 Before installation backup your old configuration:
 
- - $HOME/.vim folder
- - $HOME/.vimrc
- - $HOME/.tmux.conf
- - $HOME/.gitconfig
+     $HOME/.vim
+     $HOME/.vimrc
+     $HOME/.tmux.conf
+     $HOME/.gitconfig
 
 Installation
 ------------
