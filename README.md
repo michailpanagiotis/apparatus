@@ -17,7 +17,7 @@ Installation
 
 Obtain the tools:
 
-    sudo apt-get install vim git tmux
+    sudo apt-get install vim-nox git tmux
 
 Clone the repository:
 
