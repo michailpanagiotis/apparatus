@@ -117,6 +117,9 @@ let g:gundo_right = 1
 "Tagbar
 nmap <silent><Leader>b :TagbarToggle<CR>
 
+"TaskList
+map <leader>td <Plug>TaskList
+
 "let g:airline#extensions#branch#enabled = 1
 "let g:airline#extensions#tabline#buffer_min_count = 1
 "let g:airline#extensions#tabline#enabled = 1
