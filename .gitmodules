@@ -47,3 +47,6 @@
 [submodule "vim/bundle/nerdcommender"]
 	path = vim/bundle/nerdcommender
 	url = https://github.com/scrooloose/nerdcommenter.git
+[submodule "vim/bundle/pytest.vim"]
+	path = vim/bundle/pytest.vim
+	url = https://github.com/alfredodeza/pytest.vim.git

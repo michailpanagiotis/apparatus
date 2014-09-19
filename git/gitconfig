@@ -1,8 +1,7 @@
 [user]
-	name = Michael Resvanis
-	email = resbanis@gmail.com
+	name = Panos Michail
+	email = michailpanagiotis@gmail.com
 [core]
-	excludesfile = /Users/mike/.gitignore_global
 	editor = vim
 [diff]
   tool = vimdiff
@@ -64,3 +63,5 @@
   changes=diff --name-status -r
   diffstat=diff --stat -r
 
+[push]
+	default = simple

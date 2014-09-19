@@ -36,10 +36,10 @@ set incsearch		" Incremental search
 set hlsearch
 set mouse=a		  " Enable mouse usage (all modes)
 set autoindent
-set tabstop=2
+set tabstop=4
 set expandtab
-set softtabstop=2
-set shiftwidth=2
+set softtabstop=4
+set shiftwidth=4
 set textwidth=80
 set number
 set colorcolumn=80
@@ -48,7 +48,7 @@ set linebreak
 set nolist
 set formatoptions+=l
 set cursorline
-
+set undofile
 "leader key
 let mapleader = ","
 let g:mapleader = ","
@@ -80,6 +80,11 @@ if has('gui_running')
 else
   colorscheme molokai
 endif
+
+let g:solarized_termcolors=256
+syntax enable
+set background=dark
+colorscheme solarized"
 
 "Movement sortcuts
 map <c-j> <c-w>j
@@ -117,6 +122,17 @@ let g:gundo_right = 1
 "Tagbar
 nmap <silent><Leader>b :TagbarToggle<CR>
 
+
+"Pytest
+nmap <silent><Leader>f <Esc>:Pytest file<CR>
+nmap <silent><Leader>p <Esc>:Pytest project<CR>
+nmap <silent><Leader>c <Esc>:Pytest class<CR>
+nmap <silent><Leader>m <Esc>:Pytest method<CR>
+
+
+"Multiple Paste
+xnoremap p pgvy
+
 "let g:airline#extensions#branch#enabled = 1
 "let g:airline#extensions#tabline#buffer_min_count = 1
 "let g:airline#extensions#tabline#enabled = 1
@@ -126,3 +142,6 @@ nmap <silent><Leader>b :TagbarToggle<CR>
 "let g:airline#extensions#virtualenv#enabled = 1
 "let g:airline#extensions#whitespace#enabled = 1
 "let g:airline#extensions#whitespace#symbol = '!'
+"
+"remove trailing spaces
+autocmd BufWritePre * :%s/\s\+$//e
