@@ -82,7 +82,6 @@ else
 endif
 
 let g:solarized_termcolors=256
-syntax enable
 set background=dark
 colorscheme solarized"
 
@@ -145,3 +144,8 @@ xnoremap p pgvy
 "
 "remove trailing spaces
 autocmd BufWritePre * :%s/\s\+$//e
+
+
+"Syntastic for php
+let g:syntastic_php_phpcs_args="--report=csv --standard=Laravel"
+autocmd FileType php setlocal shiftwidth=2 tabstop=2 noexpandtab
