@@ -87,6 +87,9 @@ map <c-k> <c-w>k
 map <c-l> <c-w>l
 map <c-h> <c-w>h
 
+"vim-markdown
+let g:vim_markdown_folding_disabled=1
+
 "CtrlP
 nnoremap <leader>t :CtrlP<CR>
 let g:ctrlp_use_caching = 1
@@ -98,6 +101,8 @@ let g:ctrlp_match_window_reversed = 0
 let g:easytags_by_filetype = '/home/mike/.vim/tags/'
 let g:easytags_file = '/home/mike/.vim/tags/tags'
 let g:easytags_auto_highlight = 0
+let g:easytags_auto_update = 0
+"let g:easytags_async = 1
 
 "nerdtree
 map <C-n> :NERDTreeToggle<CR>

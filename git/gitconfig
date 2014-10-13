@@ -1,8 +1,8 @@
 [user]
-	name = Michael Resvanis
-	email = resbanis@gmail.com
+	name = Mike Resvanis
+	email = resbanis@skroutz.gr
 [core]
-	excludesfile = /Users/mike/.gitignore_global
+	excludesfile = /home/mike/.gitignore-global
 	editor = vim
 [diff]
   tool = vimdiff
@@ -21,7 +21,26 @@
     frag = magenta bold
     old = red bold
     new = green bold
+[gitlab]
+    token=fqDU33MgiGpKBLp9iuxR
+
 [alias]
+
+# list aliases
+  la = "!git config -l | grep alias | cut -c 7-"
+
+# stathopa aliases
+	tip = log -1
+	amend = commit --amend --no-edit
+	pr = pull --rebase
+	vimod = "!vim -p `git status -s | awk '{ if ($1 == \"M\") print $2 }'`"
+	vinew = "!vim -p `git status -s | awk '{ if ($1 == \"A\") print $2 }'`"
+	wrap = !sh -c 'git stash && git $@ && git stash pop' -
+	continue = rebase --continue
+	abort = rebase --abort
+  skip = rebase --skip
+
+# mine
   ci = commit
   cl = clone
   cp = cherry-pick
@@ -38,9 +57,6 @@
   sa = stash apply
   ss = stash save
   sp = stash pop
-
-# list aliases
-  la = "!git config -l | grep alias | cut -c 7-"
 
 # log listing aliases
   ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s\\ %Cgreen(%cr)%Cblue\\ [%cn]" --date=relative --decorate
