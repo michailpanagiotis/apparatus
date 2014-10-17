@@ -53,6 +53,8 @@ set undofile
 let mapleader = ","
 let g:mapleader = ","
 
+
+
 " highlight trailing spaces
 :highlight ExtraWhitespace ctermbg=161 guibg=#F92672
 :autocmd ColorScheme * highlight ExtraWhitespace ctermbg=161 guibg=#F92672
@@ -132,20 +134,15 @@ nmap <silent><Leader>m <Esc>:Pytest method<CR>
 "Multiple Paste
 xnoremap p pgvy
 
-"let g:airline#extensions#branch#enabled = 1
-"let g:airline#extensions#tabline#buffer_min_count = 1
-"let g:airline#extensions#tabline#enabled = 1
-"let g:airline#extensions#tabline#left_sep = ' '
-"let g:airline#extensions#tabline#left_alt_sep = '|'
-"let g:airline_section_y = ''
-"let g:airline#extensions#virtualenv#enabled = 1
-"let g:airline#extensions#whitespace#enabled = 1
-"let g:airline#extensions#whitespace#symbol = '!'
-"
 "remove trailing spaces
 autocmd BufWritePre * :%s/\s\+$//e
 
+"Makefiles
+:autocmd FileType make set noexpandtab
 
 "Syntastic for php
 let g:syntastic_php_phpcs_args="--report=csv --standard=Laravel"
-autocmd FileType php setlocal shiftwidth=2 tabstop=2 noexpandtab
+autocmd FileType php setlocal  noexpandtab textwidth=120 colorcolumn=120
+
+"Underline Search
+highlight Search term=underline cterm=underline ctermbg=NONE ctermfg=Red

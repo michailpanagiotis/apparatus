@@ -74,3 +74,6 @@
 [submodule "vim/bundle/vim-commentary"]
 	path = vim/bundle/vim-commentary
 	url = https://github.com/tpope/vim-commentary.git
+[submodule "vim/bundle/vim-blade"]
+	path = vim/bundle/vim-blade
+	url = https://github.com/xsbeats/vim-blade.git

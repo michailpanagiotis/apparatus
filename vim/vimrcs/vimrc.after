@@ -31,11 +31,14 @@ nmap <silent> <D-Right> :wincmd l<CR>
 nmap <silent> <D-w> :bd
 highlight CursorLine  term=underline  guibg=#55555:
 
+" Mappings for NERDTree
 
 map <C-n> :NERDTreeToggle<CR>
 let g:NERDTreeDirArrows=0
 autocmd BufEnter * lcd %:p:h
 
+" Mappings for TagBar
+"
 nmap <silent><Leader>b :TagbarToggle<CR>
 
 "let g:airline#extensions#branch#enabled = 1
