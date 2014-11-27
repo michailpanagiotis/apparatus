@@ -28,13 +28,13 @@ syntax on
 filetype on
 filetype plugin indent on
 
-set showcmd		  " Show (partial) command in status line.
-set showmatch		" Show matching brackets.
-set ignorecase	" Do case insensitive matching
-set smartcase		" Do smart case matching
-set incsearch		" Incremental search
+set showcmd          " Show (partial) command in status line.
+set showmatch        " Show matching brackets.
+set ignorecase    " Do case insensitive matching
+set smartcase        " Do smart case matching
+set incsearch        " Incremental search
 set hlsearch
-set mouse=a		  " Enable mouse usage (all modes)
+set mouse=a          " Enable mouse usage (all modes)
 set autoindent
 set tabstop=4
 set expandtab
@@ -99,6 +99,10 @@ let g:ctrlp_use_caching = 1
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_max_height = 20
 let g:ctrlp_match_window_reversed = 0
+let g:ctrlp_user_command = [
+    \ '.git', 'cd %s && git ls-files . -co --exclude-standard',
+    \ 'find %s -type f'
+    \ ]
 
 "easyytags
 let g:easytags_by_filetype = '/home/mike/.vim/tags/'
@@ -135,6 +139,7 @@ nmap <silent><Leader>m <Esc>:Pytest method<CR>
 xnoremap p pgvy
 
 "remove trailing spaces
+"autocmd BufWritePre * :%s/\t/    /e
 autocmd BufWritePre * :%s/\s\+$//e
 
 "Makefiles
@@ -142,7 +147,7 @@ autocmd BufWritePre * :%s/\s\+$//e
 
 "Syntastic for php
 let g:syntastic_php_phpcs_args="--report=csv --standard=Laravel"
-autocmd FileType php setlocal  noexpandtab textwidth=120 colorcolumn=120
+autocmd FileType php setlocal expandtab textwidth=120 colorcolumn=120
 
 "Underline Search
 highlight Search term=underline cterm=underline ctermbg=NONE ctermfg=Red
