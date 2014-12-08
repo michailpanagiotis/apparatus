@@ -23,6 +23,8 @@
     new = green bold
 [gitlab]
     token=fqDU33MgiGpKBLp9iuxR
+[push]
+    default = current
 
 [alias]
 
@@ -76,7 +78,10 @@
 # file, commit changes aliases
   dl = "!git ll -1"
   dlc = diff --cached HEAD^
+  dfc = diff --cached
   dr  = "!f() { git diff "$1"^.."$1"; }; f"
   changes=diff --name-status -r
   diffstat=diff --stat -r
 
+# grep
+  ggrep = "grep --break --heading --line-number"
