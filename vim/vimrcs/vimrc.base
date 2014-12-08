@@ -102,7 +102,7 @@ let g:easytags_by_filetype = '/home/mike/.vim/tags/'
 let g:easytags_file = '/home/mike/.vim/tags/tags'
 let g:easytags_auto_highlight = 0
 let g:easytags_auto_update = 0
-"let g:easytags_async = 1
+let g:easytags_async = 1
 
 "nerdtree
 map <C-n> :NERDTreeToggle<CR>
