@@ -35,9 +35,6 @@
 [submodule "vim/bundle/vim-flake8"]
 	path = vim/bundle/vim-flake8
 	url = https://github.com/nvie/vim-flake8.git
-[submodule "vim/bundle/sort-python-imports"]
-	path = vim/bundle/sort-python-imports
-	url = https://github.com/vim-scripts/sort-python-imports.git
 [submodule "vim/bundle/vim-node"]
 	path = vim/bundle/vim-node
 	url = https://github.com/moll/vim-node.git
