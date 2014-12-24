@@ -155,12 +155,14 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- Restart xmonad
     , ((modMask              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
     -- Sound hot keys
-    -- , ((0                    , 0x1008ff13), spawn "amixer set Master 2+")
-    -- , ((0                    , 0x1008ff11), spawn "amixer set Master 2-")
-    -- , ((0                    , 0x1008ff12), spawn "amixer set Master toggle")
-    , ((modMask							 , xK_F7), spawn "amixer set Master 2+")
-    , ((modMask              , xK_F6), spawn "amixer set Master 2-")
-    , ((modMask							 , xK_F5), spawn "amixer set Master toggle")
+    , ((0                    , 0x1008ff13), spawn "amixer set Master 2+")
+    , ((0                    , 0x1008ff11), spawn "amixer set Master 2-")
+    , ((0                    , 0x1008ff12), spawn "amixer set Master toggle")
+    , ((0                    , 0x1008ff03), spawn "xbacklight -dec 10")
+    , ((0                    , 0x1008ff02), spawn "xbacklight -inc 10")
+    --, ((modMask							 , xK_F7), spawn "amixer set Master 2+")
+    --, ((modMask              , xK_F6), spawn "amixer set Master 2-")
+    --, ((modMask							 , xK_F5), spawn "amixer set Master toggle")
     ]
     ++
 
