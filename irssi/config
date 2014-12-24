@@ -16,7 +16,7 @@ servers = (
     chatnet = "skroutznet";
     port = "6697";
     use_ssl = "yes";
-    ssl_verify = "no";
+    ssl_verify = "yes";
     autoconnect = "yes";
   },
   {
@@ -24,7 +24,7 @@ servers = (
     chatnet = "FreeNode";
     port = "6697";
     use_ssl = "yes";
-    ssl_verify = "no";
+    ssl_verify = "yes";
     autoconnect = "yes";
   }
 );
@@ -82,16 +82,13 @@ chatnets = {
   SILC = { type = "SILC"; };
   FreeNode = {
     type = "IRC";
-    autosendcmd = "/^msg nickserv mikeres; wait 2000";
+    nick = "mikeres";
+    autosendcmd = "/^msg nickserv identify 5lacid5ar6; wait 2000";
   };
-  skroutznet = {
-    type = "IRC";
-    autosendcmd = "/^msg nickserv mikeres; wait 2000";
-  };
+  skroutznet = { type = "IRC"; nick = "mikeres"; };
 };
 
 channels = (
-  { name = "#irssi"; chatnet = "ircnet"; autojoin = "No"; },
   { name = "#skroutz"; chatnet = "skroutznet"; autojoin = "yes"; },
   { name = "#ecommerce"; chatnet = "skroutznet"; autojoin = "yes"; },
   { name = "#los_ceidados"; chatnet = "FreeNode"; autojoin = "yes"; }
@@ -272,17 +269,81 @@ settings = {
     user_name = "mikeres";
     nick = "mikeres";
   };
-  "fe-text" = { actlist_sort = "refnum"; };
+  "fe-text" = {
+    actlist_sort = "refnum";
+    term_force_colors = "yes";
+    autostick_split_windows = "yes";
+  };
   "fe-common/core" = {
-    theme = "magick";
-    beep_msg_level = "CRAP MSGS PUBLIC NOTICES SNOTES CTCPS ACTIONS JOINS PARTS QUITS KICKS MODES TOPICS WALLOPS INVITES NICKS DCC DCCMSGS CLIENTNOTICE CLIENTCRAP CLIENTERROR ";
-    bell_beeps = "yes";
+    use_status_window = "yes";
+    use_msgs_window = "yes";
+    autocreate_windows = "yes";
+    autoclose_windows = "no";
+    reuse_unused_windows = "yes";
+    completion_char = ",";
+    completion_nicks_lowercase = "yes";
+    print_active_channel = "yes";
+    theme = "xchat";
   };
   "perl/core/scripts" = {
     awl_shared_sbar = "OFF";
     awl_block = "-14";
     awl_viewer = "no";
+    growl_show_message_public = "no";
+    growl_show_message_private = "yes";
+    growl_show_message_action = "no";
+    growl_show_highlight = "yes";
+    growl_show_notifylist = "no";
+    growl_show_server = "no";
+    growl_show_channel_topic = "no";
+    growl_channel_filter = "off";
   };
 };
-hilights = ( { text = "nick"; nick = "yes"; word = "yes"; } );
+hilights = (
+  { text = "mikeres"; nick = "yes"; word = "yes"; },
+  { text = "mikeres_"; nick = "yes"; word = "yes"; },
+  { text = "tio"; nick = "no"; word = "yes"; fullword = "yes"; },
+  { text = "css"; nick = "no"; word = "yes"; fullword = "yes"; }
+);
 logs = { };
+windows = {
+  1 = {
+    items = (
+      {
+        type = "CHANNEL";
+        chat_type = "IRC";
+        name = "#skroutz";
+        tag = "skroutznet";
+      }
+    );
+  };
+  2 = {
+    items = (
+      {
+        type = "CHANNEL";
+        chat_type = "IRC";
+        name = "#ecommerce";
+        tag = "skroutznet";
+      }
+    );
+  };
+  3 = {
+    items = (
+      {
+        type = "CHANNEL";
+        chat_type = "IRC";
+        name = "#los_ceidados";
+        tag = "FreeNode";
+      }
+    );
+  };
+  4 = { name = "hilight"; sticky = "yes"; };
+};
+mainwindows = {
+  1 = { first_line = "8"; lines = "46"; };
+  4 = { first_line = "1"; lines = "7"; };
+};
+ignores = (
+  { level = "JOINS PARTS QUITS"; channels = ( "#skroutz" ); },
+  { level = "JOINS PARTS QUITS"; channels = ( "#ecommerce" ); }
+);
