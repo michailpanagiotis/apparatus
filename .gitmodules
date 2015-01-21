@@ -77,3 +77,6 @@
 [submodule "vim/bundle/vim-blade"]
 	path = vim/bundle/vim-blade
 	url = https://github.com/xsbeats/vim-blade.git
+[submodule "vim/bundle/vim-surround_custom_mapping"]
+	path = vim/bundle/vim-surround_custom_mapping
+	url = https://github.com/t9md/vim-surround_custom_mapping.git

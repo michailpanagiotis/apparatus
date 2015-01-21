@@ -92,6 +92,11 @@ map <c-j> <c-w>j
 map <c-k> <c-w>k
 map <c-l> <c-w>l
 map <c-h> <c-w>h
+nnoremap tl :tabnext<CR>
+nnoremap th :tabprev<CR>
+nnoremap tn :tabnew<CR>
+
+
 
 "CtrlP
 nnoremap <leader>t :CtrlP<CR>
@@ -151,3 +156,9 @@ autocmd FileType php setlocal expandtab textwidth=120 colorcolumn=120
 
 "Underline Search
 highlight Search term=underline cterm=underline ctermbg=NONE ctermfg=Red
+
+let g:surround_custom_mapping = {}
+let g:surround_custom_mapping.python = {
+            \ 'p':  "print( \r)",
+            \ '[':  "[\r]",
+            \ }
