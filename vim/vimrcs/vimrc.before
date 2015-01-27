@@ -1,48 +1,34 @@
 filetype on
-filetype plugin on
+filetype plugin indent on
+syntax on
 
-" we like security
 set nomodeline
-" abbrev. of messages (avoids 'hit enter')
 set shortmess+=a
-" display the current mode
 set showmode
-" min num of lines to keep above/below the cursor
 set scrolloff=2
-" disable the line numbering column
-set nonumber
-
-" a tab is 4 spaces
-set tabstop=4
-set shiftwidth=4
-
-" the text width
+set number
+set tabstop=2
+set expandtab
+set softtabstop=2
+set shiftwidth=2
 set textwidth=79
-
-" wrap long lines
 set wrap
-
-" unlimited undo saved on file
 set undofile
-
 set foldmethod=indent
 set foldlevel=99
-
 set cursorline
 set textwidth=0
 set wrapmargin=0
-
-" remove trailing spaces
-autocmd BufWritePre * :%s/\s\+$//e
-" Auto indent entire buffer
-map <F7> mzgg=G`z<CR>
-" when yanking keep the original string on clipboard (multiple paste)
-xnoremap p pgvy
-
+set showmatch
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+set mouse=a
+set autoindent
+set colorcolumn=80
+set nolist
+set linebreak
 
 " filetypes
-autocmd FileType python set ft=python.django " For SnipMate
-autocmd FileType html set ft=htmldjango" For SnipMate
-autocmd BufRead,BufNewFile *.py set filetype=python
-au BufReadPost *.html set syntax=htmldjango
-autocmd BufRead,BufNewFile *.rb set filetype=ruby
+"autocmd BufRead,BufNewFile *.rb set filetype=ruby

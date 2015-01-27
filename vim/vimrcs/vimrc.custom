@@ -1,19 +1,27 @@
-let g:solarized_termcolors=256
-"let g:solarized_termtrans=1
-syntax enable
-set background=dark
-colorscheme solarized
-
-if (has('gui_running'))
-	set guifont=Consolas:h14
-endif
-
-highlight CursorLine  term=underline  guibg=#555555  cterm=underline
-highlight ExtraWhitespace ctermbg=red guibg=red
+" Trailing whitespaces
+highlight ExtraWhitespace ctermbg=161 guibg=#F926725  cterm=underline
 match ExtraWhitespace /\s\+$/
+autocmd ColorScheme * highlight ExtraWhitespace ctermbg=161 guibg=#F92672
 autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
 autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 autocmd BufWinLeave * call clearmatches()
 
+nnoremap <Leader>wn :match ExtraWhitespace /\s\+$/<CR>
+nnoremap <Leader>wf :match<CR>
+"" remove whitespaces
+nnoremap <Leader>wnf :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
+
+set t_Co=256
+set background=dark
+let g:molokai_original = 1
+colorscheme molokai
+
+if (has('gui_running'))
+	set guifont=Consolas:h12
+endif
+
+
+runtime macros/matchit.vim
+"highlight CursorLine  term=underline  guibg=#555555  cterm=underline
 

@@ -63,3 +63,5 @@
   changes=diff --name-status -r
   diffstat=diff --stat -r
 
+[push]
+	default = simple
