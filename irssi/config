@@ -142,6 +142,9 @@ aliases = {
   ATAG = "WINDOW SERVER";
   UNSET = "set -clear";
   RESET = "set -default";
+  ante = "https://www.dropbox.com/s/6qs319kdlg32jsx/ante.gif?dl=0";
+  heavy = "https://www.dropbox.com/s/84wrjvws7tebkaf/heavy.gif?dl=0";
+  remove = "heavy";
 };
 
 statusbar = {
@@ -258,6 +261,13 @@ statusbar = {
       items = {
         barstart = { priority = "100"; };
         awl_0 = { };
+        barend = { priority = "100"; alignment = "right"; };
+      };
+    };
+    awl_1 = {
+      items = {
+        barstart = { priority = "100"; };
+        awl_1 = { };
         barend = { priority = "100"; alignment = "right"; };
       };
     };
