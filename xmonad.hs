@@ -24,6 +24,7 @@ import XMonad.Actions.CycleWS
 import qualified XMonad.StackSet as W
 import XMonad.Hooks.ManageHelpers
 import qualified Data.Map        as M
+import XMonad.Util.Scratchpad
 
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
@@ -142,6 +143,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
     -- Deincrement the number of windows in the master area
     , ((modMask              , xK_period), sendMessage (IncMasterN (-1)))
+
+    -- Spawn scratchpad
+    , ((modMask              , xK_s), scratchpadSpawnActionTerminal myTerminal)
 
     -- toggle the status bar gap
     -- TODO, update this binding with avoidStruts , ((modMask              , xK_b     ),
@@ -293,7 +297,8 @@ myManageHook = composeAll
     , isFullscreen                  --> doFullFloat
     , className =? "Pidgin"         --> doShift "9:im"
     , resource  =? "desktop_window" --> doIgnore
-    , resource  =? "kdesktop"       --> doIgnore ]
+    , resource  =? "kdesktop"       --> doIgnore
+    , scratchpadManageHook (W.RationalRect 0.125 0.25 0.75 0.5)]
 
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse :: Bool
