@@ -50,9 +50,6 @@
 [submodule "vim/bundle/pytest.vim"]
 	path = vim/bundle/pytest.vim
 	url = https://github.com/alfredodeza/pytest.vim.git
-[submodule "vim/bundle/vim-php-indent"]
-	path = vim/bundle/vim-php-indent
-	url = git@github.com:2072/PHP-Indenting-for-VIm.git
 [submodule "vim/bundle/vim-markdown"]
 	path = vim/bundle/vim-markdown
 	url = https://github.com/plasticboy/vim-markdown.git
