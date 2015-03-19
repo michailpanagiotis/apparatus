@@ -162,3 +162,6 @@ let g:surround_custom_mapping.python = {
             \ 'p':  "print( \r)",
             \ '[':  "[\r]",
             \ }
+
+
+vnoremap <C-r> "hy:%s/<C-r>h//g<left><left>
