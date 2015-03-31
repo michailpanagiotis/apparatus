@@ -89,9 +89,8 @@ chatnets = {
 };
 
 channels = (
-  { name = "#skroutz"; chatnet = "skroutznet"; autojoin = "yes"; },
-  { name = "#ecommerce"; chatnet = "skroutznet"; autojoin = "yes"; },
-  { name = "#los_ceidados"; chatnet = "FreeNode"; autojoin = "yes"; }
+  { name = "#los_ceidados"; chatnet = "FreeNode"; autojoin = "yes"; },
+  { name = "#bartendr"; chatnet = "FreeNode"; autojoin = "yes"; }
 );
 
 aliases = {
@@ -264,13 +263,6 @@ statusbar = {
         barend = { priority = "100"; alignment = "right"; };
       };
     };
-    awl_1 = {
-      items = {
-        barstart = { priority = "100"; };
-        awl_1 = { };
-        barend = { priority = "100"; alignment = "right"; };
-      };
-    };
   };
 };
 settings = {
@@ -322,8 +314,8 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#skroutz";
-        tag = "skroutznet";
+        name = "#los_ceidados";
+        tag = "FreeNode";
       }
     );
   };
@@ -332,26 +324,16 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#ecommerce";
-        tag = "skroutznet";
-      }
-    );
-  };
-  3 = {
-    items = (
-      {
-        type = "CHANNEL";
-        chat_type = "IRC";
-        name = "#los_ceidados";
+        name = "#bartendr";
         tag = "FreeNode";
       }
     );
   };
-  4 = { name = "hilight"; sticky = "yes"; };
+  3 = { name = "hilight"; sticky = "yes"; };
 };
 mainwindows = {
   1 = { first_line = "8"; lines = "46"; };
-  4 = { first_line = "1"; lines = "7"; };
+  2 = { first_line = "1"; lines = "7"; };
 };
 ignores = (
   { level = "JOINS PARTS QUITS"; channels = ( "#skroutz" ); },
