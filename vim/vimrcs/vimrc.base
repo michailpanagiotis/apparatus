@@ -49,6 +49,9 @@ set nolist
 set formatoptions+=l
 set cursorline
 
+set swapfile
+set dir=~/tmp
+
 "leader key
 let mapleader = ","
 let g:mapleader = ","
