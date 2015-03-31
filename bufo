@@ -1,0 +1,31 @@
+#!/bin/bash
+#
+# Bufo Client
+# Put this somewhere in your path
+#
+set -e
+
+version=v1
+command=$1
+login=${BUFO_LOGIN:-bufo@bufo2.skroutz.gr}
+ssh_args=$BUFO_SSH
+ssh_command="ssh $ssh_args $login"
+scp_command="scp -r $ssh_args $login"
+
+case "$command" in
+    # The only scp command at the moment
+    ymls)
+	$scp_command:$version/ymls $2
+	;;
+    shell)
+	$ssh_command -t v1 $@
+	;;
+    script)
+	download_to=$0
+	$scp_command:$version/script $download_to
+	;;
+    *)
+	$ssh_command $version $@
+	;;
+esac
+

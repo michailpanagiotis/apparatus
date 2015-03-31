@@ -1,0 +1,5 @@
+#!/bin/sh
+xrandr --auto --output HDMI1 --mode 1920x1080 # --left-of eDP1 --primary
+# xrandr --auto --output eDP1 --right-of HDMI1
+kill $(pgrep trayer)
+/home/mike/.bin/tray &
