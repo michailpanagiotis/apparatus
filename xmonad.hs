@@ -73,7 +73,7 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9:im"]
 --
 -- myNormalBorderColor  = "#7c7c7c"
 -- myFocusedBorderColor = "#ffb6b0"
-myFocusedBorderColor = "blue"
+myFocusedBorderColor = "#1919FF"
 myNormalBorderColor  = "black"
 
 ------------------------------------------------------------------------
@@ -88,7 +88,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. controlMask, xK_l     ), spawn "xscreensaver-command -lock")
 
     -- launch dmenu
-    , ((modMask,               xK_p     ), spawn "exe=`dmenu_run | ~/.bin/dmenu` && eval \"exec $exe\"")
+    , ((modMask,               xK_p     ), spawn "exe=`dmenu_path | ~/.bin/dmenu` && eval \"exec $exe\"")
 
     -- launch gmrun
     , ((modMask .|. shiftMask, xK_p     ), spawn "gmrun")
@@ -205,7 +205,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
     --
     [((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
-        | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
+        | (key, sc) <- zip [xK_w, xK_e, xK_r] [1,0,2]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
 
