@@ -143,6 +143,11 @@ nmap <silent><Leader>m <Esc>:Pytest method<CR>
 "Multiple Paste
 xnoremap p pgvy
 
+
+"vim-expand-region
+vmap v <Plug>(expand_region_expand)
+vmap <C-v> <Plug>(expand_region_shrink)
+
 "remove trailing spaces
 "autocmd BufWritePre * :%s/\t/    /e
 autocmd BufWritePre * :%s/\s\+$//e
@@ -164,4 +169,5 @@ let g:surround_custom_mapping.python = {
             \ }
 
 
-vnoremap <C-r> "hy:%s/<C-r>h//g<left><left>
+"replace all selected text with Ctrl-r
+vnoremap <C-R> "hy:%s/<C-r>h//gc<left><left><left>
