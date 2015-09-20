@@ -63,5 +63,11 @@
   changes=diff --name-status -r
   diffstat=diff --stat -r
 
+# vimod
+  vimod = "!vim -p `git status -s | awk '{ if ($1 == \"M\") print $2 }'`"
+
+# grep
+  ggrep = "grep --break --heading --line-number"
+
 [push]
-	default = simple
+  default = simple
