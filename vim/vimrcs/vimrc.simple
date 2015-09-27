@@ -6,7 +6,7 @@ filetype indent on
 " Misc settings
 set showcmd
 syntax enable
-colorscheme elflord
+colorscheme molokai
 "set cursorline
 
 set autoindent
