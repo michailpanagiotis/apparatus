@@ -70,4 +70,4 @@
   ggrep = "grep --break --heading --line-number"
 
 [push]
-  default = simple
+  default = current
