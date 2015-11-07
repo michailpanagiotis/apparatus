@@ -174,3 +174,6 @@ vnoremap <C-R> "hy:%s/<C-r>h//gc<left><left><left>
 
 "do not insert *newline* chars when a line has exceeded its size
 set textwidth=0 wrapmargin=0
+
+autocmd FileType html setlocal shiftwidth=2 tabstop=2 softtabstop=2
+autocmd FileType javascript setlocal shiftwidth=2 tabstop=2 softtabstop=2
