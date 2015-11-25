@@ -50,7 +50,7 @@ set formatoptions+=l
 set cursorline
 
 set swapfile
-set dir=~/tmp
+set dir=~/.vim/tmp
 
 "leader key
 let mapleader = ","
@@ -101,8 +101,8 @@ let g:ctrlp_max_height = 20
 let g:ctrlp_match_window_reversed = 0
 
 "easyytags
-let g:easytags_by_filetype = '/home/mike/.vim/tags/'
-let g:easytags_file = '/home/mike/.vim/tags/tags'
+let g:easytags_by_filetype = '/Users/mike/.vim/tags/'
+let g:easytags_file = '/Users/mike/.vim/tags/tags'
 let g:easytags_auto_highlight = 0
 let g:easytags_auto_update = 0
 let g:easytags_async = 1
@@ -127,6 +127,13 @@ nmap <silent><Leader>b :TagbarToggle<CR>
 
 "TaskList
 map <leader>td <Plug>TaskList
+
+"vim-go
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
 
 "let g:airline#extensions#branch#enabled = 1
 "let g:airline#extensions#tabline#buffer_min_count = 1
