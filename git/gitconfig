@@ -27,7 +27,7 @@
   st = status -s
   co = checkout
   df = diff
-  br = branch -a
+  br = branch -av
 
 # reset aliases
   rh = reset --hard HEAD
