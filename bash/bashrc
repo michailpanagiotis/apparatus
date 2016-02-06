@@ -222,5 +222,5 @@ function parse_git_branch {
 }
 
 #Bash prompt configuration
-export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h:\[\e[33m\]\w\[\e[0m\]\n\e[31m\]$(parse_git_branch)\e[0m\]λ '
+export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h:\[\e[33m\]\w\[\e[0m\]\n\[\e[31m\]$(parse_git_branch)\[\e[0m\]λ '
 
