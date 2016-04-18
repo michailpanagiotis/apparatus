@@ -117,6 +117,7 @@ let g:easytags_auto_highlight = 0
 "nerdtree
 map <C-n> :NERDTreeToggle<CR>
 let g:NERDTreeDirArrows=0
+let NERDTreeShowHidden=1
 "autocmd BufEnter * lcd %:p:h
 
 " gitgutter
@@ -142,6 +143,7 @@ nmap <silent><Leader>m <Esc>:Pytest method<CR>
 
 "Multiple Paste
 xnoremap p pgvy
+set clipboard="+
 
 
 "vim-expand-region
@@ -177,6 +179,7 @@ set textwidth=0 wrapmargin=0
 
 autocmd FileType html setlocal shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType javascript setlocal shiftwidth=2 tabstop=2 softtabstop=2
+autocmd FileType yaml setlocal shiftwidth=2 tabstop=2 softtabstop=2
 
 "Syntastic for javascript
 let g:syntastic_javascript_checkers = ['eslint']
