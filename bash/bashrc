@@ -218,13 +218,17 @@ alias ubx='C:/Personal/Programs/cygwin/home/rinis/bin/ubxdump'
 alias ubxdump='C:/SVN/SOFTWARE/ubtools/ubxdump.pl'
 
 function parse_git_branch {
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/{\1} /'
+    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/{\1} /'
 }
 
 function parse_screen {
-  if [ -n "$STY" ]; then echo "[screen w:$WINDOW] "; else echo ""; fi
+    if [ -n "$STY" ]; then echo "[screen w:$WINDOW] "; else echo ""; fi
 }
 
 #Bash prompt configuration
-export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h:\[\e[33m\]\w\[\e[0m\]\n\[\e[36m\]$(parse_screen)\[\e[31m\]$(parse_git_branch)\[\e[0m\]λ '
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+    export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\e[41m\]\e[30m\]\h\e[32m\]\e[40m\]:\[\e[33m\]\w\[\e[0m\]\n\[\e[36m\]$(parse_screen)\[\e[31m\]$(parse_git_branch)\[\e[0m\]λ '
+else
+    export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h:\[\e[33m\]\w\[\e[0m\]\n\[\e[36m\]$(parse_screen)\[\e[31m\]$(parse_git_branch)\[\e[0m\]λ '
+fi
 
