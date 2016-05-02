@@ -222,7 +222,7 @@ function parse_git_branch {
 }
 
 function parse_screen {
-    if [ -n "$STY" ]; then echo "[screen w:$WINDOW] "; else echo ""; fi
+    if [ -n "$STY" ]; then echo "[\$:$WINDOW] "; else echo ""; fi
 }
 
 #Bash prompt configuration
