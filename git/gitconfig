@@ -1,73 +1,83 @@
 [user]
     name = ilias.rinis
     email = ilias.rinis@u-blox.com
+
 [core]
-	editor = vim
+    editor = vim
+
 [diff]
-  tool = vimdiff
+    tool = vimdiff
+
 [color]
-  ui = true
+    ui = true
+
 [color "branch"]
     current = red reverse
     local = blue
     remote = green
+
 [color "status"]
     added = yellow
     changed = green
     untracked = cyan
+
 [color "diff"]
     meta = yellow bold
     frag = magenta bold
     old = red bold
     new = green bold
+
 [alias]
-  ci = commit
-  cl = clone
-  cp = cherry-pick
-  st = status -s
-  co = checkout
-  df = diff
-  br = branch
+    ci = commit
+    cl = clone
+    cp = cherry-pick
+    st = status -s
+    co = checkout
+    df = diff
+    br = branch
 
-# reset aliases
-  rh = reset --hard HEAD
+    # reset aliases
+    rh = reset --hard HEAD
 
-# stash aliases
-  sl = stash list
-  sa = stash apply
-  ss = stash save
-  sp = stash pop
+    # stash aliases
+    sl = stash list
+    sa = stash apply
+    ss = stash save
+    sp = stash pop
 
-# list aliases
-  la = "!git config -l | grep alias | cut -c 7-"
+    # list aliases
+    la = "!git config -l | grep alias | cut -c 7-"
 
-# log listing aliases
-  ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s\\ %Cgreen(%cr)%Cblue\\ [%cn]" --date=relative --decorate
-  ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
-  lnc = log --pretty=format:"%h\\ %s\\ [%cn]"
-  ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=default
-  le = log --oneline --decorate
-  lc = log ORIG_HEAD.. --stat --no-merges
-  llog = log --date=local
-  who = shortlog -s --
-  fl = log -u
+    # log listing aliases
+    ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s\\ %Cgreen(%cr)%Cblue\\ [%cn]" --date=relative --decorate
+    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+    lnc = log --pretty=format:"%h\\ %s\\ [%cn]"
+    ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=default
+    le = log --oneline --decorate
+    lc = log ORIG_HEAD.. --stat --no-merges
+    llog = log --date=local
+    who = shortlog -s --
+    fl = log -u
 
-# merging aliases
-  cours = "!f() { git co --ours $@ && git add $@; }; f"
-  ctheirs = "!f() { git co --theirs $@ && git add $@; }; f"
+    # tag aliases
+    tl = tag -ln
 
-# file, commit changes aliases
-  dl = "!git ll -1"
-  dlc = diff --cached HEAD^
-  dr  = "!f() { git diff "$1"^.."$1"; }; f"
-  changes=diff --name-status -r
-  diffstat=diff --stat -r
+    # merging aliases
+    cours = "!f() { git co --ours $@ && git add $@; }; f"
+    ctheirs = "!f() { git co --theirs $@ && git add $@; }; f"
 
-# vimod
-  vimod = "!vim -p `git status -s | awk '{ if ($1 == \"M\") print $2 }'`"
+    # file, commit changes aliases
+    dl = "!git ll -1"
+    dlc = diff --cached HEAD^
+    dr  = "!f() { git diff "$1"^.."$1"; }; f"
+    changes=diff --name-status -r
+    diffstat=diff --stat -r
 
-# grep
-  ggrep = "grep --break --heading --line-number"
+    # vimod
+    vimod = "!vim -p `git status -s | awk '{ if ($1 == \"M\") print $2 }'`"
+
+    # grep
+    ggrep = "grep --break --heading --line-number"
 
 [push]
-  default = current
+    default = current
