@@ -45,7 +45,7 @@ screen:
 	test -e $(HOME)/.apparatus/screen/screenrc       && ln -fs $(HOME)/.apparatus/screen/screenrc       $(HOME)/.screenrc
 
 gpsdate:
-	#$(info *** gpsdate ***)
-	# TODO
+	$(info *** gpsdate ***)
+	test -e $(HOME)/.apparatus/gpsdate/gpsdate       && cp -f $(HOME)/.apparatus/gpsdate/gpsdate        /usr/bin/gpsdate
 
 .PHONY: osx.bash osx.git ubx.bash ubx.git vim tmux screen gpsdate
