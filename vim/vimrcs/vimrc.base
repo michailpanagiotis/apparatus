@@ -74,14 +74,14 @@ let g:mapleader = ","
 " turn on this option as well
 set t_Co=256
 set background=dark
-let g:molokai_original = 1
+"let g:molokai_original = 1
 
 if has('gui_running')
   "set background=light
   set guifont=Monospace\ 12
   colorscheme solarized
 else
-  colorscheme molokai
+  colorscheme gruvbox
 endif
 
 "Movement sortcuts
