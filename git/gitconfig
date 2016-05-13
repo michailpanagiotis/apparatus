@@ -1,6 +1,5 @@
-[user]
-    name = ilias.rinis
-    email = ilias.rinis@u-blox.com
+[include]
+    path = ~/.git.author
 
 [core]
     editor = vim

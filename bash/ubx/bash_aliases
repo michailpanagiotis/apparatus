@@ -1,6 +1,3 @@
-# If not running interactively, don't do anything
-[[ "$-" != *i* ]] && return
-
 # Aliases
 alias ls='ls -lahp --color=tty'
 alias clear='printf "\033c"'
@@ -21,18 +18,3 @@ alias spec='cd ~/SVN/DOCUMENTS/ProtocolSpec/trunk'
 alias aop='C:/SVN/IDP/FW/CODENAME/aop/offl/Debug/aop/aop.exe'
 alias ubx='C:/Personal/Programs/cygwin/home/rinis/bin/ubxdump'
 alias ubxdump='C:/SVN/SOFTWARE/ubtools/ubxdump.pl'
-
-function parse_git_branch {
-    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/{\1} /'
-}
-
-#Bash prompt configuration
-if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-    export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\e[41m\]\e[30m\]\h\e[32m\]\e[40m\]:\[\e[33m\]\w\[\e[0m\]\n\[\[\e[31m\]$(parse_git_branch)\[\e[0m\]λ '
-else
-    export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h:\[\e[33m\]\w\[\e[0m\]\n\[\e[31m\]$(parse_git_branch)\[\e[0m\]λ '
-fi
-
-# Resume screen on startup
-[[ $TERM != "screen" ]] && exec screen -dRRq
-
