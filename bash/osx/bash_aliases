@@ -1,5 +1,5 @@
 # General aliases
-alias ls='ls -lah'
+alias ls='ls -Glahp'
 alias grep='grep --color'
 alias fgrep='fgrep --color'
 
