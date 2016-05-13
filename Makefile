@@ -48,4 +48,5 @@ gpsdate:
 	$(info *** gpsdate ***)
 	test -e $(HOME)/.apparatus/gpsdate/gpsdate       && cp -f $(HOME)/.apparatus/gpsdate/gpsdate        /usr/bin/gpsdate
 
+# Prevents rules from appearing as 'nothing to change'
 .PHONY: osx.bash osx.git ubx.bash ubx.git vim tmux screen gpsdate
