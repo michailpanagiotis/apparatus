@@ -1,2 +1,2 @@
-hardstatus alwayslastline "%{b kw}%H %{r}%1` %{w}| %{g}%c %{w} %{y}%d.%m.%Y %{w}| %{= g} %{= w}%-Lw%{=r}%n%f* %t%{-}%+LW"
-
+backtick 1 900 900 curl icanhazip.com
+hardstatus alwayslastline "%{b kw}%1` %{w}| %{g}%c %{w} %{y}%d.%m.%Y %{w}| %{= g} %{= w}%-Lw%{=r}%n%f* %t%{-}%+LW"
