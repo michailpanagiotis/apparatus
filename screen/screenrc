@@ -1,0 +1,2 @@
+hardstatus alwayslastline "%{b kw}%H %{r}%1` %{w}| %{g}%c %{w} %{y}%d.%m.%Y %{w}| %{= g} %{= w}%-Lw%{=r}%n%f* %t%{-}%+LW"
+
