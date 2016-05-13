@@ -1,2 +1,11 @@
-backtick 1 900 900 curl icanhazip.com
-hardstatus alwayslastline "%{b kw}%1` %{w}| %{g}%c %{w} %{y}%d.%m.%Y %{w}| %{= g} %{= w}%-Lw%{=r}%n%f* %t%{-}%+LW"
+# look and feel
+backtick 100 900 900 curl icanhazip.com
+hardstatus alwayslastline
+hardstatus string '%{= kG}[ %{W}%100` %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %m-%d-%y %{W}%c %{g}]'
+
+# hide startup message
+startup_message off
+
+# automatically detach on hangup
+autodetach on
+

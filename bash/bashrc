@@ -233,3 +233,6 @@ else
     export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h:\[\e[33m\]\w\[\e[0m\]\n\[\e[36m\]$(parse_screen)\[\e[31m\]$(parse_git_branch)\[\e[0m\]λ '
 fi
 
+# Resume screen on startup
+[[ $TERM != "screen" ]] && exec screen -dRRq
+
