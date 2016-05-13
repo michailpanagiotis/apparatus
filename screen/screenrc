@@ -1,7 +1,10 @@
-# look and feel
+# backtick commands
 backtick 100 900 900 curl icanhazip.com
+
+# look and feel
 hardstatus alwayslastline
-hardstatus string '%{= kG}[ %{W}%100` %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %m-%d-%y %{W}%c %{g}]'
+hardstatus string '%{= kG}[ %{W}%100` %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{W} %m-%d-%y %{W}%c %{g}]'
+vbell off
 
 # hide startup message
 startup_message off
