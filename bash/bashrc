@@ -208,8 +208,9 @@ alias fgrep='fgrep --color=auto'
 
 # u-blox specific aliases
 alias e='cd /cygdrive/e/u-blox'
-alias c='cd /cygdrive/e/u-blox'
+alias c='cd /cygdrive/c/u-blox'
 alias mga='cd ~/SVN/SOFTWARE/SERVICES/MGA'
+alias fota='cd ~/SVN/SOFTWARE/SERVICES/FOTA'
 alias fw='cd ~/SVN/IDP/FW/CODENAME'
 alias spec='cd ~/SVN/DOCUMENTS/ProtocolSpec/trunk'
 alias date='/usr/bin/date; C:/Personal/Programs/cygwin/home/rinis/bin/gpsdate'
