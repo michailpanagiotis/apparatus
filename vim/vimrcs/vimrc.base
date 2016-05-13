@@ -25,6 +25,7 @@ set linebreak
 set nolist
 set formatoptions+=l
 set cursorline
+set backspace=2
 
 set swapfile
 set dir=~/.vim/tmp
@@ -40,7 +41,6 @@ let g:mapleader = ","
 :autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 :autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 :autocmd BufWinLeave * call clearmatches()
-
 
 :nnoremap <Leader>wn :match ExtraWhitespace /\s\+$/<CR>
 :nnoremap <Leader>wf :match<CR>
