@@ -4,7 +4,7 @@ backtick 200 60 60 /usr/bin/gpsdate
 
 # look and feel
 hardstatus alwaysfirstline
-hardstatus string '%{= kG}[ %{W}%100` %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{W} %m-%d-%y %{W}%c %{B}%200` %{g}]'
+hardstatus string '%{= kG}[ %{W}%100` %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{W} %d-%m-%y %{W}%c %{B}%200` %{g}]'
 vbell off
 
 # hide startup message
