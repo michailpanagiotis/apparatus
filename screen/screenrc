@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # backtick commands
 backtick 100 900 900 curl icanhazip.com
 backtick 200 60 60 $HOME/.apparatus/gpsdate/gpsdate
@@ -13,3 +14,6 @@ startup_message off
 # automatically detach on hangup
 autodetach on
 
+=======
+shell -$SHELL
+>>>>>>> ilias/osx

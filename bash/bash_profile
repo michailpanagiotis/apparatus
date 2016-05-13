@@ -1,0 +1,23 @@
+# Configure bash prompt
+source ~/.bash_prompt
+
+# Aliases
+alias ls='ls -lah'
+alias grep='grep --color'
+alias fgrep='fgrep --color'
+
+# Directory shortcuts
+alias btr='cd ~/Workspace/bartendr'
+alias x11='cd ~/Google\ Drive/Workspace/x11-squad'
+
+# git completion plugin
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+    . $(brew --prefix)/etc/bash_completion
+fi
+
+# git completion script
+source ~/.apparatus/bash/git-completion.bash
+
+# youtube-dl
+alias ut='youtube-dl'
+alias utmp3='youtube-dl -x --audio-format mp3 --audio-quality 0'

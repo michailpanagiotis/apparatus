@@ -38,6 +38,7 @@
 
     # reset aliases
     rh = reset --hard HEAD
+    ro = reset --hard origin
 
     # stash aliases
     sl = stash list

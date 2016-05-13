@@ -6,7 +6,7 @@ filetype indent on
 " Misc settings
 set showcmd
 syntax enable
-colorscheme molokai
+"colorscheme molokai
 "set cursorline
 
 set autoindent
@@ -83,3 +83,6 @@ au Filetype perl nmap <C-S-f> :call DoTidy()<CR>
 
 "shortcut for visual mode to run on the the current visual selection"
 au Filetype perl vmap <C-S-f> :Tidy<CR>
+
+" vim-markdown
+let g:vim_markdown_folding_disabled = 1
