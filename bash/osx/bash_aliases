@@ -10,3 +10,6 @@ alias x11='cd ~/Google\ Drive/Workspace/x11-squad'
 # youtube-dl
 alias ut='youtube-dl'
 alias utmp3='youtube-dl -x --audio-format mp3 --audio-quality 0'
+
+# virtualenv
+alias venv='if [ -e .venv/bin/activate ]; then source .venv/bin/activate; else echo "Could not find script: .venv/bin/activate"; fi'
