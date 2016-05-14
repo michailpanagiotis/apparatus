@@ -67,6 +67,10 @@ inoremap {}     {}
 " Insert new line at the cursor without entering insert mode
 nnoremap <S-Enter> i<CR><Esc>
 
+" NERDTree
+let mapleader = ","
+nmap <leader>d :NERDTree<cr>
+
 """"""""
 " Perl "
 """"""""
