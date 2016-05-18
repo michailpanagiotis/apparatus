@@ -1,5 +1,5 @@
 # General aliases
-alias ls='ls -lah'
+alias ls='ls -Glahp'
 alias grep='grep --color'
 alias fgrep='fgrep --color'
 
@@ -10,3 +10,9 @@ alias x11='cd ~/Google\ Drive/Workspace/x11-squad'
 # youtube-dl
 alias ut='youtube-dl'
 alias utmp3='youtube-dl -x --audio-format mp3 --audio-quality 0'
+
+# virtualenv
+venv_activate() {
+    source "$1/bin/activate"
+}
+alias venv=venv_activate
