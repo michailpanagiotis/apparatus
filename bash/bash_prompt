@@ -36,64 +36,64 @@ LIGHT_GREEN="\[\033[1;32m\]"
 
 # determine git branch name
 function parse_git_branch(){
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/{\1} /'
+    if [ -d .git ]; then
+        git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/{\1} /'
+    fi
 }
 
 # Determine the branch/state information for this git repository.
 function set_git_branch() {
-  # Get the name of the branch.
-  branch=$(parse_git_branch)
+    # Get the name of the branch.
+    branch=$(parse_git_branch)
 
-  # Set the final branch string.
-  BRANCH="${RED}${branch}${COLOR_NONE}"
+    # Set the final branch string.
+    BRANCH="${RED}${branch}${COLOR_NONE}"
 }
 
 # Return the prompt symbol to use, colorized based on the return value of the
 # previous command.
 function set_prompt_symbol () {
-  if test $1 -eq 0 ; then
-      PROMPT_SYMBOL="λ"
-  else
-      PROMPT_SYMBOL="${LIGHT_RED}λ${COLOR_NONE}"
-  fi
+    if test $1 -eq 0 ; then
+        PROMPT_SYMBOL="λ"
+    else
+        PROMPT_SYMBOL="${LIGHT_RED}λ${COLOR_NONE}"
+    fi
 }
 
 # Determine active Python virtualenv details.
 function set_virtualenv () {
-  if test -z "$VIRTUAL_ENV" ; then
-      PYTHON_VIRTUALENV=""
-  else
-      PYTHON_VIRTUALENV="${BLUE}[`basename \"$VIRTUAL_ENV\"`]${COLOR_NONE} "
-  fi
+    if test -z "$VIRTUAL_ENV" ; then
+        PYTHON_VIRTUALENV=""
+    else
+        PYTHON_VIRTUALENV="${BLUE}[`basename \"$VIRTUAL_ENV\"`]${COLOR_NONE} "
+    fi
 }
 
 # Set the hostname, highlighting the background if in ssh
 function set_host () {
-  P_HOST=`hostname -s`
-  if test -n "$SSH_TTY" || test -n "$SSH_CLIENT" ; then
-      P_HOST="${BG_RED}${WHITE}${P_HOST}${COLOR_NONE}"
-  fi
+    P_HOST=$HOSTNAME
+    if test -n "$SSH_TTY" || test -n "$SSH_CLIENT" ; then
+        P_HOST="${BG_RED}${WHITE}${P_HOST}${COLOR_NONE}"
+    fi
 }
 
 # Set the full bash prompt.
 function set_bash_prompt () {
-  # Set the PROMPT_SYMBOL variable. We do this first so we don't lose the
-  # return value of the last command.
-  set_prompt_symbol $?
+    # Set the PROMPT_SYMBOL variable. We do this first so we don't lose the
+    # return value of the last command.
+    set_prompt_symbol $?
 
-  # Set the P_HOST variable.
-  set_host
+    # Set the P_HOST variable.
+    set_host
 
-  # Set the PYTHON_VIRTUALENV variable.
-  set_virtualenv
+    # Set the PYTHON_VIRTUALENV variable.
+    set_virtualenv
 
-  # Set the BRANCH variable.
-  set_git_branch
+    # Set the BRANCH variable.
+    set_git_branch
 
-  # Set the bash prompt variable.
-  PS1="
-${GREEN}\u@${P_HOST}${COLOR_NONE}:${YELLOW}\w${COLOR_NONE}
-${PYTHON_VIRTUALENV}${BRANCH}${PROMPT_SYMBOL} "
+    # Set the bash prompt variable.
+    PS1="\n${GREEN}\u@${P_HOST}${COLOR_NONE}:${YELLOW}\w${COLOR_NONE}\n${PYTHON_VIRTUALENV}${BRANCH}${PROMPT_SYMBOL} "
 }
 
 # Tell bash to execute this function just before displaying its prompt.
