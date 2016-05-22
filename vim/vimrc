@@ -95,3 +95,14 @@ au Filetype perl vmap <C-S-f> :Tidy<CR>
 "CtrlP
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 nmap <C-p> :CtrlP<CR>
+
+"Python -- flake8
+autocmd BufWritePost *.py call Flake8()
+let g:flake8_show_quickfix=0
+let g:flake8_show_in_file=1
+"use colors defined in the colorscheme
+highlight link Flake8_Error      Error
+highlight link Flake8_Warning    WarningMsg
+highlight link Flake8_Complexity WarningMsg
+highlight link Flake8_Naming     WarningMsg
+highlight link Flake8_PyFlake    WarningMsg
