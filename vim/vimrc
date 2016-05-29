@@ -20,6 +20,10 @@ set incsearch
 set hlsearch
 set backspace=indent,eol,start
 set showtabline=2
+set colorcolumn=80
+highlight ColorColumn ctermbg=DarkGrey
+"set cursorline
+"highlight Cursorline cterm=NONE ctermbg=darkgrey ctermfg=white
 
 "Show trailing whitespace
 highlight ExtraWhitespace ctermbg=darkblue guibg=#344011
@@ -106,3 +110,7 @@ highlight link Flake8_Warning    WarningMsg
 highlight link Flake8_Complexity WarningMsg
 highlight link Flake8_Naming     WarningMsg
 highlight link Flake8_PyFlake    WarningMsg
+
+" vim-airline
+let g:airline#extensions#tabline#enabled = 1
+set laststatus=2
