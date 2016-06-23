@@ -1,4 +1,4 @@
-sudo apt-get install vim-nox git tmux
+sudo apt-get install vim-nox git tmux exuberant-ctags
 cd $HOME/.apparatus/
 git submodule init
 git submodule update
