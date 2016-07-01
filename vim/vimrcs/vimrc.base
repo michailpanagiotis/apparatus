@@ -49,6 +49,7 @@ set nolist
 set formatoptions+=l
 set cursorline
 set undofile
+set backspace=2
 "leader key
 let mapleader = ","
 let g:mapleader = ","
