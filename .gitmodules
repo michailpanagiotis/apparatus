@@ -85,3 +85,6 @@
 [submodule "vim/bundle/vim-addon-mw-utils"]
 	path = vim/bundle/vim-addon-mw-utils
 	url = git@github.com:MarcWeber/vim-addon-mw-utils.git
+[submodule "vim/bundle/vim-phpqa.git"]
+	path = vim/bundle/vim-phpqa.git
+	url = git@github.com:joonty/vim-phpqa.git
