@@ -12,6 +12,7 @@ set incsearch		" Incremental search
 set hlsearch
 set mouse=a		  " Enable mouse usage (all modes)
 set autoindent
+set laststatus=2
 set smartindent
 set tabstop=2
 set expandtab
@@ -42,11 +43,8 @@ let g:mapleader = ","
 :autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 :autocmd BufWinLeave * call clearmatches()
 
-:nnoremap <Leader>wn :match ExtraWhitespace /\s\+$/<CR>
-:nnoremap <Leader>wf :match<CR>
-
 "" remove whitespaces
-:nnoremap <Leader>wnf :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
+:nnoremap <leader><space> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
 
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
@@ -76,6 +74,7 @@ let g:vim_markdown_folding_disabled = 1
 
 "CtrlP
 nnoremap <leader>t :CtrlP<CR>
+nnoremap <leader>b :CtrlPBuffer<CR>
 let g:ctrlp_use_caching = 1
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_max_height = 20
@@ -104,7 +103,7 @@ nnoremap <leader>gun :GundoToggle<CR>
 let g:gundo_right = 1
 
 "Tagbar
-nmap <silent><Leader>b :TagbarToggle<CR>
+nmap <silent><leader>] :TagbarToggle<CR>
 
 "TaskList
 map <leader>td <Plug>TaskList
