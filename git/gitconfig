@@ -35,6 +35,10 @@
     df = diff
     br = branch
 
+    # pull
+    pl = pull
+    pr = pull --rebase
+
     # reset aliases
     rh = reset --hard HEAD
     ro = reset --hard origin
