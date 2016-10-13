@@ -1,2 +1,2 @@
 # Resume screen on startup
-[[ $TERM != "screen" ]] && exec screen -dRRq
+#[[ $TERM != "screen" ]] && exec screen -dRRq
