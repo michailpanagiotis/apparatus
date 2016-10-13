@@ -48,6 +48,7 @@
     sa = stash apply
     ss = stash save
     sp = stash pop
+    sc = stash clear
 
     # list aliases
     la = "!git config -l | grep alias | cut -c 7-"
