@@ -36,7 +36,7 @@ LIGHT_GREEN="\[\033[1;32m\]"
 
 # determine git branch name
 function parse_git_branch(){
-    if [ -d .git ]; then
+    if [ -d .git ] || git rev-parse --git-dir > /dev/null 2>&1 ; then
         git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/{\1} /'
     fi
 }
