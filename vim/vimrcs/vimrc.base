@@ -108,6 +108,9 @@ nmap <silent><leader>] :TagbarToggle<CR>
 "TaskList
 map <leader>td <Plug>TaskList
 
+"vim-javacript
+let g:javascript_plugin_jsdoc = 1
+
 "vim-go
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
