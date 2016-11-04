@@ -5,6 +5,8 @@ alias fgrep='fgrep --color'
 
 # Directory shortcuts
 alias btr='cd ~/Workspace/bartendr'
+alias spf='cd ~/Workspace/sound-proof'
+alias wp='cd ~/Workspace'
 alias x11='cd ~/Google\ Drive/Workspace/x11-squad'
 
 # youtube-dl
