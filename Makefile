@@ -2,10 +2,10 @@ install:
 	git submodule init
 	git submodule update
 
-ubx: bash.ubx git.ubx vim screen gpsdate.ubx
+ubx: bash.ubx git.ubx vim.ubx screen gpsdate.ubx
 	$(info ubx done!)
 
-osx: bash.osx git.osx vim tmux gpsdate.osx
+osx: bash.osx git.osx vim.osx tmux gpsdate.osx
 	$(info osx done!)
 
 bash.osx:
@@ -32,9 +32,13 @@ git.ubx:
 	test -e $(HOME)/.apparatus/git/gitconfig         && ln -fs $(HOME)/.apparatus/git/gitconfig         $(HOME)/.gitconfig
 	test -e $(HOME)/.apparatus/git/ubx/git.author    && ln -fs $(HOME)/.apparatus/git/ubx/git.author    $(HOME)/.git.author
 
-vim:
+vim.ubx:
 	$(info *** vim ***)
-	test -e $(HOME)/.apparatus/vim/vimrc             && ln -fs $(HOME)/.apparatus/vim/vimrc             $(HOME)/.vimrc
+	test -e $(HOME)/.apparatus/vim/ubx/vimrc         && ln -fs $(HOME)/.apparatus/vim/vimrc             $(HOME)/.vimrc
+
+vim.osx:
+	$(info *** vim ***)
+	test -e $(HOME)/.apparatus/vim/osx/vimrc         && ln -fs $(HOME)/.apparatus/vim/vimrc             $(HOME)/.vimrc
 
 tmux:
 	$(info *** tmux ***)
