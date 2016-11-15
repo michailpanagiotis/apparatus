@@ -12,22 +12,8 @@ set showcmd
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
 syntax on
-set t_Co=256
 set background=dark
-let g:molokai_original = 1
-
-if has('gui_running')
-  "set background=light
-  set guifont=Monospace\ 12
-  colorscheme solarized
-else
-  colorscheme molokai
-endif
-
-let g:solarized_termcolors=256
-set background=dark
-colorscheme solarized
-set cursorline
+colorscheme molokai
 
 set autoindent
 set expandtab
@@ -42,8 +28,6 @@ set backspace=indent,eol,start
 set showtabline=2
 set colorcolumn=80
 highlight ColorColumn ctermbg=DarkGrey
-"set cursorline
-"highlight Cursorline cterm=NONE ctermbg=darkgrey ctermfg=white
 
 "Show trailing whitespace
 highlight ExtraWhitespace ctermbg=darkblue guibg=#344011
@@ -87,10 +71,6 @@ inoremap {}     {}
 " Insert new line at the cursor without entering insert mode
 nnoremap <S-Enter> i<CR><Esc>
 
-" NERDTree
-let mapleader = ","
-nmap <leader>d :NERDTree<cr>
-
 """"""""
 " Perl "
 """"""""
@@ -112,22 +92,3 @@ au Filetype perl nmap <C-S-f> :call DoTidy()<CR>
 "shortcut for visual mode to run on the the current visual selection"
 au Filetype perl vmap <C-S-f> :Tidy<CR>
 
-"CtrlP
-set runtimepath^=~/.vim/bundle/ctrlp.vim
-nmap <C-p> :CtrlP<CR>
-
-"Python -- flake8
-autocmd BufWritePost *.py call Flake8()
-let g:flake8_show_quickfix=0
-let g:flake8_show_in_file=1
-"use colors defined in the colorscheme
-highlight link Flake8_Error      Error
-highlight link Flake8_Warning    WarningMsg
-highlight link Flake8_Complexity WarningMsg
-highlight link Flake8_Naming     WarningMsg
-highlight link Flake8_PyFlake    WarningMsg
-
-" vim-airline
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_detect_modified=1
-set laststatus=2
