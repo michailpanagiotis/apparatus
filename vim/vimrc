@@ -5,9 +5,25 @@ filetype indent on
 
 " Misc settings
 set showcmd
-syntax enable
-colorscheme elflord
-"set cursorline
+" If using a dark background within the editing area and syntax highlighting
+" turn on this option as well
+syntax on
+set t_Co=256
+set background=dark
+let g:molokai_original = 1
+
+if has('gui_running')
+  "set background=light
+  set guifont=Monospace\ 12
+  colorscheme solarized
+else
+  colorscheme molokai
+endif
+
+let g:solarized_termcolors=256
+set background=dark
+colorscheme solarized
+set cursorline
 
 set autoindent
 set expandtab
