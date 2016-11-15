@@ -1,3 +1,7 @@
+" Pathogen
+execute pathogen#infect()
+filetype plugin indent on
+
 " Auto completion settings
 filetype on
 filetype plugin on
@@ -44,10 +48,6 @@ highlight ColorColumn ctermbg=DarkGrey
 "Show trailing whitespace
 highlight ExtraWhitespace ctermbg=darkblue guibg=#344011
 autocmd BufEnter * exe ':2match ExtraWhitespace /\s\+$\| \+\ze\t\|\t\+\ze /'
-
-" Pathogen
-execute pathogen#infect()
-filetype plugin indent on
 
 " Vim. Live it.
 noremap <up> <nop>
