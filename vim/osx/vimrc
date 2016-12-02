@@ -13,17 +13,6 @@ set showcmd
 " turn on this option as well
 syntax on
 set t_Co=256
-set background=dark
-let g:molokai_original = 1
-
-if has('gui_running')
-  "set background=light
-  set guifont=Monospace\ 12
-  colorscheme solarized
-else
-  colorscheme molokai
-endif
-
 let g:solarized_termcolors=256
 set background=dark
 colorscheme solarized
@@ -42,8 +31,6 @@ set backspace=indent,eol,start
 set showtabline=2
 set colorcolumn=80
 highlight ColorColumn ctermbg=DarkGrey
-"set cursorline
-"highlight Cursorline cterm=NONE ctermbg=darkgrey ctermfg=white
 
 "Show trailing whitespace
 highlight ExtraWhitespace ctermbg=darkblue guibg=#344011
@@ -90,6 +77,16 @@ nnoremap <S-Enter> i<CR><Esc>
 " NERDTree
 let mapleader = ","
 nmap <leader>d :NERDTree<cr>
+
+""""""
+" Go "
+""""""
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_types = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
 
 """"""""
 " Perl "
