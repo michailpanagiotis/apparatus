@@ -9,3 +9,6 @@ source ~/.bash_extras
 
 # PATH definitions
 export PATH="/usr/local/sbin:$PATH"
+
+# Display archey
+archey
