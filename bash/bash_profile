@@ -7,3 +7,5 @@ source ~/.bash_aliases
 # Plugins and Extras
 source ~/.bash_extras
 
+# PATH definitions
+export PATH="/usr/local/sbin:$PATH"
