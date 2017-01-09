@@ -147,6 +147,11 @@ nmap <silent><Leader>m <Esc>:Pytest method<CR>
 xnoremap p pgvy
 set clipboard="+
 
+"Toggle Paste
+nnoremap <F2> :set invpaste paste?<CR>
+set pastetoggle=<F2>
+set showmode
+
 
 "vim-expand-region
 vmap v <Plug>(expand_region_expand)
