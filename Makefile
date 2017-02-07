@@ -34,11 +34,11 @@ git.ubx:
 
 vim.ubx:
 	$(info *** vim ***)
-	test -e $(HOME)/.apparatus/vim/ubx/vimrc         && ln -fs $(HOME)/.apparatus/vim/ubx/vimrc         $(HOME)/.vimrc
+	test -e $(HOME)/.apparatus/vim/vimrcs/vimrc.ubx  && ln -fs $(HOME)/.apparatus/vim/vimrcs/vimrc.ubx  $(HOME)/.vimrc
 
 vim.osx:
 	$(info *** vim ***)
-	test -e $(HOME)/.apparatus/vim/osx/vimrc         && ln -fs $(HOME)/.apparatus/vim/osx/vimrc         $(HOME)/.vimrc
+	test -e $(HOME)/.apparatus/vim/vimrcs/vimrc.osx  && ln -fs $(HOME)/.apparatus/vim/vimrcs/vimrc.osx  $(HOME)/.vimrc
 
 tmux:
 	$(info *** tmux ***)
