@@ -2,11 +2,6 @@
 execute pathogen#infect()
 filetype plugin indent on
 
-" Auto completion settings
-filetype on
-filetype plugin on
-filetype indent on
-
 " Misc settings
 set showcmd
 " If using a dark background within the editing area and syntax highlighting
@@ -113,18 +108,10 @@ au Filetype perl vmap <C-S-f> :Tidy<CR>
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 nmap <C-p> :CtrlP<CR>
 
-"Python -- flake8
-autocmd BufWritePost *.py call Flake8()
-let g:flake8_show_quickfix=0
-let g:flake8_show_in_file=1
-"use colors defined in the colorscheme
-highlight link Flake8_Error      Error
-highlight link Flake8_Warning    WarningMsg
-highlight link Flake8_Complexity WarningMsg
-highlight link Flake8_Naming     WarningMsg
-highlight link Flake8_PyFlake    WarningMsg
-
 " vim-airline
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_detect_modified=1
 set laststatus=2
+
+" gitgutter
+let g:gitgutter_sign_column_always = 1
