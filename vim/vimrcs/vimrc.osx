@@ -7,10 +7,8 @@ set showcmd
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
 syntax on
-set t_Co=256
-let g:solarized_termcolors=256
 set background=dark
-colorscheme solarized
+colorscheme gruvbox
 set cursorline
 
 set autoindent
