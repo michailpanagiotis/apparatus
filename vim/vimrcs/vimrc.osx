@@ -19,7 +19,7 @@ colorscheme gruvbox
 " highlighting
 syntax on
 set cursorline
-set colorcolumn=80
+"set colorcolumn=80
 highlight ColorColumn ctermbg=DarkGrey
 set hlsearch
 
