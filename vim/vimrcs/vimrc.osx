@@ -67,6 +67,10 @@ inoremap {}     {}
 " Insert new line at the cursor without entering insert mode
 nnoremap <S-Enter> i<CR><Esc>
 
+" Re-map help command to open vertically
+cabbrev help vert help
+"cabbrev help tab help
+
 " NERDTree
 let mapleader = ","
 nmap <leader>d :NERDTree<cr>
