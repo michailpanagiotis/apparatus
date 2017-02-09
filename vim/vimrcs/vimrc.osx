@@ -1,33 +1,39 @@
 " Pathogen
 execute pathogen#infect()
-filetype plugin indent on
 
-" Misc settings
-set showcmd
-" If using a dark background within the editing area and syntax highlighting
-" turn on this option as well
-syntax on
-set background=dark
-colorscheme gruvbox
-set cursorline
+" Enable filetype plugin
+filetype plugin on
 
+" indentation
 set autoindent
-set expandtab
 set smarttab
+set expandtab
 set shiftwidth=4
 set softtabstop=4
-set number
-set nocompatible
-set incsearch
-set hlsearch
-set backspace=indent,eol,start
-set showtabline=2
+set tabstop=4
+
+" colors
+set background=dark
+colorscheme gruvbox
+
+" highlighting
+syntax on
+set cursorline
 set colorcolumn=80
 highlight ColorColumn ctermbg=DarkGrey
+set hlsearch
 
 "Show trailing whitespace
 highlight ExtraWhitespace ctermbg=darkblue guibg=#344011
 autocmd BufEnter * exe ':2match ExtraWhitespace /\s\+$\| \+\ze\t\|\t\+\ze /'
+
+" misc
+set showcmd
+set number
+set nocompatible
+set incsearch
+set backspace=indent,eol,start
+set showtabline=2
 
 " Vim. Live it.
 noremap <up> <nop>
@@ -67,44 +73,15 @@ inoremap {}     {}
 " Insert new line at the cursor without entering insert mode
 nnoremap <S-Enter> i<CR><Esc>
 
+" Define leader key
+let mapleader = ","
+
 " Re-map help command to open vertically
 cabbrev help vert help
 "cabbrev help tab help
 
 " NERDTree
-let mapleader = ","
 nmap <leader>d :NERDTree<cr>
-
-""""""
-" Go "
-""""""
-let g:go_highlight_functions = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_fields = 1
-let g:go_highlight_types = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_build_constraints = 1
-
-""""""""
-" Perl "
-""""""""
-
-" perltidy
-command -range=% -nargs=* Tidy <line1>,<line2>!C:/Personal/Programs/cygwin/home/rinis/bin/Perl-Tidy-20140328/perltidy
-
-"run :Tidy on entire buffer and return cursor to (approximate) original position"
-fun DoTidy()
-    let l = line(".")
-    let c = col(".")
-    :Tidy
-    call cursor(l, c)
-endfun
-
-"shortcut for normal mode to run on entire buffer then return to current line"
-au Filetype perl nmap <C-S-f> :call DoTidy()<CR>
-
-"shortcut for visual mode to run on the the current visual selection"
-au Filetype perl vmap <C-S-f> :Tidy<CR>
 
 "CtrlP
 set runtimepath^=~/.vim/bundle/ctrlp.vim
