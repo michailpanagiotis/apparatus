@@ -1,11 +1,12 @@
-" Pathogen
+" pathogen
 execute pathogen#infect()
 
-" Enable filetype plugin
+" enable filetype plugin
 filetype plugin on
 
 " indentation
 set autoindent
+set smartindent
 set smarttab
 set expandtab
 set shiftwidth=4
@@ -23,7 +24,7 @@ set cursorline
 highlight ColorColumn ctermbg=DarkGrey
 set hlsearch
 
-"Show trailing whitespace
+" show trailing whitespace
 highlight ExtraWhitespace ctermbg=darkblue guibg=#344011
 autocmd BufEnter * exe ':2match ExtraWhitespace /\s\+$\| \+\ze\t\|\t\+\ze /'
 
@@ -35,7 +36,7 @@ set incsearch
 set backspace=indent,eol,start
 set showtabline=2
 
-" Vim. Live it.
+" vim. live it.
 noremap <up> <nop>
 noremap <down> <nop>
 noremap <left> <nop>
@@ -49,10 +50,10 @@ vnoremap <down> <nop>
 vnoremap <left> <nop>
 vnoremap <right> <nop>
 
-" Highlight all occurences of current word without moving
+" highlight all occurences of current word without moving
 nnoremap <C-b> *``
 
-" Tab switching alternatives to gt/gT
+" tab switching alternatives to gt/gT
 nnoremap <C-l> :tabnext<CR>
 nnoremap <C-h> :tabprevious<CR>
 nnoremap <C-t> :tabnew 
@@ -60,30 +61,33 @@ inoremap <C-l> <Esc>:tabnext<CR>i
 inoremap <C-h> <Esc>:tabprevious<CR>i
 inoremap <C-t> <Esc>:tabnew 
 
-"Ctrl+R replaces all occurences of selected text in visual mode, Ctrl+Shift+R
-"only the selected one
+" Ctrl+R replaces all occurences of selected text in visual mode
+" Ctrl+Shift+R only the selected one
 vnoremap <C-r> "hy:%s/<C-r>h//g<left><left>
 
-" Auto-complete brackets
-"inoremap {      {}<Left>
+" auto-complete brackets
 inoremap {<CR>  {<CR>}<Esc>O
 inoremap {{     {
 inoremap {}     {}
 
-" Insert new line at the cursor without entering insert mode
+" insert new line at the cursor without entering insert mode
 nnoremap <S-Enter> i<CR><Esc>
 
-" Define leader key
+" define leader key
 let mapleader = ","
 
-" Re-map help command to open vertically
+" re-map help command to open vertically
 cabbrev help vert help
 "cabbrev help tab help
+
+"
+" Plugin specific configuration
+"
 
 " NERDTree
 nmap <leader>d :NERDTree<cr>
 
-"CtrlP
+" CtrlP
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 nmap <C-p> :CtrlP<CR>
 

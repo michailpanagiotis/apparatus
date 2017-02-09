@@ -7,6 +7,20 @@ let g:go_highlight_fields = 1
 let g:go_highlight_types = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
+let g:go_highlight_extra_types = 1
+
+" go list type
+let g:go_list_type="quickfix"
+
+" use goimports for formatting
+let g:go_fmt_command = "goimports"
+
+" key mappings
+nmap <leader>b :GoBuild<CR>
+nmap <leader>r :GoRun 
+map <C-n> :cnext<CR>
+map <C-m> :cprevious<CR>
+nnoremap <leader>a :cclose<CR>
 
 " indentation
 set noexpandtab
