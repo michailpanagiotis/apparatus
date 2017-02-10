@@ -25,9 +25,6 @@ inoremap <C-l> <Esc>:tabnext<CR>i
 inoremap <C-h> <Esc>:tabprevious<CR>i
 inoremap <C-t> <Esc>:tabnew 
 
-" define leader key
-let mapleader = ","
-
 " re-map help command to open vertically
-cabbrev help vert help
+cabbrev hv vert help
 "cabbrev help tab help

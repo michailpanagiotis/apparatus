@@ -27,7 +27,7 @@ nnoremap <leader>r :GoRun %
 noremap <C-n> :cnext<CR>
 noremap <C-m> :cprevious<CR>
 nnoremap <leader>a :cclose<CR>
-noremap <C-S-r> :GoRename 
+noremap <C-g> :GoRename 
 
 " godef
 " instead of default <C-t>

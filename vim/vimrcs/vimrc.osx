@@ -28,16 +28,20 @@ set hlsearch
 highlight ExtraWhitespace ctermbg=darkblue guibg=#344011
 autocmd BufEnter * exe ':2match ExtraWhitespace /\s\+$\| \+\ze\t\|\t\+\ze /'
 
+" define leader key
+let mapleader = ","
+
 " misc
 set showcmd
 set number
 set nocompatible
 set incsearch
 set backspace=indent,eol,start
+
+" tabline
 set showtabline=2
 
 " Ctrl+R replaces all occurences of selected text in visual mode
-" Ctrl+Shift+R only the selected one
 vnoremap <C-r> "hy:%s/<C-r>h//g<left><left>
 
 " auto-complete brackets
