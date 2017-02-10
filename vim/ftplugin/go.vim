@@ -13,7 +13,7 @@ let g:go_highlight_extra_types = 1
 let g:go_metalinter_autosave = 1
 let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 let g:go_metalinter_autosave_enabled = ['golint']
-nmap <leader>l :GoMetaLinter<CR>
+nnoremap <leader>l :GoMetaLinter<CR>
 
 " go list type
 let g:go_list_type="quickfix"
@@ -22,12 +22,16 @@ let g:go_list_type="quickfix"
 let g:go_fmt_command = "goimports"
 
 " key mappings
-nmap <leader>b :GoBuild<CR>
-nmap <leader>r :GoRun % 
-map <C-n> :cnext<CR>
-map <C-m> :cprevious<CR>
+nnoremap <leader>b :GoBuild<CR>
+nnoremap <leader>r :GoRun % 
+noremap <C-n> :cnext<CR>
+noremap <C-m> :cprevious<CR>
 nnoremap <leader>a :cclose<CR>
-map <C-S-r> :GoRename 
+noremap <C-S-r> :GoRename 
+
+" godef
+" instead of default <C-t>
+noremap <C-[> :GoDefPop<CR>
 
 " indentation
 set noexpandtab
