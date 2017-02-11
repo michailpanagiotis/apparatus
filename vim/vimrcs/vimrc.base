@@ -92,13 +92,13 @@ map <C-n> :NERDTreeToggle<CR>
 let g:NERDTreeDirArrows=0
 "autocmd BufEnter * lcd %:p:h
 
-" gitgutter
+"gitgutter
 let g:gitgutter_enabled = 0
 nmap <leader>gd :GitGutterToggle<CR>:GitGutterLineHighlightsToggle<CR>
 nnoremap <leader>gh :GitGutterNextHunk<CR>
 nnoremap <leader>gH :GitGutterPrevHunk<CR>
 
-" Gundo
+"Gundo
 nnoremap <leader>gun :GundoToggle<CR>
 let g:gundo_right = 1
 
@@ -112,11 +112,17 @@ map <leader>td <Plug>TaskList
 let g:javascript_plugin_jsdoc = 1
 
 "vim-go
+let g:go_auto_sameids = 1
+let g:go_auto_type_info = 1
+let g:go_fmt_command = "goimports"
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_structs = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
+let g:go_metalinter_autosave = 1
+let g:go_metalinter_deadline = "5s"
+autocmd FileType go nmap <Leader>i <Plug>(go-info)
 
 "vim-syntastic
 set statusline+=%#warningmsg#
