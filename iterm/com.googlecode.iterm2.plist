@@ -2023,6 +2023,13 @@
 			<key>Text</key>
 			<string>0x01 0x2d</string>
 		</dict>
+		<key>0x74-0x100000</key>
+		<dict>
+			<key>Action</key>
+			<integer>11</integer>
+			<key>Text</key>
+			<string>0x01 0x63</string>
+		</dict>
 		<key>0x9-0x40000</key>
 		<dict>
 			<key>Action</key>
@@ -2222,9 +2229,9 @@
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>650 590 620 392 0 0 1920 1178 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>953 559 796 473 0 0 1920 1178 </string>
+	<string>953 583 796 473 0 0 1920 1200 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>298 -55 1770 1174 0 0 1920 1178 </string>
+	<string>831 206 1450 972 0 0 1920 1178 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>275 18 1450 1077 0 0 1920 1200 </string>
 	<key>NeverWarnAboutShortLivedSessions_9270BAB8-B4BC-405A-8259-5D7E5E64F547</key>
