@@ -58,6 +58,18 @@ map <c-k> <c-w>k
 map <c-l> <c-w>l
 map <c-h> <c-w>h
 
+"ag
+noremap <leader>a :Ag<space>
+let g:ag_working_path_mode="r"
+" Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
+if executable('ag')
+  " Use Ag over Grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
+
 "vim-flake8
 autocmd BufWritePost *.py call Flake8()
 let g:flake8_show_quickfix=0
@@ -145,3 +157,4 @@ let g:airline_extensions = ['branch', 'virtualenv', 'whitespace', 'syntastic']
 " let g:airline#extensions#tabline#left_alt_sep = '|'
 " let g:airline#extensions#tabline#buffer_min_count = 0
 " let g:airline#extensions#whitespace#symbol = '!'
+set runtimepath^=~/.vim/bundle/ag
