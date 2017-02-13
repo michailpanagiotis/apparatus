@@ -1,6 +1,5 @@
 install:
-	git submodule init
-	git submodule update
+	git submodule update --init --recursive
 
 ubx: bash.ubx git.ubx vim.ubx screen gpsdate.ubx
 	$(info ubx done!)
