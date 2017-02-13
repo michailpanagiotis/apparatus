@@ -87,7 +87,7 @@ function set_bash_prompt () {
     set_host
 
     # Set the PYTHON_VIRTUALENV variable.
-    set_virtualenv
+    # set_virtualenv
 
     # Set the BRANCH variable.
     set_git_branch
