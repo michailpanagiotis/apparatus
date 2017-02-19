@@ -15,6 +15,13 @@ let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 let g:go_metalinter_autosave_enabled = ['golint']
 nnoremap <leader>l :GoMetaLinter<CR>
 
+" go info
+let g:go_auto_type_info = 1
+nnoremap <leader>w :GoInfo<CR>
+
+" go same ids
+let g:go_auto_sameids = 1
+
 " go list type
 let g:go_list_type="quickfix"
 
