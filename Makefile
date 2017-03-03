@@ -19,6 +19,10 @@ git.osx:
 	test -e $(HOME)/.apparatus/git/gitconfig         && ln -fs $(HOME)/.apparatus/git/gitconfig         $(HOME)/.gitconfig
 	test -e $(HOME)/.apparatus/git/osx/git.author    && ln -fs $(HOME)/.apparatus/git/osx/git.author    $(HOME)/.git.author
 
+tig:
+	$(info *** tig ***)
+	test -e $(HOME)/.apparatus/tig/tigrc             && ln -fs $(HOME)/.apparatus/tig/tigrc             $(HOME)/.tigrc
+
 bash.ubx:
 	$(info *** bash ***)
 	test -e $(HOME)/.apparatus/bash/bash_prompt      && ln -fs $(HOME)/.apparatus/bash/bash_prompt      $(HOME)/.bash_prompt
@@ -56,4 +60,4 @@ gpsdate.osx:
 	test -e $(HOME)/.apparatus/gpsdate/gpsdate       && cp -f $(HOME)/.apparatus/gpsdate/gpsdate        /usr/local/bin/gpsdate
 
 # Prevents rules from appearing as 'nothing to change'
-.PHONY: bash.osx git.osx bash.ubx git.ubx vim tmux screen gpsdate
+.PHONY: bash.osx git.osx bash.ubx git.ubx vim tmux screen gpsdate tig

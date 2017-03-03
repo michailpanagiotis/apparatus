@@ -1,0 +1,6 @@
+# Specify the main view
+set main-view = \
+    date:default \
+    author:yes \
+    id:yes \
+    commit-title:yes,graph:v2,refs:yes
