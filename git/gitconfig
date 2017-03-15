@@ -50,6 +50,10 @@
     sp = stash pop
     sc = stash clear
 
+    # submodule aliases
+    bup = submodule update --recursive
+    bui = submodule update --init --recursive
+
     # list aliases
     la = "!git config -l | grep alias | cut -c 7-"
 
