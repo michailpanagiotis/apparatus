@@ -50,6 +50,10 @@
     sp = stash pop
     sc = stash clear
 
+    # submodule aliases
+    bup = submodule update --recursive
+    bui = submodule update --init --recursive
+
     # list aliases
     la = "!git config -l | grep alias | cut -c 7-"
 
@@ -63,6 +67,12 @@
     llog = log --date=local
     who = shortlog -s --
     fl = log -u
+
+    # All my commits since yesterday midnight
+    sup = !git log --since=yesterday.midnight --author=\"$(git config user.name)\" --oneline
+
+    # All my commits since 1 week ago
+    lw = !git log --since=\"1 week ago\" --author=\"$(git config user.name)\" --pretty=format:\"%Cgreen%cd %C(yellow)%h%Cred%d %Creset%s\" --decorate --date=format:\"%F %T\"
 
     # tag aliases
     tl = tag -ln
