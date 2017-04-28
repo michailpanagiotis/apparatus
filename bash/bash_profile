@@ -7,8 +7,11 @@ source ~/.bash_aliases
 # Plugins and Extras
 source ~/.bash_extras
 
+# Display archey
+archey
+
 # PATH definitions
 export PATH="/usr/local/sbin:$PATH"
 
-# Display archey
-archey
+# GOPATH
+export GOPATH="~/Workspace/futurae/webapp/"
