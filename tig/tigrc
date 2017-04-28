@@ -1,3 +1,5 @@
+set commit-order = default
+
 # Specify the main view
 set main-view = \
     date:default \
