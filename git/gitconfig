@@ -33,6 +33,7 @@
     st = status -s
     co = checkout
     df = diff
+    dc = diff --cached
     br = branch
 
     # pull
