@@ -2301,7 +2301,7 @@
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>650 590 620 392 0 0 1920 1178 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>953 609 796 473 0 0 1920 1200 </string>
+	<string>255 589 796 473 0 0 1920 1200 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
 	<string>193 17 1450 1077 0 0 1920 1178 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
@@ -3132,7 +3132,7 @@
 	<key>SplitPaneDimmingAmount</key>
 	<real>0.60000002384185791</real>
 	<key>SwitchTabModifier</key>
-	<integer>4</integer>
+	<integer>5</integer>
 	<key>SwitchWindowModifier</key>
 	<integer>6</integer>
 	<key>TabStyle</key>
@@ -3161,6 +3161,8 @@
 	<string>/-+\~_.</string>
 	<key>findIgnoreCase_iTerm</key>
 	<true/>
+	<key>findMode_iTerm</key>
+	<integer>0</integer>
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
