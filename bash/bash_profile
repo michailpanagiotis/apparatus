@@ -14,4 +14,4 @@ archey
 export PATH="/usr/local/sbin:$PATH"
 
 # GOPATH
-export GOPATH="~/Workspace/futurae/webapp/"
+export GOPATH="/home/ilias/Workspace/futurae/webapp/"
