@@ -62,6 +62,10 @@ nnoremap <leader>d :NERDTree<cr>
 " CtrlP
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 nnoremap <C-p> :CtrlP<CR>
+let g:ctrlp_custom_ignore = {
+    \ 'dir': '\v[\/](\.git|bin|pkg|Godeps)$',
+    \ 'file': '\v\.(exe|so|dll)$',
+    \ }
 
 " vim-airline
 let g:airline#extensions#tabline#enabled = 1
