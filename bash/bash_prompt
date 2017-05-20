@@ -33,6 +33,7 @@ LIGHT_GREEN="\[\033[1;32m\]"
  LIGHT_GRAY="\[\033[0;37m\]"
  COLOR_NONE="\[\e[0m\]"
      BG_RED="\[\e[41m\]"
+    BG_BLUE="\[\e[44m\]"
 
 # determine git branch name
 function parse_git_branch(){
@@ -60,20 +61,20 @@ function set_prompt_symbol () {
     fi
 }
 
-# Determine active Python virtualenv details.
-function set_virtualenv () {
-    if test -z "$VIRTUAL_ENV" ; then
-        PYTHON_VIRTUALENV=""
-    else
-        PYTHON_VIRTUALENV="${BLUE}[`basename \"$VIRTUAL_ENV\"`]${COLOR_NONE} "
-    fi
-}
-
 # Set the hostname, highlighting the background if in ssh
 function set_host () {
     P_HOST=$HOSTNAME
     if test -n "$SSH_TTY" || test -n "$SSH_CLIENT" ; then
-        P_HOST="${BG_RED}${WHITE}${P_HOST}${COLOR_NONE}"
+        P_HOST="${BG_BLUE}${WHITE}${P_HOST}${COLOR_NONE}"
+    fi
+}
+
+# Set the username and the hostname
+function set_user () {
+    P_USER=`whoami`
+    P_USER="${P_USER}@"
+    if [[ ${P_USER} == "root@" ]] ; then
+        P_USER="${BG_RED}${WHITE}${P_USER}${COLOR_NONE}"
     fi
 }
 
@@ -86,14 +87,14 @@ function set_bash_prompt () {
     # Set the P_HOST variable.
     set_host
 
-    # Set the PYTHON_VIRTUALENV variable.
-    # set_virtualenv
+    # Set the P_USER variable.
+    set_user
 
     # Set the BRANCH variable.
     set_git_branch
 
     # Set the bash prompt variable.
-    PS1="\n${GREEN}\u@${P_HOST}${COLOR_NONE}:${YELLOW}\w${COLOR_NONE}\n${PYTHON_VIRTUALENV}${BRANCH}${PROMPT_SYMBOL} "
+    PS1="\n${GREEN}${P_USER}${P_HOST}${COLOR_NONE}:${YELLOW}\w${COLOR_NONE}\n${PYTHON_VIRTUALENV}${BRANCH}${PROMPT_SYMBOL} "
 }
 
 # Tell bash to execute this function just before displaying its prompt.
