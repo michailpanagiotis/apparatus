@@ -54,10 +54,20 @@ function set_git_branch() {
 # Return the prompt symbol to use, colorized based on the return value of the
 # previous command.
 function set_prompt_symbol () {
+    SYMBOL="λ"
+
+    if test -n "$SSH_TTY" || test -n "$SSH_CLIENT" ; then
+        SYMBOL="$"
+    fi
+
+    if [[ `whoami` == "root" ]] ; then
+        SYMBOL="#"
+    fi
+
     if test $1 -eq 0 ; then
-        PROMPT_SYMBOL="λ"
+        PROMPT_SYMBOL=$SYMBOL
     else
-        PROMPT_SYMBOL="${LIGHT_RED}λ${COLOR_NONE}"
+        PROMPT_SYMBOL="${LIGHT_RED}${SYMBOL}${COLOR_NONE}"
     fi
 }
 
