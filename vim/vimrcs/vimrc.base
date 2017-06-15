@@ -38,7 +38,7 @@ set mouse=a          " Enable mouse usage (all modes)
 set autoindent
 set textwidth=80
 set number
-set colorcolumn=80
+set colorcolumn=100
 set wrap
 set linebreak
 set nolist
@@ -46,6 +46,7 @@ set formatoptions+=l
 set cursorline
 set undofile
 set backspace=2
+set backupcopy=yes
 
 set tabstop=4 softtabstop=4 expandtab shiftwidth=4 smarttab
 
@@ -107,7 +108,7 @@ let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_max_height = 20
 let g:ctrlp_match_window_reversed = 0
 let g:ctrlp_user_command = [
-    \ '.git', 'cd %s && git ls-files . -co --exclude-standard',
+    \ '.git', "cd %s && git ls-files . -co --exclude-standard | perl -lne 'print tr:/::, \" $_\"' | sort -n | cut -d' ' -f2",
     \ 'find %s -type f'
     \ ]
 
@@ -123,7 +124,7 @@ let NERDTreeShowHidden=1
 "autocmd BufEnter * lcd %:p:h
 
 " gitgutter
-let g:gitgutter_enabled = 0
+let g:gitgutter_enabled = 1
 nmap <leader>gd :GitGutterToggle<CR>:GitGutterLineHighlightsToggle<CR>
 nnoremap <leader>gh :GitGutterNextHunk<CR>
 nnoremap <leader>gH :GitGutterPrevHunk<CR>
@@ -187,11 +188,16 @@ set textwidth=0 wrapmargin=0
 
 "Syntastic for javascript
 let g:syntastic_javascript_checkers = ['eslint']
+
 let g:phpqa_messdetector_ruleset = "/root/.apparatus/linters/phpmd/phpmd.xml"
 let g:phpqa_open_loc = 1
 let g:phpqa_codecoverage_autorun = 0
 
+let g:syntastic_json_jsonlint_args = "-V config.schema.json"
+
 autocmd FileType html setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
 autocmd FileType javascript setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
+autocmd FileType json setlocal tabstop=4 softtabstop=4 expandtab shiftwidth=4 smarttab
 autocmd FileType yaml setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
 autocmd FileType coffee setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
+autocmd FileType typescript setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab

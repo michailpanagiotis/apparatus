@@ -63,5 +63,8 @@
   changes=diff --name-status -r
   diffstat=diff --stat -r
 
+# other aliases
+  pred = !zsh -c 'diff -u <(git rev-list --abbrev-commit --first-parent "${1:-master}") <(git rev-list --abbrev-commit --first-parent "${2:-HEAD}") | sed -ne \"s/^ //p\" | head -1' -
+  branch-diff = !zsh -c 'diff -u <(git rev-list --abbrev-commit --first-parent "${1:-master}") <(git rev-list --abbrev-commit --first-parent "${2:-HEAD}") | sed -ne \"s/^ //p\" | head -1' - | xargs git diff --name-only HEAD..
 [push]
 	default = simple
