@@ -36,6 +36,9 @@
     dc = diff --cached
     br = branch
 
+    # rebase
+    ri = rebase --interactive
+
     # pull
     pl = pull
     pr = pull --rebase
