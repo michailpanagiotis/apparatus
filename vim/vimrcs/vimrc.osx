@@ -4,6 +4,9 @@ execute pathogen#infect()
 " enable filetype plugin
 filetype plugin on
 
+" haproxy vim syntax
+au BufRead,BufNewFile haproxy* set ft=haproxy
+
 " indentation
 set autoindent
 set smartindent
