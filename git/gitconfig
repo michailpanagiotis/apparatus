@@ -1,6 +1,6 @@
 [user]
-	name = Mike Resvanis
-	email = resbanis@skroutz.gr
+	name = MiKe
+	email = resbanis@gmail.com
 [core]
 	excludesfile = /home/mike/.gitignore-global
 	editor = vim
@@ -21,8 +21,6 @@
     frag = magenta bold
     old = red bold
     new = green bold
-[gitlab]
-    token=fqDU33MgiGpKBLp9iuxR
 [push]
     default = current
 
@@ -85,3 +83,6 @@
 
 # grep
   ggrep = "grep --break --heading --line-number"
+
+[credential]
+  helper = osxkeychain
