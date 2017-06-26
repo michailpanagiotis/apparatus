@@ -35,10 +35,18 @@ Set the configuration for *vim*:
     ln -s $HOME/.apparatus/vim/vimrcs/vimrc.base $HOME/.vimrc
     ln -s $HOME/.apparatus/vim $HOME/.vim
 
+Set the configuration for *git*:
+
+    ln -s $HOME/.apparatus/git/gitconfig $HOME/.gitconfig
+
 Set the configuration for *tmux*:
 
     ln -s $HOME/.apparatus/tmux/tmux.conf $HOME/.tmux.conf
 
-Set the configuration for *git*:
+Set the tmux plugin manager:
 
-    ln -s $HOME/.apparatus/git/gitconfig $HOME/.gitconfig
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+After opening tmux just install all plugins referenced in the .tmux.config by pressing:
+
+    Ctrl-a I
