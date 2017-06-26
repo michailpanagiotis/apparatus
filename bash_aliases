@@ -1,5 +1,5 @@
-alias ll='ls -lh --color=auto'
-alias lla='ls -lha --color=auto'
+alias ll='ls -lhG'
+alias lla='ls -lhaG'
 
 alias ber='bundle exec rake'
 alias be='bundle exec'
