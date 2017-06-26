@@ -149,7 +149,7 @@ let g:syntastic_check_on_wq = 1
 let g:syntastic_aggregate_errors = 1
 
 "vim-airline
-let g:airline_theme='base16_default'
+let g:airline_theme='molokai'
 let g:airline_detect_modified=1
 let g:airline_extensions = ['branch', 'virtualenv', 'whitespace', 'syntastic']
 set runtimepath^=~/.vim/bundle/ag
