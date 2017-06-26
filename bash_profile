@@ -13,12 +13,14 @@ if [ -f $(brew --prefix)/etc/bash_completion ]; then
   . $(brew --prefix)/etc/bash_completion
 fi
 
-eval "$(hub alias -s)"
-eval "$(rbenv init -)"
-
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 export GOPATH=~/Projects/
 export PATH="/usr/local/sbin:$PATH"
 eval $(/usr/libexec/path_helper -s)
+
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
+# eval "$(hub alias -s)"
