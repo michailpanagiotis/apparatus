@@ -50,3 +50,7 @@ Set the tmux plugin manager:
 After opening tmux just install all plugins referenced in the .tmux.config by pressing:
 
     Ctrl-a I
+
+iTerm color themes:
+
+    git clone https://github.com/mbadolato/iTerm2-Color-Schemes.git
