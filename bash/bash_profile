@@ -16,3 +16,6 @@ export PATH="/usr/local/sbin:$PATH"
 # GOPATH
 export GOPATH="/Users/ilias/Workspace/futurae/webapp/"
 eval $(/usr/libexec/path_helper -s)
+
+# direnv
+eval "$(direnv hook bash)"

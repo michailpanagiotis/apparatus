@@ -29,12 +29,20 @@ inoremap <C-e> <Esc>:edit
 inoremap <C-w> <Esc>:bdelete<CR>
 
 " tab switching alternatives to gt/gT
-nnoremap <C-l> :tabnext<CR>
-nnoremap <C-h> :tabprevious<CR>
-nnoremap <C-t> :tabnew 
-inoremap <C-l> <Esc>:tabnext<CR>i
-inoremap <C-h> <Esc>:tabprevious<CR>i
-inoremap <C-t> <Esc>:tabnew 
+"nnoremap <C-l> :tabnext<CR>
+"nnoremap <C-h> :tabprevious<CR>
+"nnoremap <C-t> :tabnew 
+"inoremap <C-l> <Esc>:tabnext<CR>i
+"inoremap <C-h> <Esc>:tabprevious<CR>i
+"inoremap <C-t> <Esc>:tabnew 
+
+" splits
+nnoremap <C-s> :vsplit<CR>
+nnoremap <C-l> :wincmd l<CR>
+nnoremap <C-h> :wincmd h<CR>
+inoremap <C-s> <Esc>:vsplit<CR>i
+inoremap <C-l> <Esc>:wincmd l<CR>i
+inoremap <C-h> <Esc>:wincmd h<CR>i
 
 " re-map help command to open vertically
 cabbrev hv vert help

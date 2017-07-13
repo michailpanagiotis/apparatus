@@ -37,6 +37,9 @@
     dc = diff --cached
     br = branch
 
+    # add
+    ap = add -p
+
     # rebase
     ri = rebase --interactive
 
@@ -45,8 +48,8 @@
     pr = pull --rebase
 
     # reset aliases
-    rh = reset --hard HEAD
-    ro = reset --hard origin
+    rhh = reset --hard HEAD
+    rho = reset --hard origin
 
     # stash aliases
     sl = stash list

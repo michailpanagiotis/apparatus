@@ -17,3 +17,6 @@ build/*
 *.nav
 *.toc
 *.pyc
+*.bak
+*.swp
+*.swo
