@@ -34,8 +34,8 @@
     st = status -s
     co = checkout
     df = diff
-    dc = diff --cached
-    br = branch
+    dfc = diff --cached
+    br = branch -av
 
     # add
     ap = add -p
@@ -55,6 +55,7 @@
     sl = stash list
     sa = stash apply
     ss = stash save
+    sh = stash
     sp = stash pop
     sc = stash clear
 
