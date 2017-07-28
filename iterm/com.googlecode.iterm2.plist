@@ -2295,15 +2295,15 @@
 		<integer>1</integer>
 	</dict>
 	<key>NSWindow Frame NSFontPanel</key>
-	<string>709 562 445 77 0 0 1920 1178 </string>
+	<string>709 379 445 77 0 0 1920 1080 </string>
 	<key>NSWindow Frame Preferences</key>
 	<string>705 316 606 456 0 0 1920 1177 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>650 516 620 392 0 0 1920 1080 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>255 574 958 433 0 0 1920 1080 </string>
+	<string>383 602 796 473 0 0 1920 1200 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>198 1 1450 1056 0 0 1920 1200 </string>
+	<string>198 4 1450 1077 0 0 1920 1178 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>275 0 1450 1077 0 0 1920 1080 </string>
 	<key>NeverWarnAboutShortLivedSessions_9270BAB8-B4BC-405A-8259-5D7E5E64F547</key>
@@ -2538,7 +2538,7 @@
 			<key>Disable Window Resizing</key>
 			<true/>
 			<key>Flashing Bell</key>
-			<false/>
+			<true/>
 			<key>Foreground Color</key>
 			<dict>
 				<key>Blue Component</key>
@@ -2912,7 +2912,7 @@
 			<key>Shortcut</key>
 			<string></string>
 			<key>Silence Bell</key>
-			<false/>
+			<true/>
 			<key>Smart Cursor Color</key>
 			<true/>
 			<key>Smart Selection Rules</key>
@@ -3124,7 +3124,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2017-06-26T13:08:42Z</date>
+	<date>2017-07-21T07:15:19Z</date>
 	<key>SUSkippedVersion</key>
 	<string>3.1.beta.5</string>
 	<key>SavePasteHistory</key>
