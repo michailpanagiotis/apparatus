@@ -15,6 +15,7 @@ export PATH="/usr/local/sbin:$PATH"
 
 # GOPATH
 export GOPATH="/Users/ilias/Workspace/futurae/webapp/"
+export PATH="$GOPATH/bin:$PATH"
 eval $(/usr/libexec/path_helper -s)
 
 # direnv
