@@ -35,7 +35,7 @@
     co = checkout
     df = diff
     dfc = diff --cached
-    br = branch -av
+    br = branch -avv
 
     # add
     ap = add -p
