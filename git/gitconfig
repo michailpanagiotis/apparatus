@@ -1,5 +1,10 @@
-[include]
-    path = ~/.git.author
+[user]
+    name = Ilias Rinis
+    email = iliasr@gmail.com
+
+[user "ssh://git@git.futurae.com"]
+    name = Ilias Rinis
+    email = ilias@futurae.com
 
 [core]
     editor = vim
@@ -35,7 +40,7 @@
     co = checkout
     df = diff
     dfc = diff --cached
-    br = branch -avv
+    br = branch
 
     # add
     ap = add -p

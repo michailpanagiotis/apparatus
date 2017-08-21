@@ -41,6 +41,10 @@ set nocompatible
 set incsearch
 set backspace=indent,eol,start
 
+" paste
+nnoremap <F2> :set invpaste paste?<CR>
+set pastetoggle=<F2>
+
 " tabline
 set showtabline=2
 
