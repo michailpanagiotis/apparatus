@@ -106,3 +106,5 @@
 
 [push]
     default = current
+[init]
+	templatedir = ~/.apparatus/git/templates

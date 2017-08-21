@@ -1,0 +1,16 @@
+#!/bin/sh
+
+REPO=`git config --get remote.origin.url`
+
+# Only run this hook if we're inside a Futurae repo
+if [[ $REPO == git@git.futurae.com* ]]; then
+
+    # Check that email is a Futurae one
+    CURRENT=`git config user.email`
+    EXPECTED=ilias@futurae.com
+    if [ "$CURRENT" != "$EXPECTED" ]; then
+        printf "[pre-commit hook] ERROR: Unexpected Futurae email ('%s', should be '%s')\n" $CURRENT $EXPECTED
+        exit 1
+    fi
+
+fi
