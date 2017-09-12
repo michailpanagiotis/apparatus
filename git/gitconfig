@@ -39,7 +39,8 @@
     br = branch
 
     # add
-    ap = add -p
+    ap = add --patch
+    ai = add --interactive
 
     # rebase
     ri = rebase --interactive
