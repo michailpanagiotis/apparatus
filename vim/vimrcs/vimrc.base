@@ -10,7 +10,7 @@ set ignorecase	" Do case insensitive matching
 set smartcase		" Do smart case matching
 set incsearch		" Incremental search
 set hlsearch
-set mouse=a		  " Enable mouse usage (all modes)
+" set mouse=n		  " Enable mouse usage (all modes)
 set autoindent
 set laststatus=2
 set smartindent
