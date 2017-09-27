@@ -69,21 +69,14 @@
     la = "!git config -l | grep alias | cut -c 7-"
 
     # log listing aliases
-    ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s\\ %Cgreen(%cr)%Cblue\\ [%cn]" --date=relative --decorate
-    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
-    lnc = log --pretty=format:"%h\\ %s\\ [%cn]"
-    ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=default
-    le = log --oneline --decorate
-    lc = log ORIG_HEAD.. --stat --no-merges
-    llog = log --date=local
+    # Author stats
     who = shortlog -s --
-    fl = log -u
-
     # All my commits since yesterday midnight
     sup = !git log --since=yesterday.midnight --author=\"$(git config user.name)\" --oneline
-
     # All my commits since 1 week ago
     lw = !git log --since=\"1 week ago\" --author=\"$(git config user.name)\" --pretty=format:\"%Cgreen%cd %C(yellow)%h%Cred%d %Creset%s\" --decorate --date=format:\"%F %T\"
+    # My last commit
+    ls = log --name-status HEAD^..HEAD
 
     # tag aliases
     tl = tag -ln
