@@ -30,6 +30,7 @@
 
 [alias]
     ci = commit
+    fix = commit --fixup
     cl = clone
     cp = cherry-pick
     st = status -s
