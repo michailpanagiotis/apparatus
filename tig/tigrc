@@ -6,3 +6,6 @@ set main-view = \
     author:yes \
     id:yes \
     commit-title:yes,graph:v2,refs:yes
+
+# Copy Commit SHA to clipboard
+bind generic 9 !@bash -c "echo -n %(commit) | pbcopy"
