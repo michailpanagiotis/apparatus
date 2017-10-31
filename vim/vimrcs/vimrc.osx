@@ -66,14 +66,6 @@ nnoremap <S-Enter> i<CR><Esc>
 " NERDTree
 nnoremap <leader>d :NERDTree<cr>
 
-" CtrlP
-set runtimepath^=~/.vim/bundle/ctrlp.vim
-nnoremap <C-p> :CtrlP<CR>
-let g:ctrlp_custom_ignore = {
-    \ 'dir': '\v[\/](\.git|bin|pkg|Godeps)$',
-    \ 'file': '\v\.(exe|so|dll)$',
-    \ }
-
 " vim-airline
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_detect_modified=1
@@ -81,3 +73,7 @@ set laststatus=2
 
 " gitgutter
 let g:gitgutter_sign_column_always = 1
+
+" fzf
+set rtp+=/usr/local/opt/fzf
+nnoremap <C-p> :FZF<CR>
