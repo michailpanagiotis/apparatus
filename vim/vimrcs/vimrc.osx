@@ -67,7 +67,7 @@ nnoremap <S-Enter> i<CR><Esc>
 nnoremap <leader>d :NERDTree<cr>
 
 " vim-airline
-let g:airline#extensions#tabline#enabled = 1
+let g:airline_extensions = [ "branch" ]
 let g:airline_detect_modified=1
 set laststatus=2
 
