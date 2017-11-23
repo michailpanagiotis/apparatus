@@ -49,6 +49,8 @@
 
     # rebase
     ri = rebase --interactive
+    rc = rebase --continue
+    ra = rebase --abort
 
     # push/pull
     pu = push --set-upstream
