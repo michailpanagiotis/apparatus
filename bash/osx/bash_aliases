@@ -25,3 +25,6 @@ alias dex='docker exec -it'
 
 # Futurae
 alias dbreset='doc down && ./tasks/docker/db_bootstrap.sh && ./tasks/docker/app_bootstrap.sh'
+
+# Fun
+alias coin='coinmon -c CHF -H'
