@@ -27,4 +27,4 @@ alias dex='docker exec -it'
 alias dbreset='doc down && ./tasks/docker/db_bootstrap.sh && ./tasks/docker/app_bootstrap.sh'
 
 # Fun
-alias coin='coinmon -c CHF -H'
+alias coin='coinmon -c eur -H -f btc,eth,xrp,trx,dash,bch,ltc,icx,xmr'
