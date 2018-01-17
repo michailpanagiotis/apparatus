@@ -64,7 +64,9 @@ nnoremap <S-Enter> i<CR><Esc>
 "
 
 " NERDTree
-nnoremap <leader>d :NERDTree<cr>
+let NERDTreeMinimalUI = 1
+nnoremap <leader>d :NERDTreeToggle<cr>
+autocmd VimEnter * NERDTree | wincmd l
 
 " vim-airline
 let g:airline_extensions = [ "tabline", "branch" ]
