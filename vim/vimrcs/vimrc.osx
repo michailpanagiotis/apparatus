@@ -65,6 +65,7 @@ nnoremap <S-Enter> i<CR><Esc>
 
 " NERDTree
 let NERDTreeMinimalUI = 1
+let NERDTreeShowHidden=1
 nnoremap <leader>d :NERDTreeToggle<cr>
 autocmd VimEnter * NERDTree | wincmd l
 
