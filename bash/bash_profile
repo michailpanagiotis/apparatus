@@ -12,6 +12,7 @@ archey
 
 # PATH definitions
 export PATH="/usr/local/sbin:$PATH"
+export EDITOR="vim"
 
 # direnv
 eval "$(direnv hook bash)"
