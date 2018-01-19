@@ -4,6 +4,7 @@ syntax on
 filetype on
 filetype plugin indent on
 
+" misc
 set showcmd		  " Show (partial) command in status line.
 set showmatch		" Show matching brackets.
 set ignorecase	" Do case insensitive matching
@@ -11,29 +12,31 @@ set smartcase		" Do smart case matching
 set incsearch		" Incremental search
 set hlsearch
 " set mouse=n		  " Enable mouse usage (all modes)
-set autoindent
 set laststatus=2
-set smartindent
-set tabstop=2
-set expandtab
-set softtabstop=2
-set shiftwidth=2
 set textwidth=80
-set number
 set colorcolumn=80
+set number
 set wrap
 set linebreak
 set nolist
 set formatoptions+=l
-set cursorline
-set backspace=2
 
+" indentation
+set autoindent
+set backspace=2
+set expandtab
+set shiftwidth=2
+set smartindent
+set smarttab
+set softtabstop=2
+set tabstop=2
+
+" swapfiles
 set swapfile
 set dir=~/.vim/tmp
 
-"leader key
+" leader key
 let mapleader = ","
-let g:mapleader = ","
 
 " highlight trailing spaces
 :highlight ExtraWhitespace ctermbg=161 guibg=#F92672
@@ -43,22 +46,21 @@ let g:mapleader = ","
 :autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 :autocmd BufWinLeave * call clearmatches()
 
-"" remove whitespaces
+" remove whitespaces
 :nnoremap <leader><space> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
 
-" If using a dark background within the editing area and syntax highlighting
-" turn on this option as well
+" colors
 set t_Co=256
 set background=dark
 colorscheme gruvbox
 
-"Movement sortcuts
+" movement shortcuts
 map <c-j> <c-w>j
 map <c-k> <c-w>k
 map <c-l> <c-w>l
 map <c-h> <c-w>h
 
-"ag
+" ag
 noremap <leader>a :Ag<space>
 let g:ag_working_path_mode="r"
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
@@ -74,7 +76,7 @@ if executable('ag')
   let g:fzf_default_command ='ag --nocolor -g ""'
 endif
 
-"vim-flake8
+" vim-flake8
 autocmd BufWritePost *.py call Flake8()
 let g:flake8_show_quickfix=0
 let g:flake8_show_in_file=1
@@ -85,10 +87,10 @@ highlight link Flake8_Complexity WarningMsg
 highlight link Flake8_Naming     WarningMsg
 highlight link Flake8_PyFlake    WarningMsg
 
-"vim-markdown
+" vim-markdown
 let g:vim_markdown_folding_disabled = 1
 
-"CtrlP
+" CtrlP
 nnoremap <leader>t :CtrlP<CR>
 nnoremap <leader>b :CtrlPBuffer<CR>
 let g:ctrlp_use_caching = 1
@@ -96,7 +98,7 @@ let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_max_height = 20
 let g:ctrlp_match_window_reversed = 0
 
-"fzf
+" fzf
 set rtp+=/usr/local/opt/fzf
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
@@ -113,38 +115,38 @@ nmap ; :Buffers<CR>
 nmap <Leader>t :Files<CR>
 nmap <Leader>r :Tags<CR>
 
-"easyytags
+" easyytags
 let g:easytags_by_filetype = '/Users/mike/.vim/tags/'
 let g:easytags_file = '/Users/mike/.vim/tags/tags'
 let g:easytags_auto_highlight = 0
 let g:easytags_auto_update = 0
 let g:easytags_async = 1
 
-"nerdtree
+" Nerdtree
 map <C-n> :NERDTreeToggle<CR>
 let g:NERDTreeDirArrows=0
 "autocmd BufEnter * lcd %:p:h
 
-"gitgutter
+" Gitgutter
 let g:gitgutter_enabled = 0
 nmap <leader>gd :GitGutterToggle<CR>:GitGutterLineHighlightsToggle<CR>
 nnoremap <leader>gh :GitGutterNextHunk<CR>
 nnoremap <leader>gH :GitGutterPrevHunk<CR>
 
-"Gundo
+" Gundo
 nnoremap <leader>gun :GundoToggle<CR>
 let g:gundo_right = 1
 
-"Tagbar
+" Tagbar
 nmap <silent><leader>] :TagbarToggle<CR>
 
-"TaskList
+" TaskList
 map <leader>td <Plug>TaskList
 
-"vim-javacript
+" vim-javacript
 let g:javascript_plugin_jsdoc = 1
 
-"vim-go
+" vim-go
 let g:go_auto_sameids = 1
 let g:go_auto_type_info = 1
 let g:go_fmt_command = "goimports"
@@ -160,7 +162,7 @@ let g:go_metalinter_autosave_enabled = ['vet', 'golint']
 let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 autocmd FileType go nmap <Leader>i <Plug>(go-info)
 
-"vim-syntastic
+" vim-syntastic
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
@@ -172,13 +174,13 @@ let g:syntastic_check_on_wq = 1
 
 let g:syntastic_aggregate_errors = 1
 
-"vim-airline
+" vim-airline
 let g:airline_theme='molokai'
 let g:airline_detect_modified=1
 let g:airline_extensions = ['branch', 'virtualenv', 'whitespace', 'syntastic']
 set runtimepath^=~/.vim/bundle/ag
 
-"haskell-vim
+" haskell-vim
 "g:haskell_classic_highlighting = 1
 "g:haskell_indent_disable = 1
 let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
