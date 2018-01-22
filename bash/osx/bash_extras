@@ -3,3 +3,6 @@
 
 # git completion script
 #source ~/.apparatus/bash/git-completion.bash
+
+# fzf
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
