@@ -3,6 +3,7 @@ execute pathogen#infect()
 
 " enable filetype plugin
 filetype plugin on
+filetype on
 
 " haproxy vim syntax
 autocmd BufRead,BufNewFile haproxy*.cfg* set ft=haproxy
