@@ -175,9 +175,18 @@ let g:syntastic_check_on_wq = 1
 let g:syntastic_aggregate_errors = 1
 
 " vim-airline
-let g:airline_theme='molokai'
-let g:airline_detect_modified=1
+let g:airline_theme = 'base16_eighties'
+let g:airline_detect_modified = 1
+let g:airline_powerline_fonts = 1
 let g:airline_extensions = ['branch', 'virtualenv', 'whitespace', 'syntastic']
+" let g:airline_left_sep = ''
+" let g:airline_left_alt_sep = ''
+" let g:airline_right_sep = ''
+" let g:airline_right_alt_sep = ''
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
 set runtimepath^=~/.vim/bundle/ag
 
 " haskell-vim
@@ -190,3 +199,13 @@ let g:haskell_enable_pattern_synonyms = 1 " to enable highlighting of `pattern`
 let g:haskell_enable_typeroles = 1        " to enable highlighting of type roles
 let g:haskell_enable_static_pointers = 1  " to enable highlighting of `static`
 let g:haskell_backpack = 1                " to enable highlighting of backpack keywords
+
+let g:tmuxline_powerline_separators = 0
+let g:tmuxline_preset = {
+    \'a'    : '#S',
+    \'c'    : ['#(curl icanhazip.com)', "#(ifconfig en0 | grep 'inet ' | awk     '{print \"en0 \" $2}') #(ifconfig en1 | grep 'inet ' | awk '{print \"en1 \" $2}')"],
+    \'win'  : '#I #W',
+    \'cwin' : '#I #W',
+    \'x'    : '#H',
+    \'y'    : '#(tmux-mem-cpu-load --averages-count 0 --graph-lines 0 --interval 2)',
+    \'z'    : ["%a %d %Y", "%T %Z", "#(date -u | awk '{print $4}') UTC"]}
