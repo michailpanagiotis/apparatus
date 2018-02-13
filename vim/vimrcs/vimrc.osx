@@ -77,6 +77,9 @@ vnoremap <C-/> <Plug>Commentary
 let g:airline_extensions = [ "tabline", "branch" ]
 let g:airline_detect_modified=1
 set laststatus=2
+let g:airline_theme='base16_eighties'
+let g:airline_left_sep=''
+let g:airline_right_sep=''
 
 " gitgutter
 let g:gitgutter_sign_column_always = 1
@@ -84,6 +87,7 @@ let g:gitgutter_sign_column_always = 1
 " fzf
 set rtp+=/usr/local/opt/fzf
 nnoremap <C-p> :FZF<CR>
+nmap <C-;> :Buffers<CR>
 
 let g:fzf_layout = { 'down': '~30%' }
 let g:fzf_colors =
