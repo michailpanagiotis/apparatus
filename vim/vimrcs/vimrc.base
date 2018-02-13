@@ -13,8 +13,8 @@ set incsearch		" Incremental search
 set hlsearch
 " set mouse=n		  " Enable mouse usage (all modes)
 set laststatus=2
-set textwidth=80
-set colorcolumn=80
+set textwidth=100
+set colorcolumn=100
 set number
 set wrap
 set linebreak
@@ -59,6 +59,11 @@ map <c-j> <c-w>j
 map <c-k> <c-w>k
 map <c-l> <c-w>l
 map <c-h> <c-w>h
+
+" buffers
+noremap <C-j> :bnext<CR>
+noremap <C-k> :bprevious<CR>
+noremap <C-w> :bdelete<CR>
 
 " ag
 noremap <leader>a :Ag<space>
@@ -111,7 +116,7 @@ imap <c-x><c-j> <plug>(fzf-complete-file-ag)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 " Advanced customization using autoload functions
 inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
-nmap ; :Buffers<CR>
+nmap <Leader>; :Buffers<CR>
 nmap <Leader>t :Files<CR>
 nmap <Leader>r :Tags<CR>
 
