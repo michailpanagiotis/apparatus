@@ -21,6 +21,10 @@
     frag = magenta bold
     old = red bold
     new = green bold
+[color "grep"]
+  linenumber = green
+  match = red
+  filename = magenta
 [push]
     default = current
 
