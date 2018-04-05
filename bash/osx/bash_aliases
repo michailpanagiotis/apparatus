@@ -8,10 +8,16 @@ alias btr='cd ~/Workspace/bartendr'
 alias fut='cd ~/Workspace/futurae'
 alias wp='cd ~/Workspace'
 alias x11='cd ~/Google\ Drive/Workspace/x11-squad'
+alias ..='cd ..'
+alias ...='cd ../../'
 
 # youtube-dl
 alias ut='youtube-dl'
 alias utmp3='youtube-dl -x --audio-format mp3 --audio-quality 0'
+
+# git
+alias vimod='vim -p $(git diff --name-only | uniq)'
+alias tiga='tig --all'
 
 # virtualenv
 venv_activate() {
