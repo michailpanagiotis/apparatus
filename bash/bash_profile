@@ -11,13 +11,12 @@ source ~/.bash_extras
 archey
 
 # PATH definitions
-export PATH="/usr/local/sbin:$PATH"
+export PATH="$HOME/.rbenv/bin:/usr/local/sbin:$PATH"
 export EDITOR="vim"
 
-# direnv
-eval "$(direnv hook bash)"
+eval "$(rbenv init -)"
 
 # Futurae
-export GOPATH="/Users/ilias/Workspace/futurae/webapp/"
+export GOPATH="/Users/ilias/Workspace/futurae/webapp"
 export PATH="$GOPATH/bin:$PATH"
-eval $(/usr/libexec/path_helper -s)
+#eval $(/usr/libexec/path_helper -s)

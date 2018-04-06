@@ -31,6 +31,7 @@ alias dex='docker exec -it'
 
 # Futurae
 alias dbreset='doc down && ./tasks/docker/db_bootstrap.sh && ./tasks/docker/app_bootstrap.sh'
+alias be='bundle exec'
 
 # Fun
 alias coin='coinmon -c eur -H -f btc,eth,xrp,trx,dash,bch,ltc,icx,xmr'
