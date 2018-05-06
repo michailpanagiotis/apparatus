@@ -91,9 +91,6 @@
 [submodule "vim/bundle/vim-coffee-script"]
 	path = vim/bundle/vim-coffee-script
 	url = https://github.com/kchmck/vim-coffee-script.git
-[submodule "vim/bundle/syntastic-local-eslint.vim"]
-	path = vim/bundle/syntastic-local-eslint.vim
-	url = https://github.com/nemtsov/syntastic-local-eslint.vim.git
 [submodule "vim/bundle/typescript-vim"]
 	path = vim/bundle/typescript-vim
 	url = https://github.com/leafgarland/typescript-vim.git
