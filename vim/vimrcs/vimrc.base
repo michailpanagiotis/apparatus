@@ -47,6 +47,7 @@ set cursorline
 set undofile
 set backspace=2
 set backupcopy=yes
+set autochdir
 
 set tabstop=4 softtabstop=4 expandtab shiftwidth=4 smarttab
 
@@ -188,6 +189,7 @@ set textwidth=0 wrapmargin=0
 
 "Syntastic for javascript
 let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_javascript_eslint_exe = 'npm run lint --'
 
 let g:phpqa_messdetector_ruleset = "/root/.apparatus/linters/phpmd/phpmd.xml"
 let g:phpqa_open_loc = 1
