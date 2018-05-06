@@ -13,9 +13,6 @@
 [submodule "vim/bundle/pytest.vim"]
 	path = vim/bundle/pytest.vim
 	url = https://github.com/alfredodeza/pytest.vim.git
-[submodule "vim/bundle/sort-python-imports"]
-	path = vim/bundle/sort-python-imports
-	url = https://github.com/vim-scripts/sort-python-imports.git
 [submodule "vim/bundle/syntastic"]
 	path = vim/bundle/syntastic
 	url = https://github.com/scrooloose/syntastic.git

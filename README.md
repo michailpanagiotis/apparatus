@@ -21,7 +21,7 @@ Obtain the tools:
 
 Clone the repository:
 
-    git clone git@github.com:michailpanagiotis/apparatus.git $HOME/.apparatus
+    git clone https://github.com/michailpanagiotis/apparatus.git $HOME/.apparatus
 
 
 Fetch the submodules:
