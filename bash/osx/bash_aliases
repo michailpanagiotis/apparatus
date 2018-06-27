@@ -26,8 +26,12 @@ venv_activate() {
 alias venv=venv_activate
 
 # docker
+docker_bash () {
+  docker exec -it -e COLUMNS="`tput cols`" -e LINES="`tput lines`" $1 /usr/bin/env bash
+}
 alias doc='docker-compose'
 alias dex='docker exec -it'
+alias dosh='docker_bash'
 
 # Futurae
 alias dbreset='doc down && ./tasks/docker/db_bootstrap.sh && ./tasks/docker/app_bootstrap.sh'
