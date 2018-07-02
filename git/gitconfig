@@ -52,6 +52,7 @@
   co = checkout
   df = diff
   br = branch
+  bra = branch -av
 
 # reset aliases
   rh = reset --hard HEAD
