@@ -63,7 +63,7 @@ map <c-h> <c-w>h
 " buffers
 noremap <C-j> :bnext<CR>
 noremap <C-k> :bprevious<CR>
-noremap <C-w> :bdelete<CR>
+noremap <C-x> :bdelete<CR>
 
 " ag
 noremap <leader>a :Ag<space>
