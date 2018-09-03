@@ -44,6 +44,7 @@ set backspace=indent,eol,start
 
 " copy to clipboard
 nnoremap <leader>y "*y
+nnoremap <leader>p "*p
 
 " paste
 nnoremap <F2> :set invpaste paste?<CR>
