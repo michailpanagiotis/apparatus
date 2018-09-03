@@ -42,6 +42,9 @@ set nocompatible
 set incsearch
 set backspace=indent,eol,start
 
+" copy to clipboard
+nnoremap <leader>y "*y
+
 " paste
 nnoremap <F2> :set invpaste paste?<CR>
 set pastetoggle=<F2>
