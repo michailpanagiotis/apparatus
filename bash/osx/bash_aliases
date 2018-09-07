@@ -1,9 +1,9 @@
-# General aliases
+# general
 alias ls='ls -Glahp'
 alias grep='grep --color'
 alias fgrep='fgrep --color'
 
-# Directory shortcuts
+# directory shortcuts
 alias btr='cd ~/Workspace/bartendr'
 alias fut='cd ~/Workspace/futurae'
 alias wp='cd ~/Workspace'
@@ -26,16 +26,11 @@ venv_activate() {
 alias venv=venv_activate
 
 # docker
-docker_bash () {
-  docker exec -it -e COLUMNS="`tput cols`" -e LINES="`tput lines`" $1 /usr/bin/env bash
-}
 alias doc='docker-compose'
-alias dex='docker exec -it'
-alias dosh='docker_bash'
+alias dex='docker exec -it -e COLUMNS="`tput cols`" -e LINES="`tput lines`"'
 
-# Futurae
-alias dbreset='doc down && ./tasks/docker/db_bootstrap.sh && ./tasks/docker/app_bootstrap.sh'
+# bundle
 alias be='bundle exec'
 
-# Fun
+# fun
 alias coin='coinmon -c eur -H -f btc,eth,xrp,trx,dash,bch,ltc,icx,xmr'

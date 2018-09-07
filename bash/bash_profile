@@ -17,6 +17,11 @@ export EDITOR="vim"
 eval "$(rbenv init -)"
 
 # Futurae
-export GOPATH="/Users/ilias/Workspace/futurae/webapp"
 export PATH="$GOPATH/bin:$PATH"
 #eval $(/usr/libexec/path_helper -s)
+
+# direnv
+eval "$(direnv hook bash)"
+
+[[ -s "/Users/ilias/.gvm/scripts/gvm" ]] && source "/Users/ilias/.gvm/scripts/gvm"
+export GOPATH="/Users/ilias/Workspace/futurae/webapp"
