@@ -65,22 +65,6 @@ noremap <C-j> :bnext<CR>
 noremap <C-k> :bprevious<CR>
 noremap <C-x> :bdelete<CR>
 
-" ag
-noremap <leader>a :Ag<space>
-let g:ag_working_path_mode="r"
-" Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
-if executable('ag')
-  " Use Ag over Grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-  let g:ackprg = 'ag --nocolor -g ""'
-
-  let g:fzf_default_command ='ag --nocolor -g ""'
-endif
-
 " vim-flake8
 autocmd BufWritePost *.py call Flake8()
 let g:flake8_show_quickfix=0
@@ -95,27 +79,19 @@ highlight link Flake8_PyFlake    WarningMsg
 " vim-markdown
 let g:vim_markdown_folding_disabled = 1
 
-" CtrlP
-nnoremap <leader>t :CtrlP<CR>
-nnoremap <leader>b :CtrlPBuffer<CR>
-let g:ctrlp_use_caching = 1
-let g:ctrlp_clear_cache_on_exit = 0
-let g:ctrlp_max_height = 20
-let g:ctrlp_match_window_reversed = 0
-
 " fzf
 set rtp+=/usr/local/opt/fzf
 " Mapping selecting mappings
-nmap <leader><tab> <plug>(fzf-maps-n)
-xmap <leader><tab> <plug>(fzf-maps-x)
-omap <leader><tab> <plug>(fzf-maps-o)
+nmap <Leader><tab> <plug>(fzf-maps-n)
+xmap <Leader><tab> <plug>(fzf-maps-x)
+omap <Leader><tab> <plug>(fzf-maps-o)
 " Insert mode completion
-imap <c-x><c-k> <plug>(fzf-complete-word)
-imap <c-x><c-f> <plug>(fzf-complete-path)
-imap <c-x><c-j> <plug>(fzf-complete-file-ag)
-imap <c-x><c-l> <plug>(fzf-complete-line)
+imap <C-x><C-k> <plug>(fzf-complete-word)
+imap <C-x><C-f> <plug>(fzf-complete-path)
+imap <C-x><C-j> <plug>(fzf-complete-file-ag)
+imap <C-x><C-l> <plug>(fzf-complete-line)
 " Advanced customization using autoload functions
-inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
+inoremap <expr> <C-x><C-k> fzf#vim#complete#word({'left': '15%'})
 nmap <Leader>; :Buffers<CR>
 nmap <Leader>t :Files<CR>
 nmap <Leader>r :Tags<CR>
@@ -146,7 +122,7 @@ let g:gundo_right = 1
 nmap <silent><leader>] :TagbarToggle<CR>
 
 " TaskList
-map <leader>td <Plug>TaskList
+map <leader>d <Plug>TaskList
 
 " vim-javacript
 let g:javascript_plugin_jsdoc = 1
@@ -161,10 +137,11 @@ let g:go_highlight_methods = 1
 let g:go_highlight_structs = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
-let g:go_metalinter_autosave = 1
-let g:go_metalinter_deadline = "5s"
-let g:go_metalinter_autosave_enabled = ['vet', 'golint']
-let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
+" let g:go_metalinter_autosave = 1
+" let g:go_metalinter_deadline = "5s"
+" let g:go_metalinter_autosave_enabled = ['vet', 'golint']
+" let g:go_metalinter_autosave_enabled = ['vet', 'golint']
+" let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 autocmd FileType go nmap <Leader>i <Plug>(go-info)
 
 " vim-syntastic

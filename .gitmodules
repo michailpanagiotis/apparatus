@@ -77,3 +77,6 @@
 [submodule "vim/bundle/vim-airline-themes"]
   path = vim/bundle/vim-airline-themes
   url = https://github.com/vim-airline/vim-airline-themes.git
+[submodule "vim/bundle/puppet"]
+	path = vim/bundle/puppet
+	url = git://github.com/rodjek/vim-puppet.git
