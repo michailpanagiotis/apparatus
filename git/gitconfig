@@ -43,6 +43,7 @@
 	continue = rebase --continue
 	abort = rebase --abort
   skip = rebase --skip
+  fix = commit --fixup
 
 # mine
   ci = commit
