@@ -34,6 +34,7 @@ autocmd BufEnter * exe ':2match ExtraWhitespace /\s\+$\| \+\ze\t\|\t\+\ze /'
 
 " define leader key
 let mapleader = ","
+nnoremap <leader>a :cclose<CR>:lclose<CR>
 
 " misc
 set showcmd
@@ -41,10 +42,10 @@ set number
 set nocompatible
 set incsearch
 set backspace=indent,eol,start
+set noswapfile
 
 " copy to clipboard
-nnoremap <leader>y "*y
-nnoremap <leader>p "*p
+nmap <leader>y "*y
 
 " paste
 nnoremap <F2> :set invpaste paste?<CR>
@@ -108,3 +109,14 @@ let g:fzf_colors =
   \ 'marker':  ['fg', 'Keyword'],
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
+
+" syntastic
+nnoremap <leader>s :SyntasticCheck<CR>
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0

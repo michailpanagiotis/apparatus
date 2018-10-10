@@ -33,8 +33,8 @@ nnoremap <leader>b :GoBuild<CR>
 nnoremap <leader>r :GoRun % 
 noremap <C-n> :cnext<CR>
 noremap <C-m> :cprevious<CR>
-nnoremap <leader>a :cclose<CR>
 noremap <C-g> :GoRename 
+nnoremap <leader>s :GoMetaLinter<CR>
 
 " godef
 " instead of default <C-t>
