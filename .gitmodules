@@ -80,3 +80,12 @@
 [submodule "vim/bundle/puppet"]
 	path = vim/bundle/puppet
 	url = git://github.com/rodjek/vim-puppet.git
+[submodule "vim/bundle/vim-multiple-cursors"]
+	path = vim/bundle/vim-multiple-cursors
+	url = https://github.com/terryma/vim-multiple-cursors.git
+[submodule "vim/vim-yankstack"]
+	path = vim/vim-yankstack
+	url = https://github.com/maxbrunsfeld/vim-yankstack.git
+[submodule "vim/bundle/vim-yankstack"]
+	path = vim/bundle/vim-yankstack
+	url = https://github.com/maxbrunsfeld/vim-yankstack.git
