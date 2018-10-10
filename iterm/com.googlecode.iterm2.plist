@@ -2301,19 +2301,19 @@
 		<integer>1</integer>
 	</dict>
 	<key>NSWindow Frame NSFontPanel</key>
-	<string>709 288 445 77 0 0 1920 1200 </string>
+	<string>1043 415 445 77 0 0 2560 1440 </string>
 	<key>NSWindow Frame Preferences</key>
 	<string>705 316 606 456 0 0 1920 1177 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>970 786 620 392 0 0 2560 1440 </string>
+	<string>650 606 620 392 0 0 1920 1200 </string>
 	<key>NSWindow Frame SessionsPreferences</key>
 	<string>269 126 606 469 0 0 1920 1200 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>674 550 918 492 0 0 2560 1418 </string>
+	<string>663 705 916 404 0 0 2560 1440 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>320 77 1465 1101 0 0 2560 1418 </string>
+	<string>288 534 1465 1101 0 0 2560 1440 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>367 77 1465 1101 0 0 2560 1440 </string>
+	<string>367 77 1465 1101 0 0 2560 1418 </string>
 	<key>NeverWarnAboutShortLivedSessions_9270BAB8-B4BC-405A-8259-5D7E5E64F547</key>
 	<true/>
 	<key>New Bookmarks</key>
@@ -3036,6 +3036,8 @@
 			<false/>
 			<key>Use Italic Font</key>
 			<true/>
+			<key>Use Non-ASCII Font</key>
+			<false/>
 			<key>Vertical Spacing</key>
 			<real>1</real>
 			<key>Visual Bell</key>
@@ -3050,6 +3052,8 @@
 	<true/>
 	<key>NoSyncDoNotWarnBeforeMultilinePaste_selection</key>
 	<integer>1</integer>
+	<key>NoSyncHaveWarnedAboutIncompatibleSoftware</key>
+	<true/>
 	<key>NoSyncHaveWarnedAboutPasteConfirmationChange</key>
 	<true/>
 	<key>NoSyncInstallationId</key>
@@ -3134,7 +3138,9 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2018-01-29T15:16:45Z</date>
+	<date>2018-10-07T11:34:29Z</date>
+	<key>SUSkippedVersion</key>
+	<string>3.2.3beta2</string>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>ShowBookmarkName</key>
@@ -3184,6 +3190,6 @@
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>3.1.5.beta.2</string>
+	<string>3.2.2beta3</string>
 </dict>
 </plist>
