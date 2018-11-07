@@ -4,14 +4,14 @@ Xft*hinting: 1
 Xft*hintstyle: hintsfull
 Xft*rgba: rgb
 
-URxvt.termName: rxvt-unicode
-URxvt.perl-lib: /home/mike/.lib/urxvt/perl/
-URxvt.perl-ext-common:	default,matcher,keyboard-select,url-select,clipboard
+URxvt.termName: rxvt-unicode-256color
+URxvt.perl-lib: /home/mike/.lib/urxvt/rxvt-ext/
+URxvt.perl-ext-common: default,matcher,keyboard-select,url-select,clipboard
 
-URxvt.keysym.M-Escape:	perl:keyboard-select:activate
+URxvt.keysym.M-Escape: perl:keyboard-select:activate
 URxvt.keysym.M-s:	perl:keyboard-select:search
 URxvt.keysym.M-u:	perl:url-select:select_next
-URxvt.urlLauncher:	/usr/bin/iceweasel
+URxvt.urlLauncher:	chromium
 URxvt.underlineURLs: 	true
 URvxt.urlButton:	1
 
@@ -27,12 +27,12 @@ URxvt.tabbed.tab-bg:    0
 
 URxvt*saveLines: 5000
 
-URxvt*font: xft:Monospace:style=book:size=12:antialias=true:hinting=true
-URxvt*boldFont: xft:Monospace:style=bold:size=12:antialias=true:hinting=true
-!URxvt*font: xft:DejaVu Sans Mono:size=12:antialias=true:hinting=true
-!URxvt*boldFont: xft:DejaVu Sans Mono:bold:size=12:antialias=true:hinting=true
-!URxvt*font: xft:DejaVu Sans Mono:pixelsize=15:antialias=true:hinting=true
-!URxvt*boldFont: xft:DejaVu Sans Mono:bold:pixelsize=15:antialias=true:hinting=true
+URxvt*font: xft:Monospace:style=book:size=16:antialias=true:hinting=true
+URxvt*boldFont: xft:Monospace:style=bold:size=16:antialias=true:hinting=true
+!URxvt*font: xft:DejaVu Sans Mono:size=14:antialias=true:hinting=true
+!URxvt*boldFont: xft:DejaVu Sans Mono:bold:size=14:antialias=true:hinting=true
+!URxvt*font: xft:DejaVu Sans Mono:pixelsize=16:antialias=true:hinting=true
+!URxvt*boldFont: xft:DejaVu Sans Mono:bold:pixelsize=16:antialias=true:hinting=true
 
 URxvt*scrollBar: false
 
