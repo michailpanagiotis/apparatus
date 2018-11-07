@@ -1,5 +1,3 @@
--- xmonad config used by Vic Fryzel
--- Author: Vic Fryzel
 -- http://github.com/vicfryzel/xmonad-config
 
 import System.IO
@@ -7,7 +5,9 @@ import System.Exit
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
+import XMonad.Layout.Fullscreen
 import XMonad.Layout.NoBorders
 import XMonad.Layout.SimpleDecoration
 import XMonad.Layout.Tabbed
@@ -16,20 +16,21 @@ import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Grid
 import XMonad.Layout.IM
 import Data.Ratio ((%))
-import XMonad.Util.Run(spawnPipe)
 import XMonad.Actions.WindowBringer
 import XMonad.Actions.GridSelect
-import XMonad.Util.EZConfig(additionalKeys)
 import XMonad.Actions.CycleWS
-import qualified XMonad.StackSet as W
-import XMonad.Hooks.ManageHelpers
-import qualified Data.Map        as M
+import XMonad.Util.Run(spawnPipe)
+import XMonad.Util.EZConfig(additionalKeys)
 import XMonad.Util.Scratchpad
+import qualified XMonad.StackSet as W
+import qualified Data.Map        as M
 
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
-myTerminal      = "urxvt"
+myTerminal = "urxvt"
+
+myLauncher = "$(yeganesh -x -- -fn 'monospace-14' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC')"
 
 -- Width of the window border in pixels.
 --
@@ -84,14 +85,12 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- launch a terminal
     [ ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
-    -- launch gmrun
+    -- launch screensaver
     , ((modMask .|. controlMask, xK_l     ), spawn "xscreensaver-command -lock")
 
-    -- launch dmenu
-    , ((modMask,               xK_p     ), spawn "exe=`dmenu_path | ~/.bin/dmenu` && eval \"exec $exe\"")
+    -- launch launcher
+    , ((modMask,               xK_p     ), spawn myLauncher)
 
-    -- launch gmrun
-    , ((modMask .|. shiftMask, xK_p     ), spawn "gmrun")
 
     -- close focused window
     , ((modMask .|. shiftMask, xK_c     ), kill)
@@ -185,7 +184,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. shiftMask, xK_g ), gotoMenu)
     , ((modMask .|. shiftMask, xK_b ), bringMenu)
 
-    , ((modMask, xK_g), goToSelected defaultGSConfig)
+    -- , ((modMask, xK_g), goToSelected defaultGSConfig)
     -- Find out how this works
     -- , ((modMask .|. shiftMask, xK_Tab ), gridselectWindow)
     ]
@@ -243,8 +242,8 @@ myTabConfig = defaultTheme { inactiveBorderColor = "#7C7C7C"
                              , activeColor       = "#000000" }
 
 myLayout = windowNavigation $
-	avoidStruts $
-	onWorkspace "9:im" ((withIM (0.15) skypeRoster) tiled) $
+  avoidStruts $
+  onWorkspace "9:im" ((withIM (0.15) skypeRoster) tiled) $
 	-- onWorkspace "9:im" ((withIM (0.15) pidginRoster) tiled) $
   --	onWorkspace "7" (noBorders Full) $
 	tiled ||| Mirror tiled ||| myTabbed ||| Grid
@@ -332,14 +331,14 @@ myStartupHook = return ()
 -- Run xmonad with the settings you specify. No need to modify this.
 --
 main = do
-	xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmobarrc"
+	xmproc <- spawnPipe "xmobar ~/.xmobarrc"
 	xmonad $ defaults {
-		logHook            = dynamicLogWithPP $ xmobarPP {
-                                ppOutput = hPutStrLn xmproc
-                                , ppTitle = xmobarColor "#FFB6B0" "" . shorten 100
-                                , ppCurrent = xmobarColor "#CEFFAC" ""
-                                , ppSep = "   "
-                                }
+		logHook = dynamicLogWithPP $ xmobarPP {
+      ppOutput = hPutStrLn xmproc
+      , ppTitle = xmobarColor "#FFB6B0" "" . shorten 100
+      , ppCurrent = xmobarColor "#CEFFAC" ""
+      , ppSep = "   "
+    }
 		, manageHook = manageDocks <+> myManageHook
 		, startupHook = setWMName "LG3D"
 	}
