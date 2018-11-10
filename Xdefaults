@@ -27,8 +27,8 @@ URxvt.tabbed.tab-bg:    0
 
 URxvt*saveLines: 5000
 
-URxvt*font: xft:Monospace:style=book:size=16:antialias=true:hinting=true
-URxvt*boldFont: xft:Monospace:style=bold:size=16:antialias=true:hinting=true
+URxvt*font: xft:Monospace:style=book:size=14:antialias=true:hinting=true
+URxvt*boldFont: xft:Monospace:style=bold:size=14:antialias=true:hinting=true
 !URxvt*font: xft:DejaVu Sans Mono:size=14:antialias=true:hinting=true
 !URxvt*boldFont: xft:DejaVu Sans Mono:bold:size=14:antialias=true:hinting=true
 !URxvt*font: xft:DejaVu Sans Mono:pixelsize=16:antialias=true:hinting=true

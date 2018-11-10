@@ -1,10 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 
 # Configure X
 xrdb -merge ~/.Xdefaults &
 xrdb -merge ~/.Xresources &
 setxkbmap us,el -option "grp:alt_shift_toggle" &
-# xrandr --auto --output HDMI1 --mode 1920x1080 --left-of VGA1 --primary --output VGA1 --mode 1920x1080
+
+xrandr --output eDP1 --primary --mode 1920x1080 &
+# xrandr --auto --output HDMI1 --mode 1920x1080 --left-of VGA1 --primary --output VGA1 --mode 1920x1080 &
 
 #feh --bg-scale /home/stathopa/Dropbox/cave-on-the-beach-wallpaper.jpg
 #feh --bg-fill /home/stathopa/Pictures/bahamas_1600x1200.jpg
