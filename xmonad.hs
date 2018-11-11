@@ -25,168 +25,105 @@ import XMonad.Util.Scratchpad
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
--- The preferred terminal program, which is used in a binding below and by
--- certain contrib modules.
---
 myTerminal = "urxvt"
-
-myLauncher = "$(yeganesh -x -- -fn 'monospace-14' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC')"
-
--- Width of the window border in pixels.
---
-myBorderWidth   = 1
-
--- modMask lets you specify which modkey you want to use. The default
--- is mod1Mask ("left alt").  You may also consider using mod3Mask
--- ("right alt"), which does not conflict with emacs keybindings. The
--- "windows key" is usually mod4Mask.
---
-myModMask       = mod4Mask
-
--- The mask for the numlock key. Numlock status is "masked" from the
--- current modifier status, so the keybindings will work with numlock on or
--- off. You may need to change this on some systems.
---
--- You can find the numlock modifier by running "xmodmap" and looking for a
--- modifier with Num_Lock bound to it:
---
--- > $ xmodmap | grep Num
--- > mod2        Num_Lock (0x4d)
---
--- Set numlockMask = 0 if you don't have a numlock key, or want to treat
--- numlock status separately.
---
--- myNumlockMask   = mod2Mask
--- myNumlockMask   = 0
-
--- The default number of workspaces (virtual screens) and their names.
--- By default we use numeric strings, but any string may be used as a
--- workspace name. The number of workspaces is determined by the length
--- of this list.
---
--- A tagging example:
---
--- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
---
-myWorkspaces    = ["1","2","3","4","5","6","7","8","9:im"]
+myLauncher = "$(yeganesh -x -- -fn 'monospace-11' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC')"
+myBorderWidth = 1
+myModMask = mod4Mask
+myWorkspaces = ["1","2","3","4","5","6","7","8","9:im"]
 
 -- Border colors for unfocused and focused windows, respectively.
---
--- myNormalBorderColor  = "#7c7c7c"
--- myFocusedBorderColor = "#ffb6b0"
 myFocusedBorderColor = "#1919FF"
-myNormalBorderColor  = "black"
+myNormalBorderColor = "black"
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
 --
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
-    -- launch a terminal
     [ ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
-
-    -- launch screensaver
-    , ((modMask .|. controlMask, xK_l     ), spawn "xscreensaver-command -lock")
-
-    -- launch launcher
-    , ((modMask,               xK_p     ), spawn myLauncher)
-
-
-    -- close focused window
-    , ((modMask .|. shiftMask, xK_c     ), kill)
-
-     -- Rotate through the available layout algorithms
-    , ((modMask,               xK_space ), sendMessage NextLayout)
+    , ((modMask .|. controlMask, xK_l), spawn "xscreensaver-command -lock")
+    , ((modMask, xK_p), spawn myLauncher)
+    , ((modMask .|. shiftMask, xK_c), kill)
+    , ((modMask, xK_space ), sendMessage NextLayout)
 
     --  Reset the layouts on the current workspace to default
     , ((modMask .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
 
     -- Resize viewed windows to the correct size
-    , ((modMask,               xK_n     ), refresh)
+    , ((modMask, xK_n), refresh)
 
     -- Move focus to the next window
-    , ((modMask,               xK_Tab   ), windows W.focusDown)
+    , ((modMask, xK_Tab), windows W.focusDown)
 
     -- Move focus to the next window
-    , ((modMask,               xK_j     ), windows W.focusDown)
+    , ((modMask, xK_j), windows W.focusDown)
 
     -- Move focus to the previous window
-    , ((modMask,               xK_k     ), windows W.focusUp  )
+    , ((modMask, xK_k), windows W.focusUp)
 
     -- Move focus to the master window
-    , ((modMask,               xK_m     ), windows W.focusMaster  )
+    , ((modMask, xK_m), windows W.focusMaster)
 
     -- Swap the focused window and the master window
-    , ((modMask,               xK_Return), windows W.swapMaster)
+    , ((modMask, xK_Return), windows W.swapMaster)
 
     -- Swap the focused window with the next window
-    , ((modMask .|. shiftMask, xK_j     ), windows W.swapDown  )
+    , ((modMask .|. shiftMask, xK_j), windows W.swapDown)
 
     -- Swap the focused window with the previous window
-    , ((modMask .|. shiftMask, xK_k     ), windows W.swapUp    )
+    , ((modMask .|. shiftMask, xK_k), windows W.swapUp)
 
     -- Shrink the master area
-    , ((modMask,               xK_h     ), sendMessage Shrink)
+    , ((modMask, xK_h), sendMessage Shrink)
 
     -- Expand the master area
-    , ((modMask,               xK_l     ), sendMessage Expand)
+    , ((modMask, xK_l), sendMessage Expand)
 
     -- Push window back into tiling
-    , ((modMask,               xK_t     ), withFocused $ windows . W.sink)
+    , ((modMask, xK_t), withFocused $ windows . W.sink)
 
     -- Increment the number of windows in the master area
-    , ((modMask              , xK_comma ), sendMessage (IncMasterN 1))
+    , ((modMask, xK_comma), sendMessage (IncMasterN 1))
 
     -- Deincrement the number of windows in the master area
-    , ((modMask              , xK_s), toggleWS)
+    , ((modMask, xK_s), toggleWS)
 
     -- Deincrement the number of windows in the master area
-    , ((modMask              , xK_period), sendMessage (IncMasterN (-1)))
+    , ((modMask, xK_period), sendMessage (IncMasterN (-1)))
 
     -- Spawn scratchpad
-    , ((modMask              , xK_s), scratchpadSpawnActionTerminal myTerminal)
+    , ((modMask, xK_s), scratchpadSpawnActionTerminal myTerminal)
 
     -- toggle the status bar gap
-    -- TODO, update this binding with avoidStruts , ((modMask              , xK_b     ),
+    -- TODO, update this binding with avoidStruts , ((modMask, xK_b),
 
     -- Open the file explorer
     , ((mod4Mask .|. shiftMask, xK_o),  spawn "pcmanfm")
 
     -- Quit xmonad
-    , ((modMask .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
+    , ((modMask .|. shiftMask, xK_q), io (exitWith ExitSuccess))
 
     -- Restart xmonad
-    , ((modMask              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
+    , ((modMask, xK_q), spawn "xmonad --recompile; xmonad --restart")
     -- Sound hot keys
-    , ((0                    , 0x1008ff13), spawn "amixer set Master 2+")
-    , ((0                    , 0x1008ff11), spawn "amixer set Master 2-")
-    , ((0                    , 0x1008ff12), spawn "amixer set Master toggle")
-    , ((0                    , 0x1008ff03), spawn "xbacklight -dec 10")
-    , ((0                    , 0x1008ff02), spawn "xbacklight -inc 10")
-    --, ((modMask							 , xK_F7), spawn "amixer set Master 2+")
-    --, ((modMask              , xK_F6), spawn "amixer set Master 2-")
-    --, ((modMask							 , xK_F5), spawn "amixer set Master toggle")
+    , ((0, 0x1008ff13), spawn "amixer set Master 2+")
+    , ((0, 0x1008ff11), spawn "amixer set Master 2-")
+    , ((0, 0x1008ff12), spawn "amixer set Master toggle")
+    , ((0, 0x1008ff03), spawn "xbacklight -dec 10")
+    , ((0, 0x1008ff02), spawn "xbacklight -inc 10")
     ]
     ++
 
-    -- Yatiohi moving keybindings
-    --
     [ ((modMask, xK_Right), sendMessage $ Go R)
     , ((modMask, xK_Left ), sendMessage $ Go L)
     , ((modMask, xK_Up   ), sendMessage $ Go U)
     , ((modMask, xK_Down ), sendMessage $ Go D)
     , ((modMask .|. shiftMask, xK_Right), nextScreen)
     , ((modMask .|. shiftMask, xK_Left), prevScreen)
---    , ((modMask .|. shiftMask, xK_Right), sendMessage $ Move R)
---    , ((modMask .|. shiftMask, xK_Left ), sendMessage $ Move L)
     , ((modMask .|. shiftMask, xK_Up   ), sendMessage $ Move U)
     , ((modMask .|. shiftMask, xK_Down ), sendMessage $ Move D)
     , ((modMask .|. shiftMask, xK_g ), gotoMenu)
     , ((modMask .|. shiftMask, xK_b ), bringMenu)
-
-    -- , ((modMask, xK_g), goToSelected defaultGSConfig)
-    -- Find out how this works
-    -- , ((modMask .|. shiftMask, xK_Tab ), gridselectWindow)
     ]
     ++
 
@@ -244,21 +181,19 @@ myTabConfig = defaultTheme { inactiveBorderColor = "#7C7C7C"
 myLayout = windowNavigation $
   avoidStruts $
   onWorkspace "9:im" ((withIM (0.15) skypeRoster) tiled) $
-	-- onWorkspace "9:im" ((withIM (0.15) pidginRoster) tiled) $
-  --	onWorkspace "7" (noBorders Full) $
 	tiled ||| Mirror tiled ||| myTabbed ||| Grid
   where
      -- default tiling algorithm partitions the screen into two panes
-     tiled   = Tall nmaster delta ratio
+     tiled = Tall nmaster delta ratio
 
      -- The default number of windows in the master pane
      nmaster = 1
 
      -- Default proportion of screen occupied by master pane
-     ratio   = 1/2
+     ratio = 1/2
 
      -- Percent of screen to increment by when resizing panes
-     delta   = 3/100
+     delta = 3/100
 
      myTabbed = tabbed shrinkText myTabConfig
 
@@ -350,22 +285,16 @@ main = do
 -- No need to modify this.
 --
 defaults = defaultConfig {
-      -- simple stuff
-        terminal           = myTerminal,
-        focusFollowsMouse  = myFocusFollowsMouse,
-        borderWidth        = myBorderWidth,
-        modMask            = myModMask,
-        -- numlockMask        = myNumlockMask,
-        workspaces         = myWorkspaces,
-        normalBorderColor  = myNormalBorderColor,
-        focusedBorderColor = myFocusedBorderColor,
-
-      -- key bindings
-        keys               = myKeys,
-        mouseBindings      = myMouseBindings,
-
-      -- hooks, layouts
-        layoutHook         = smartBorders $ myLayout,
-        manageHook         = myManageHook,
-        startupHook        = myStartupHook
+      terminal           = myTerminal,
+      focusFollowsMouse  = myFocusFollowsMouse,
+      borderWidth        = myBorderWidth,
+      modMask            = myModMask,
+      workspaces         = myWorkspaces,
+      normalBorderColor  = myNormalBorderColor,
+      focusedBorderColor = myFocusedBorderColor,
+      keys               = myKeys,
+      mouseBindings      = myMouseBindings,
+      layoutHook         = smartBorders $ myLayout,
+      manageHook         = myManageHook,
+      startupHook        = myStartupHook
     }
