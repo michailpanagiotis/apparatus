@@ -1,7 +1,7 @@
 Config { font = "xft:Sans-11:bold"
        , bgColor = "black"
        , fgColor = "grey"
-       , position = TopW L 90
+       , position = TopW L 88
        , lowerOnStart = False
        , allDesktops = True
        , persistent = True

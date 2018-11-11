@@ -1,9 +1,8 @@
-geometry 12x1+3564
-icon_size 23
-sticky 1
+geometry 8x1+1776+0
+icon_size 18
+sticky true
 window_type dock
 dockapp_mode wmaker
-window_strut auto
-skip_taskbar 1
+skip_taskbar true
 icon_gravity NE
 background black

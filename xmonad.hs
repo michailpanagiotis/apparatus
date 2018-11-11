@@ -105,6 +105,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
     -- Restart xmonad
     , ((modMask, xK_q), spawn "xmonad --recompile; xmonad --restart")
+
     -- Sound hot keys
     , ((0, 0x1008ff13), spawn "amixer set Master 2+")
     , ((0, 0x1008ff11), spawn "amixer set Master 2-")
@@ -232,6 +233,7 @@ myManageHook = composeAll
     , className =? "Pidgin"         --> doShift "9:im"
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
+    , resource  =? "stalonetray"    --> doIgnore
     , scratchpadManageHook (W.RationalRect 0.125 0.25 0.75 0.5)]
 
 -- Whether focus follows the mouse pointer.
