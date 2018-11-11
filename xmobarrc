@@ -1,4 +1,4 @@
-Config { font = "xft:Sans-12:bold"
+Config { font = "xft:Sans-11:bold"
        , bgColor = "black"
        , fgColor = "grey"
        , position = TopW L 90
@@ -8,7 +8,6 @@ Config { font = "xft:Sans-12:bold"
        , commands = [
                     Run Network "wlp2s0" ["-L","0","-H","32","--normal","green","--high","red"] 10
                     , Run Weather "LGAV" ["-t"," <tempC>C","-L","64","-H","77","--normal","green","--high","red","--low","lightblue"] 36000
-                    -- , Run Network "wlp2s0" ["-L","0","-H","32","--normal","green","--high","red"] 10
                     , Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
                     , Run Memory ["-t","Mem: <usedratio>%"] 10
                     , Run Swap [] 10
