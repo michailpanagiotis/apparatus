@@ -89,6 +89,3 @@
 
 # grep
   ggrep = "grep --break --heading --line-number"
-
-[credential]
-  helper = osxkeychain
