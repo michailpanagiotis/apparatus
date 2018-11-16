@@ -16,6 +16,7 @@ xscreensaver -nosplash &
 
 ~/.dropbox-dist/dropboxd &
 
+pnmixer &
 #tomboy &
 #gol &
 #pidgin &
