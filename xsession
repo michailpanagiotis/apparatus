@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configure X
-xrdb -load ~/.Xdefaults &
+xrdb -load ~/.Xdefaults
 xrdb -merge ~/.Xresources &
 setxkbmap us,el -option "grp:alt_shift_toggle" &
 
