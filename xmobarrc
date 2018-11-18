@@ -1,4 +1,4 @@
-Config { font = "xft:Fira Code Retina-12:style=Medium"
+Config { font = "xft:Fira Code Retina-12:bold"
        , additionalFonts = ["xft:FontAwesome:size=11"]
        , bgColor = "black"
        , fgColor = "grey"
