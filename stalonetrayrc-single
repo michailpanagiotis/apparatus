@@ -1,5 +1,5 @@
 geometry 8x1+1782+0
-icon_size 20
+icon_size 22
 sticky true
 window_type dock
 dockapp_mode wmaker

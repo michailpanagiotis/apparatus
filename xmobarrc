@@ -9,18 +9,18 @@ Config { font = "xft:Fira Code Retina-12:bold"
        , commands = [
                     Run Network "wlp2s0" [
                         "-L","0",
-                        "-H","32",
-                        "--normal","darkorange",
-                        "--high","darkred"
+                        "-H","512",
+                        "--normal", "#005b96",
+                        "--high","#854442"
                       ] 10
-                    , Run Weather "LGAV" ["-t"," <tempC>C","-L","64","-H","77","--normal","green","--high","darkred","--low","lightblue"] 36000
+                    , Run Weather "LGAV" ["-t"," <tempC>C","-L","64","-H","77","--normal","#7bc043","--high","#854442","--low","#84c1ff"] 36000
                     , Run MultiCpu [
                         "--template", "CPU: <total0>% <total1>% <total2>% <total3>%",
                         "--Low", "50",         -- units: %
-                        "--High", "85",         -- units: %
-                        "--low", "darkgreen",
-                        "--normal", "darkorange",
-                        "--high", "darkred"
+                        "--High", "85",        -- units: %
+                        "--low", "#7bc043",
+                        "--normal", "#005b96",
+                        "--high", "#854442"
                       ] 10
                     , Run Memory ["-t","Mem: <usedratio>%"] 10
                     , Run Swap [] 10
@@ -30,8 +30,9 @@ Config { font = "xft:Fira Code Retina-12:bold"
                         "-t", "<left>% <timeleft>",
                         "--Low", "15",
                         "--High", "50",
-                        "-h", "darkorange",
-                        "-l", "darkred",
+                        "-h", "#7bc043",
+                        "-l", "#854442",
+                        "-n", "#005b96",
                         "--",
                         --"-c", "charge_full",
                         "-O", "AC",
@@ -44,5 +45,5 @@ Config { font = "xft:Fira Code Retina-12:bold"
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%UnsafeStdinReader% }{ %multicpu% %memory% %swap% %wlp2s0% %kbd% %LGAV% <fc=#ee9a00>%date%</fc> %battery% "
+       , template = "%UnsafeStdinReader% }{ %multicpu% %memory% %swap% %wlp2s0% %kbd% %LGAV% <fc=#4B86B4>%date%</fc> %battery% "
        }
