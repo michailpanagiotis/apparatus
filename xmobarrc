@@ -1,30 +1,48 @@
-Config { font = "xft:Sans-11:bold"
+Config { font = "xft:Fira Code Retina-12:style=Medium"
+       , additionalFonts = ["xft:FontAwesome:size=11"]
        , bgColor = "black"
        , fgColor = "grey"
-       , position = TopW L 88
+       , position = TopW L 92
        , lowerOnStart = False
        , allDesktops = True
        , persistent = True
        , commands = [
-                    Run Network "wlp2s0" ["-L","0","-H","32","--normal","green","--high","red"] 10
-                    , Run Weather "LGAV" ["-t"," <tempC>C","-L","64","-H","77","--normal","green","--high","red","--low","lightblue"] 36000
-                    , Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
+                    Run Network "wlp2s0" [
+                        "-L","0",
+                        "-H","32",
+                        "--normal","darkorange",
+                        "--high","darkred"
+                      ] 10
+                    , Run Weather "LGAV" ["-t"," <tempC>C","-L","64","-H","77","--normal","green","--high","darkred","--low","lightblue"] 36000
+                    , Run MultiCpu [
+                        "--template", "CPU: <total0>% <total1>% <total2>% <total3>%",
+                        "--Low", "50",         -- units: %
+                        "--High", "85",         -- units: %
+                        "--low", "darkgreen",
+                        "--normal", "darkorange",
+                        "--high", "darkred"
+                      ] 10
                     , Run Memory ["-t","Mem: <usedratio>%"] 10
                     , Run Swap [] 10
     		            , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
                     , Run Kbd [("us/altgr-intl", "US"), ("gr/extended", "GR")]
                     , Run Battery [
-                        "-t", "<acstatus>: <left>% - <timeleft>",
+                        "-t", "<left>% <timeleft>",
+                        "--Low", "15",
+                        "--High", "50",
+                        "-h", "darkorange",
+                        "-l", "darkred",
                         "--",
                         --"-c", "charge_full",
                         "-O", "AC",
                         "-o", "Bat",
-                        "-h", "green",
-                        "-l", "red"
+                        "--off-icon-pattern", "<fn=1>\xf240</fn>",
+                        "--on-icon-pattern", "<fn=1>\xf0e7</fn>",
+                        "--idle-icon-pattern", "<fn=1>\xf0e7</fn>"
                       ] 10
-                    , Run StdinReader
+                    , Run UnsafeStdinReader
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%StdinReader% }{ %cpu% | %memory% * %swap% | %wlp2s0% | <fc=#ee9a00>%date%</fc>| %kbd% | %LGAV% | %battery%"
+       , template = "%UnsafeStdinReader% }{ %multicpu% %memory% %swap% %wlp2s0% %kbd% %LGAV% <fc=#ee9a00>%date%</fc> %battery% "
        }

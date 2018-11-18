@@ -26,7 +26,7 @@ import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
 myTerminal = "urxvt"
-myLauncher = "$(yeganesh -x -- -fn 'monospace-11' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC')"
+myLauncher = "$(yeganesh -x -- -fn 'Fira Code Retina-12' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC')"
 myBorderWidth = 1
 myModMask = mod4Mask
 myWorkspaces = ["1","2","3","4","5","6","7","8","9:im"]
