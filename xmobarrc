@@ -38,15 +38,12 @@ Config { font = "xft:Fira Code Retina-12:bold"
                         "--Low", "15",
                         "--High", "50",
                         "-h", "#7bc043",
-                        "-l", "#854442",
-                        "-n", "#005b96",
+                        "-l", "#db0000",
+                        "-n", "#ff6700",
                         "--",
                         --"-c", "charge_full",
                         "-O", "AC",
-                        "-o", "Bat",
-                        "--off-icon-pattern", "<fn=1>\xf240</fn>",
-                        "--on-icon-pattern", "<fn=1>\xf0e7</fn>",
-                        "--idle-icon-pattern", "<fn=1>\xf0e7</fn>"
+                        "-o", "Bat"
                       ] 10
                     , Run UnsafeStdinReader
                     ]
