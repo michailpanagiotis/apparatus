@@ -12,6 +12,8 @@ feh --bg-scale /home/mike/Downloads/abstract_circles.jpg
 
 stalonetray -c ~/.xmonad/stalonetrayrc-single &
 
+xsetroot -cursor_name left_ptr &
+
 xscreensaver -nosplash &
 
 ~/.dropbox-dist/dropboxd &
