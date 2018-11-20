@@ -8,12 +8,19 @@ Config { font = "xft:Fira Code Retina-12:bold"
        , persistent = True
        , commands = [
                     Run Network "wlp2s0" [
-                        "-L","0",
-                        "-H","512",
+                        "-L", "0",
+                        "-H", "512",
                         "--normal", "#005b96",
-                        "--high","#854442"
+                        "--high", "#854442"
                       ] 10
-                    , Run Weather "LGAV" ["-t"," <tempC>C","-L","64","-H","77","--normal","#7bc043","--high","#854442","--low","#84c1ff"] 36000
+                    , Run Weather "LGAV" [
+                        "-t", " <tempC>C",
+                        "-L", "64",
+                        "-H", "77",
+                        "--normal", "#7bc043",
+                        "--high", "#854442",
+                        "--low", "#84c1ff"
+                      ] 36000
                     , Run MultiCpu [
                         "--template", "CPU: <total0>% <total1>% <total2>% <total3>%",
                         "--Low", "50",         -- units: %
@@ -45,5 +52,5 @@ Config { font = "xft:Fira Code Retina-12:bold"
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%UnsafeStdinReader% }{ %multicpu% %memory% %swap% %wlp2s0% %kbd% %LGAV% <fc=#4B86B4>%date%</fc> %battery% "
+       , template = "%UnsafeStdinReader% }{ %multicpu% %memory% %swap% %wlp2s0% %kbd% %LGAV% <fc=#4B86B4>%date%</fc> %battery%"
        }
