@@ -32,7 +32,7 @@ Config { font = "xft:Fira Code Retina-12:bold"
     		            , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
                     , Run Kbd [("us/altgr-intl", "US"), ("gr/extended", "GR")]
                     , Run Battery [
-                        "-t", "<left>% <timeleft>",
+                        "-t", "<acstatus>: <left>% <timeleft>",
                         "--Low", "15",
                         "--High", "50",
                         "-h", "#7bc043",
