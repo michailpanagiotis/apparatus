@@ -100,6 +100,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- Open the file explorer
     , ((mod4Mask .|. shiftMask, xK_o),  spawn "pcmanfm")
 
+    -- Toggle Fullscreen
+    , ((mod4Mask .|. shiftMask, xK_f), sendMessage ToggleStruts)
+
     -- Quit xmonad
     , ((modMask .|. shiftMask, xK_q), io (exitWith ExitSuccess))
 
@@ -182,7 +185,11 @@ myTabConfig = defaultTheme { inactiveBorderColor = "#7C7C7C"
 myLayout = windowNavigation $
   avoidStruts $
   onWorkspace "9:im" ((withIM (0.15) skypeRoster) tiled) $
-	tiled ||| Mirror tiled ||| myTabbed ||| Grid
+    tiled |||
+    Mirror tiled |||
+    myTabbed |||
+    Full |||
+    Grid
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled = Tall nmaster delta ratio
@@ -224,16 +231,16 @@ myLayout = windowNavigation $
 --  isFullscreen                  --> doFullFloat
 
 myManageHook = composeAll
-    [ className =? "MPlayer"        --> doFloat
-    , className =? "Smplayer"       --> doFloat
+    [ className =? "Vlc"            --> doFloat
+    , className =? "Chrome"         --> doFloat
     , className =? "Gimp"           --> doFloat
     , className =? "Galculator"     --> doFloat
     , resource  =? "compose"        --> doFloat
-    , isFullscreen                  --> doFullFloat
     , className =? "Pidgin"         --> doShift "9:im"
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
     , resource  =? "stalonetray"    --> doIgnore
+    , isFullscreen                  --> doFullFloat
     , scratchpadManageHook (W.RationalRect 0.125 0.25 0.75 0.5)]
 
 -- Whether focus follows the mouse pointer.
@@ -272,7 +279,6 @@ main = do
 	xmonad $ defaults {
 		logHook = dynamicLogWithPP $ xmobarPP {
       ppOutput = hPutStrLn xmproc
-      -- , ppTitle = xmobarColor "#FFB6B0" "" . shorten 100
       , ppTitle = xmobarColor "#b3cde0" "" . shorten 80
       , ppCurrent = xmobarColor "#CEFFAC" ""
       , ppSep = "   "

@@ -3,9 +3,7 @@ Config { font = "xft:Fira Code Retina-12:bold"
        , bgColor = "black"
        , fgColor = "grey"
        , position = TopW L 92
-       , lowerOnStart = False
-       , allDesktops = True
-       , persistent = True
+       , lowerOnStart = True
        , commands = [
                     Run Network "wlp2s0" [
                         "-L", "0",
