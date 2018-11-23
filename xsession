@@ -16,7 +16,7 @@ xsetroot -cursor_name left_ptr &
 
 xscreensaver -nosplash &
 
-~/.dropbox-dist/dropboxd &
+# ~/.dropbox-dist/dropboxd &
 
 pnmixer &
 #tomboy &
