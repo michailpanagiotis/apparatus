@@ -11,15 +11,18 @@ URxvt.perl-ext-common: default,matcher,keyboard-select,url-select,clipboard
 URxvt.keysym.M-Escape: perl:keyboard-select:activate
 URxvt.keysym.M-s:	perl:keyboard-select:search
 URxvt.keysym.M-u:	perl:url-select:select_next
-URxvt.urlLauncher:	chromium
-URxvt.underlineURLs: 	true
-URvxt.urlButton:	1
+URxvt.urlLauncher: google-chrome
+URxvt.underlineURLs: true
+URvxt.urlButton: 1
 
-URxvt.keysym.M-c:   	perl:clipboard:copy
-URxvt.keysym.M-v:   	perl:clipboard:paste
-URxvt.keysym.M-C-v: 	perl:clipboard:paste_escaped
-URxvt.copyCommand:  	xclip -i -selection clipboard
-URxvt.pasteCommand: 	xclip -o -selection clipboard
+URxvt.keyboard-select.clipboard: true
+
+URxvt.keysym.M-c:	perl:clipboard:copy
+URxvt.keysym.M-v:	perl:clipboard:paste
+URxvt.keysym.M-C-v: perl:clipboard:paste_escaped
+URxvt.clipboard.copycmd: xclip -i -selection clipboard
+URxvt.clipboard.pastecmd: xclip -o -selection clipboard
+URxvt.clipboard.autocopy: true
 URxvt.tabbed.tabbar-fg: 2
 URxvt.tabbed.tabbar-bg: 0
 URxvt.tabbed.tab-fg:    3
@@ -27,12 +30,8 @@ URxvt.tabbed.tab-bg:    0
 
 URxvt*saveLines: 5000
 
-!URxvt*font: xft:DejaVu Sans Mono:size=14:antialias=true:hinting=true
-!URxvt*boldFont: xft:DejaVu Sans Mono:bold:size=14:antialias=true:hinting=true
 URxvt*font: xft:Fira Code Retina:size=14:antialias=true:hinting=true
 URxvt*boldFont: xft:Fira Code Retina:bold:size=14:antialias=true:hinting=true
-!URxvt*font: xft:DejaVu Sans Mono:pixelsize=16:antialias=true:hinting=true
-!URxvt*boldFont: xft:DejaVu Sans Mono:bold:pixelsize=16:antialias=true:hinting=true
 
 URxvt*scrollBar: false
 
@@ -41,4 +40,4 @@ URxvt*scrollBar_right: false
 URxvt*scrollstyle: rxvt
 URxvt*modifier: alt
 
-XTerm*bellIsUrgent: true
+XTerm*bellIsUrgent: false
