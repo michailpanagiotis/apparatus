@@ -22,8 +22,9 @@ import XMonad.Actions.CycleWS
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig(additionalKeys)
 import XMonad.Util.Scratchpad
+import XMonad.Util.Ungrab
 import qualified XMonad.StackSet as W
-import qualified Data.Map        as M
+import qualified Data.Map as M
 
 myTerminal = "urxvt"
 myLauncher = "$(yeganesh -x -- -fn 'Fira Code Retina-12' -nb '#000000' -nf '#d0e1f9' -sb '#000000' -sf '#4B86B4')"
@@ -35,6 +36,10 @@ myWorkspaces = ["1","2","3","4","5","6","7","8","9:im"]
 myFocusedBorderColor = "#4b86b4"
 myNormalBorderColor = "black"
 
+mySelectScreenshot = "scrot -s -z -e 'mv $f ~/Desktop/'"
+
+myScreenshot = "scrot -z -e 'mv $f ~/Desktop/'"
+
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
 --
@@ -43,6 +48,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
     , ((modMask .|. controlMask, xK_l), spawn "xscreensaver-command -lock")
     , ((modMask, xK_p), spawn myLauncher)
+    , ((modMask .|. shiftMask, xK_p), spawn myScreenshot)
+    , ((modMask .|. controlMask, xK_p), unGrab >> spawn mySelectScreenshot)
     , ((modMask .|. shiftMask, xK_c), kill)
     , ((modMask, xK_space ), sendMessage NextLayout)
 
@@ -107,7 +114,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. shiftMask, xK_q), io (exitWith ExitSuccess))
 
     -- Restart xmonad
-    , ((modMask, xK_q), spawn "xmonad --recompile; xmonad --restart")
+    , ((modMask, xK_q), spawn "/home/mike/.cabal/bin/xmonad --recompile; /home/mike/.cabal/bin/xmonad --restart")
 
     -- Sound hot keys
     , ((0, 0x1008ff13), spawn "amixer set Master 2+")
@@ -285,6 +292,7 @@ main = do
     }
 		, manageHook = manageDocks <+> myManageHook
 		, startupHook = setWMName "LG3D"
+		, handleEventHook = docksEventHook
 	}
 
 -- A structure containing your configuration settings, overriding

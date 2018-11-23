@@ -23,4 +23,4 @@ pnmixer &
 #gol &
 #pidgin &
 
-exec ck-launch-session dbus-launch --sh-syntax --exit-with-session xmonad
+exec ck-launch-session dbus-launch --sh-syntax --exit-with-session /home/mike/.cabal/bin/xmonad
