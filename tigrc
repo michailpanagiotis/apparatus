@@ -2,4 +2,4 @@ set main-view    = line-number:no,interval=5 id:yes date:default author:full com
 set commit-order = date		# Enum: auto, default, topo, date, reverse (main)
 set ignore-case	 = yes
 
-bind generic 9 !bash -c "echo -n %(commit) | pbcopy -selection c"
+bind generic 9 !bash -c "echo -n %(commit) | xclip"
