@@ -247,7 +247,7 @@ myManageHook = composeAll
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
     , resource  =? "stalonetray"    --> doIgnore
-    , isFullscreen                  --> doFullFloat
+    -- , isFullscreen                  --> doFullFloat
     , scratchpadManageHook (W.RationalRect 0.125 0.25 0.75 0.5)]
 
 -- Whether focus follows the mouse pointer.
