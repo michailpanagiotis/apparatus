@@ -1,38 +1,30 @@
 Config { font = "xft:Fira Code Retina-12:bold"
-       , additionalFonts = ["xft:FontAwesome:size=11"]
+       , additionalFonts = ["xft:FontAwesome:size=10"]
        , bgColor = "black"
        , fgColor = "grey"
        , position = TopW L 92
        , lowerOnStart = True
        , commands = [
-                    Run Network "wlp2s0" [
-                        "-L", "0",
-                        "-H", "512",
-                        "--normal", "#005b96",
-                        "--high", "#854442"
+										Run DynNetwork [ "--template" , "<dev> <tx>/<rx>kB/s"
+                         , "--Low"      , "1000"       -- units: kB/s
+                         , "--High"     , "5000"       -- units: kB/s
+                         , "--low"      , "white"
+                         , "--normal"   , "#005b96"
+                         , "--high"     , "#854442"
                       ] 10
-                    , Run Weather "LGAV" [
-                        "-t", " <tempC>C",
-                        "-L", "64",
-                        "-H", "77",
-                        "--normal", "#7bc043",
-                        "--high", "#854442",
-                        "--low", "#84c1ff"
-                      ] 36000
                     , Run MultiCpu [
-                        "--template", "CPU: <total0>% <total1>% <total2>% <total3>%",
+                        "--template", "<fn=1>\xf109</fn> <total>%",
                         "--Low", "50",         -- units: %
                         "--High", "85",        -- units: %
                         "--low", "#7bc043",
                         "--normal", "#005b96",
                         "--high", "#854442"
                       ] 10
-                    , Run Memory ["-t","Mem: <usedratio>%"] 10
-                    , Run Swap [] 10
+                    , Run Memory ["-t","<used>MB"] 10
     		            , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
                     , Run Kbd [("us/altgr-intl", "US"), ("gr/extended", "GR")]
                     , Run Battery [
-                        "-t", "<acstatus>: <left>% <timeleft>",
+                        "-t", "<acstatus> <left>%",
                         "--Low", "15",
                         "--High", "50",
                         "-h", "#7bc043",
@@ -40,12 +32,13 @@ Config { font = "xft:Fira Code Retina-12:bold"
                         "-n", "#ff6700",
                         "--",
                         --"-c", "charge_full",
-                        "-O", "AC",
-                        "-o", "Bat"
-                      ] 10
-                    , Run UnsafeStdinReader
+                        "-O", "<fn=1>\xf1e6</fn>",
+                        "-o", "<fn=1>\xf241</fn>"
+                      ] 100
+                    -- , Run Com "/bin/bash" [".xmonad/xmobar-volume"] "vol" 10
+                    , Run StdinReader
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%UnsafeStdinReader% }{ %multicpu% %memory% %swap% %wlp2s0% %kbd% %LGAV% <fc=#4B86B4>%date%</fc> %battery%"
+       , template = "%StdinReader% }{ %multicpu% | %memory% | %dynnetwork% | %kbd% | %battery% | <fc=#4B86B4>%date%</fc>"
        }
