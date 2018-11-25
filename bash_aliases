@@ -26,3 +26,8 @@ alias vimod='vim -p $(git diff --name-only | uniq)'
 
 alias dc='docker-compose'
 alias de='docker exec -it'
+
+alias vpn_am='sudo openvpn --config /etc/openvpn/ipvanish-NL-Amsterdam-ams-a18.ovpn --auth-user-pass /etc/openvpn/login.txt'
+alias vpn_sg='sudo openvpn --config /etc/openvpn/ipvanish-SG-Singapore-sin-a09.ovpn --auth-user-pass /etc/openvpn/login.txt'
+alias vpn_se='sudo openvpn --config /etc/openvpn/ipvanish-SE-Stockholm-sto-a11.ovpn --auth-user-pass /etc/openvpn/login.txt'
+alias eip='wget http://ipecho.net/plain -O - -q ; echo'
