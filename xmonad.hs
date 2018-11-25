@@ -114,7 +114,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. shiftMask, xK_q), io (exitWith ExitSuccess))
 
     -- Restart xmonad
-    , ((modMask, xK_q), spawn "/home/mike/.cabal/bin/xmonad --recompile; /home/mike/.cabal/bin/xmonad --restart")
+    , ((modMask, xK_q), restart "/home/mike/.xmonad/xmonad-x86_64-linux" True)
 
     -- Sound hot keys
     , ((0, 0x1008ff13), spawn "amixer set Master 2+")
