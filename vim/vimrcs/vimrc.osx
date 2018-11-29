@@ -70,9 +70,13 @@ nnoremap <S-Enter> i<CR><Esc>
 "
 
 " NERDTree
-let NERDTreeMinimalUI = 1
-let NERDTreeShowHidden=1
 nnoremap <leader>d :NERDTreeToggle<cr>
+let NERDTreeMinimalUI=1
+let NERDTreeShowHidden=1
+let g:NERDTreeDirArrows=0
+let g:NERDTreeDirArrowExpandable="+"
+let g:NERDTreeDirArrowCollapsible="~"
+" autocmd vimenter * NERDTree " open automatically
 
 " vim-commentary
 nnoremap <C-/> <Plug>CommentaryLine
@@ -87,7 +91,7 @@ let g:airline_left_sep=''
 let g:airline_right_sep=''
 
 " gitgutter
-let g:gitgutter_sign_column_always = 1
+set signcolumn=yes
 
 " fzf
 set rtp+=/usr/local/opt/fzf
@@ -120,3 +124,8 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
+
+" yankstack
+nmap <leader>y :Yanks<CR>
+nmap <leader>c <Plug>yankstack_substitute_older_paste
+nmap <leader>C <Plug>yankstack_substitute_newer_paste
