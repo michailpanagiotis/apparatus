@@ -16,6 +16,8 @@ set expandtab
 set shiftwidth=2
 set softtabstop=2
 set tabstop=2
+set encoding=utf8
+set fillchars=vert:│
 
 " colors
 set background=dark
@@ -92,6 +94,8 @@ let g:airline_right_sep=''
 
 " gitgutter
 set signcolumn=yes
+let g:gitgutter_max_signs = 200
+autocmd BufWritePost * GitGutter
 
 " fzf
 set rtp+=/usr/local/opt/fzf
