@@ -105,7 +105,8 @@ let g:easytags_async = 1
 
 " Nerdtree
 map <C-n> :NERDTreeToggle<CR>
-let g:NERDTreeDirArrows=0
+let g:NERDTreeDirArrowExpandable='+'
+let g:NERDTreeDirArrowCollapsible='~'
 "autocmd BufEnter * lcd %:p:h
 
 " Gitgutter
