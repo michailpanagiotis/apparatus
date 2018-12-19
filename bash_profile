@@ -1,5 +1,6 @@
 [[ -s "$HOME/.profile" ]] && source "$HOME/.profile" # Load the default .profile
 [[ -s "$HOME/.bash_aliases" ]] && source "$HOME/.bash_aliases" # Load the .bash_aliases
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(__git_ps1 "[\[\033[0;
 function parse_git_branch {
