@@ -4,7 +4,7 @@ set wrap-lines   = yes
 # Specify the main view
 set main-view = \
     date:default \
-    author:yes \
+    author:email-user \
     id:yes \
     commit-title:yes,graph:v2,refs:yes
 
