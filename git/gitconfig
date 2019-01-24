@@ -1,8 +1,8 @@
 [user]
-	name = Panos Michail
-	email = michailpanagiotis@gmail.com
+  name = Panos Michail
+  email = michailpanagiotis@gmail.com
 [core]
-	editor = vim
+  editor = vim
 [diff]
   tool = vimdiff
 [color]
@@ -64,8 +64,12 @@
   diffstat=diff --stat -r
 
 # other aliases
-  prune-local = !zsh -c 'git branch --merged >/tmp/merged-branches && vi /tmp/merged-branches && xargs git branch -d </tmp/merged-branches' -
   pred = !zsh -c 'diff -u <(git rev-list --abbrev-commit --first-parent "${1:-master}") <(git rev-list --abbrev-commit --first-parent "${2:-HEAD}") | sed -ne \"s/^ //p\" | head -1' -
   branch-diff = !zsh -c 'diff -u <(git rev-list --abbrev-commit --first-parent "${1:-master}") <(git rev-list --abbrev-commit --first-parent "${2:-HEAD}") | sed -ne \"s/^ //p\" | head -1' - | xargs git diff --name-only HEAD..
+  find-deprecated = "!f() { \
+    { git branch --merged | grep -v master; git branch -vv | grep -v origin | awk '{print $1}'; git branch -vv | grep ': gone' | awk '{print $1}'; }; \
+  }; f"
+
+  prune-local = !zsh -c 'git find-deprecated >/tmp/merged-branches && vi /tmp/merged-branches && xargs git branch -D </tmp/merged-branches' -
 [push]
-	default = simple
+  default = simple
