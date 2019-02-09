@@ -80,7 +80,7 @@ highlight link Flake8_PyFlake    WarningMsg
 let g:vim_markdown_folding_disabled = 1
 
 " fzf
-set rtp+=/usr/local/opt/fzf
+set rtp+=~/.fzf
 " Mapping selecting mappings
 nmap <Leader><tab> <plug>(fzf-maps-n)
 xmap <Leader><tab> <plug>(fzf-maps-x)
