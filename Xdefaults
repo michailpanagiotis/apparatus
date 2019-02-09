@@ -30,8 +30,8 @@ URxvt.tabbed.tab-bg:    0
 
 URxvt*saveLines: 5000
 
-URxvt*font: xft:Fira Code Retina:size=14:antialias=true:hinting=true
-URxvt*boldFont: xft:Fira Code Retina:bold:size=14:antialias=true:hinting=true
+URxvt*font: xft:Fira Code Retina:size=12:antialias=true:hinting=true
+URxvt*boldFont: xft:Fira Code Retina:bold:size=12:antialias=true:hinting=true
 
 URxvt*scrollBar: false
 
