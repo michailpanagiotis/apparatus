@@ -97,8 +97,8 @@ nmap <Leader>t :Files<CR>
 nmap <Leader>r :Tags<CR>
 
 " easyytags
-let g:easytags_by_filetype = '/Users/mike/.vim/tags/'
-let g:easytags_file = '/Users/mike/.vim/tags/tags'
+let g:easytags_by_filetype = '~/.vim/tags/'
+let g:easytags_file = '~/.vim/tags/tags'
 let g:easytags_auto_highlight = 0
 let g:easytags_auto_update = 0
 let g:easytags_async = 1
