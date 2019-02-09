@@ -20,7 +20,7 @@ Config { font = "xft:Fira Code Retina-12:bold"
                         "--normal", "#005b96",
                         "--high", "#854442"
                       ] 10
-                    , Run Memory ["-t","<used>MB"] 10
+                    , Run Memory ["-t","<used> MB"] 10
     		            , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
                     , Run Kbd [("us/altgr-intl", "US"), ("gr/extended", "GR")]
                     , Run Battery [
@@ -31,9 +31,9 @@ Config { font = "xft:Fira Code Retina-12:bold"
                         "-l", "#db0000",
                         "-n", "#ff6700",
                         "--",
-                        --"-c", "charge_full",
                         "-O", "<fn=1>\xf1e6</fn>",
-                        "-o", "<fn=1>\xf241</fn>"
+                        "-o", "<fn=1>\xf241</fn>",
+                        "-i", "<fn=1>\xf240</fn>"
                       ] 100
                     -- , Run Com "/bin/bash" [".xmonad/xmobar-volume"] "vol" 10
                     , Run StdinReader
