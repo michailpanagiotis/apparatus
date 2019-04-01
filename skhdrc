@@ -1,0 +1,65 @@
+cmd - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
+
+# enter fullscreen mode for the focused container
+ctrl + cmd - f : chunkc tiling::window --toggle fullscreen
+shift + cmd + ctrl - f : chunkc tiling::window --toggle native-fullscreen
+
+# change focus between tiling / floating windows
+shift + cmd - space : chunkc tiling::window --toggle float
+
+# change layout of desktop
+cmd - e : chunkc tiling::desktop --layout bsp
+cmd - s : chunkc tiling::desktop --layout monocle
+
+# kill focused window
+shift + cmd - q : chunkc tiling::window --close
+
+# change focus
+cmd - h : chunkc tiling::window --focus west
+cmd - j : chunkc tiling::window --focus south
+cmd - k : chunkc tiling::window --focus north
+cmd - l : chunkc tiling::window --focus east
+cmd - b : chunkc tiling::window --focus biggest
+
+cmd - p : chunkc tiling::window --focus prev
+cmd - n : chunkc tiling::window --focus next
+
+# move focused window
+shift + cmd + ctrl - h : chunkc tiling::window --warp west
+shift + cmd + ctrl - j : chunkc tiling::window --warp south
+shift + cmd + ctrl - k : chunkc tiling::window --warp north
+shift + cmd + ctrl - l : chunkc tiling::window --warp east
+shift + cmd + ctrl - b : chunkc tiling::window --warp biggest
+
+cmd - r : chunkc tiling::desktop --rotate 90
+
+# move focused container to workspace
+shift + cmd - m : chunkc tiling::window --send-to-desktop $(chunkc get _last_active_desktop)
+shift + cmd + ctrl - p : chunkc tiling::window --send-to-desktop prev
+shift + cmd + ctrl - n : chunkc tiling::window --send-to-desktop next
+shift + cmd + ctrl - 1 : chunkc tiling::window --send-to-desktop 1
+shift + cmd + ctrl - 2 : chunkc tiling::window --send-to-desktop 2
+shift + cmd + ctrl - 3 : chunkc tiling::window --send-to-desktop 3
+shift + cmd + ctrl - 4 : chunkc tiling::window --send-to-desktop 4
+shift + cmd + ctrl - 5 : chunkc tiling::window --send-to-desktop 5
+shift + cmd + ctrl - 6 : chunkc tiling::window --send-to-desktop 6
+
+# Resize
+cmd + shift - left 	: chunkc tiling::window --use-temporary-ratio 0.1 --adjust-window-edge west
+cmd + shift - down 	: chunkc tiling::window --use-temporary-ratio 0.1 --adjust-window-edge south
+cmd + shift - up 	: chunkc tiling::window --use-temporary-ratio 0.1 --adjust-window-edge north
+cmd + shift - right : chunkc tiling::window --use-temporary-ratio 0.1 --adjust-window-edge east
+
+lcmd + shift - right : chunkc tiling::window --use-temporary-ratio -0.1 --adjust-window-edge west
+lcmd + shift - down	 : chunkc tiling::window --use-temporary-ratio -0.1 --adjust-window-edge south
+lcmd + shift - up 	 : chunkc tiling::window --use-temporary-ratio -0.1 --adjust-window-edge north
+lcmd + shift - left  : chunkc tiling::window --use-temporary-ratio -0.1 --adjust-window-edge east
+
+# move focused container to monitor
+# ctrl + cmd - m : chunkc tiling::window --send-to-monitor $(chunkc get _last_active_desktop)
+# ctrl + cmd - p : chunkc tiling::window --send-to-monitor prev
+# ctrl + cmd - n : chunkc tiling::window --send-to-monitor next
+# ctrl + cmd - 3 : chunkc tiling::window --send-to-monitor 3
+# ctrl + cmd - 4 : chunkc tiling::window --send-to-monitor 4
+# ctrl + cmd - 5 : chunkc tiling::window --send-to-monitor 5
+# ctrl + cmd - 6 : chunkc tiling::window --send-to-monitor 6
