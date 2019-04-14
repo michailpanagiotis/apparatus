@@ -26,3 +26,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 [[ -s "/Users/mike/.gvm/scripts/gvm" ]] && source "/Users/mike/.gvm/scripts/gvm"
+
+export GOROOT=/usr/local/go
+export GOPATH=~/go
+export PATH=$GOROOT/bin:$PATH
