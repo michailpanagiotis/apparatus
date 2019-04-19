@@ -24,6 +24,8 @@ eval $(/usr/libexec/path_helper -s)
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
+
 # eval "$(hub alias -s)"
 
 export NVM_DIR="$HOME/.nvm"
