@@ -95,6 +95,7 @@ inoremap <expr> <C-x><C-k> fzf#vim#complete#word({'left': '15%'})
 nmap <Leader>; :Buffers<CR>
 nmap <Leader>t :Files<CR>
 nmap <Leader>r :Tags<CR>
+nmap <Leader>f :Rg<CR>
 
 " easyytags
 let g:easytags_by_filetype = '/Users/mike/.vim/tags/'
