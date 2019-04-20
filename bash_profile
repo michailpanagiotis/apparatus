@@ -17,7 +17,7 @@ fi
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-export GOPATH=~/Projects/
+export GOPATH=~/Projects/go
 export PATH="/usr/local/sbin:$PATH"
 eval $(/usr/libexec/path_helper -s)
 
