@@ -2,7 +2,7 @@
 	name = MiKe
 	email = resbanis@gmail.com
 [core]
-	excludesfile = /home/mike/.gitignore-global
+	excludesfile = ~/.gitignore-global
 	editor = vim
 [diff]
   tool = vimdiff

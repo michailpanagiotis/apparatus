@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #xrandr --auto --output DP1 --mode 1920x1200 --left-of eDP1 --primary
 xrandr --auto --output DP1 --mode 1920x1080 --right-of eDP1 --primary
 xrandr --auto --output eDP1 --left-of DP1
 kill $(pgrep trayer)
-/home/mike/.bin/tray &
-feh --bg-fill /home/mike/Downloads/wallpapers/a_kombi_bus-wallpaper-1920x1080.jpg
+~/.bin/tray &
+feh --bg-fill ~/Downloads/wallpapers/a_kombi_bus-wallpaper-1920x1080.jpg

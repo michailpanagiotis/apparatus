@@ -5,7 +5,7 @@ Xft*hintstyle: hintsfull
 Xft*rgba: rgb
 
 URxvt.termName: rxvt-unicode-256color
-URxvt.perl-lib: /home/mike/.lib/urxvt/rxvt-ext/
+URxvt.perl-lib: ~/.lib/urxvt/rxvt-ext/
 URxvt.perl-ext-common: default,matcher,keyboard-select,url-select,clipboard
 
 URxvt.keysym.M-Escape: perl:keyboard-select:activate
