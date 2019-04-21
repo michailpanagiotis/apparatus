@@ -1,35 +1,38 @@
-[[ -s "$HOME/.profile" ]] && source "$HOME/.profile" # Load the default .profile
-[[ -s "$HOME/.bash_aliases" ]] && source "$HOME/.bash_aliases" # Load the .bash_aliases
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+[[ -s "$HOME/.profile" ]] && source "$HOME/.profile"
+[[ -s "$HOME/.bash_aliases" ]] && source "$HOME/.bash_aliases"
 
-# PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(__git_ps1 "[\[\033[0;
+export PATH="/usr/local/sbin:$PATH"
+
+# Locale
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+# fzf
+[ -f "$HOME/.fzf.bash" ] && source "$HOME/.fzf.bash"
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
+
+# PS1
 function parse_git_branch {
   git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
 export PS1="\[$(tput setaf 3)\]\u\[$(tput setaf 4)\]@\[$(tput setaf 1)\]\h\[$(tput setaf 7)\]:\[$(tput setaf 4)\]\W \[$(tput setaf 2)\]\$(parse_git_branch)\[$(tput setaf 4)\]\\$\[$(tput sgr0)\] "
-# export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h:\[\e[33m\]\w\[\e[0m\]\n\e[31m\]$(parse_git_branch)\e[0m\]λ '
 
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
-fi
+# Bash completion
+export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-
-export GOPATH=~/Projects/go
-export PATH="/usr/local/sbin:$PATH"
+# Go
+export GOPATH="$HOME/Projects/go"
 eval $(/usr/libexec/path_helper -s)
+[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
 
+# rbenv
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
-
-# eval "$(hub alias -s)"
-
+# nvm
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-[[ -s "/Users/mike/.gvm/scripts/gvm" ]] && source "/Users/mike/.gvm/scripts/gvm"
