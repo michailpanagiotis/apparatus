@@ -1,5 +1,0 @@
-#!/bin/sh
-xrandr --auto --output eDP1 --primary
-xrandr --output DP1 --off
-kill $(pgrep trayer)
-/home/mike/.bin/tray &

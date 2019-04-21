@@ -1,4 +1,0 @@
-#!/bin/sh
-xrandr --output HDMI1 --off
-kill $(pgrep trayer)
-/home/mike/.bin/tray &
