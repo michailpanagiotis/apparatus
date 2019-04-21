@@ -1,56 +1,47 @@
-Apparatus
-=========
+# My macos dev essentials
 
-A basic configuration for workstations using *vim*, *tmux* and *git*.
+The simple `setup` script below needs the following software. Almost all of the latter are available as brew packages.
 
-Before Installing
------------------
-Before installation backup your old configuration:
+* [chunkwm](https://github.com/koekeishiya/chunkwm)
+* [shkd](https://github.com/koekeishiya/skhd)
+* [kitty](https://github.com/kovidgoyal/kitty)
+* [git](https://git-scm.com/)
+* [vim](https://github.com/vim/vim)
+* [tmux](https://github.com/tmux/tmux)
+* [tig](https://github.com/jonas/tig)
+* [fzf](https://github.com/junegunn/fzf)
+* [ripgrep](https://github.com/BurntSushi/ripgrep)
 
-     $HOME/.vim
-     $HOME/.vimrc
-     $HOME/.tmux.conf
-     $HOME/.gitconfig
+## Setup
 
-Installation
-------------
+Add all brew related file with the help of [brew.txt](https://github.com/michailpanagiotis/apparatus/blob/macos/mike/brew.txt):
 
-Obtain the tools:
+```bash
+<~/.apparatus/brew.txt xargs brew install
+```
 
-    sudo apt-get install vim-nox git tmux
+Clone the repo:
 
-Clone the repository:
+```bash
+git clone git@github.com:michailpanagiotis/apparatus.git ~/.apparatus
+```
 
-    git clone https://github.com/michailpanagiotis/vimconfig.git $HOME/.apparatus
+Link the respective rcs and dirs to your home by running the `setup` script:
 
+```bash
+cd ~/.apparatus && ./setup
+```
 
-Fetch the submodules:
-
-    cd $HOME/.apparatus/
-    git submodule init
-    git submodule update
-
-Set the configuration for *vim*:
-
-    ln -s $HOME/.apparatus/vim/vimrcs/vimrc.base $HOME/.vimrc
-    ln -s $HOME/.apparatus/vim $HOME/.vim
-
-Set the configuration for *git*:
-
-    ln -s $HOME/.apparatus/git/gitconfig $HOME/.gitconfig
-
-Set the configuration for *tmux*:
-
-    ln -s $HOME/.apparatus/tmux/tmux.conf $HOME/.tmux.conf
+## tmux
 
 Set the tmux plugin manager:
 
-    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```bash
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
 
-After opening tmux just install all plugins referenced in the .tmux.config by pressing:
+After opening tmux install the plugins referenced in `.tmux.config` with:
 
-    Ctrl-a I
-
-iTerm color themes:
-
-    git clone https://github.com/mbadolato/iTerm2-Color-Schemes.git
+```
+Ctrl-a I
+```
