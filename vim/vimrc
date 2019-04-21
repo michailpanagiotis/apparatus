@@ -11,6 +11,7 @@ set ignorecase	" Do case insensitive matching
 set smartcase		" Do smart case matching
 set incsearch		" Incremental search
 set hlsearch
+set noerrorbells visualbell t_vb=
 " set mouse=n		  " Enable mouse usage (all modes)
 set laststatus=2
 set textwidth=100
