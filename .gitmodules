@@ -94,3 +94,6 @@
 [submodule "vim/bundle/fzf.vim"]
 	path = vim/bundle/fzf.vim
 	url = git@github.com:junegunn/fzf.vim.git
+[submodule "vim/bundle/vim-startify"]
+	path = vim/bundle/vim-startify
+	url = git@github.com:mhinz/vim-startify.git
