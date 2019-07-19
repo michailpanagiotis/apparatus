@@ -7,7 +7,7 @@ alias fgrep='fgrep --color'
 alias btr='cd ~/Workspace/bartendr'
 alias fut='cd ~/Workspace/futurae'
 alias wp='cd ~/Workspace'
-alias x11='cd ~/Google\ Drive/Workspace/x11-squad'
+alias xpert='cd ~/Workspace/personal/x11-squad'
 alias ..='cd ..'
 alias ...='cd ../../'
 
