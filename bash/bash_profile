@@ -18,10 +18,15 @@ eval "$(rbenv init -)"
 
 # Futurae
 export PATH="$GOPATH/bin:$PATH"
-#eval $(/usr/libexec/path_helper -s)
+export FUTURAE_CI_TOKEN=
+export FUTURAE="/Users/ilias/Workspace/futurae"
 
 # direnv
 eval "$(direnv hook bash)"
 
 [[ -s "/Users/ilias/.gvm/scripts/gvm" ]] && source "/Users/ilias/.gvm/scripts/gvm"
-export GOPATH="/Users/ilias/Workspace/futurae/webapp"
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
