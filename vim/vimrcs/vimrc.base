@@ -28,7 +28,7 @@ syntax on
 filetype on
 filetype plugin indent on
 
-set showcmd          " Show (partial) command in status line.
+"set showcmd          " Show (partial) command in status line.
 set showmatch        " Show matching brackets.
 set ignorecase    " Do case insensitive matching
 set smartcase        " Do smart case matching
@@ -50,6 +50,29 @@ set backupcopy=yes
 "set autochdir
 
 set tabstop=4 softtabstop=4 expandtab shiftwidth=4 smarttab
+
+" status line
+set laststatus=2
+set noshowmode
+let g:lightline = {
+      \ 'colorscheme': 'solarized',
+      \ 'active': {
+      \   'left': [ [ 'path' ] ],
+      \   'right': []
+      \ },
+      \ 'inactive': {
+      \   'left': [ ['path'] ],
+      \   'right': [[], [ 'gitbranch' ] ]
+      \ },
+      \ 'right': [ [ 'gitbranch' ] ],
+      \ 'component_function': {
+      \   'gitbranch': 'fugitive#head',
+      \   'path': 'LightLineFilename'
+      \ }
+      \ }
+function! LightLineFilename()
+  return expand('%')
+endfunction
 
 "leader key
 let mapleader = ","
