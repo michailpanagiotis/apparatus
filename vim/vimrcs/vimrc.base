@@ -213,7 +213,9 @@ set textwidth=0 wrapmargin=0
 "Syntastic for javascript
 let $NODE_PATH=system('npm config get prefix').'/lib/node_modules' . ':' . $NODE_PATH
 let g:syntastic_javascript_checkers = ['eslint']
-let g:syntastic_javascript_eslint_exe = 'NODE_PATH="$(npm config get prefix)/lib/node_modules" eslint'
+let g:syntastic_javascript_eslint_exe = '$(npm bin)/eslint'
+let g:syntastic_javascriptreact_checkers = ['eslint']
+let g:syntastic_javascriptreact_eslint_exe = '$(npm bin)/eslint'
 
 let g:phpqa_messdetector_ruleset = "/root/.apparatus/linters/phpmd/phpmd.xml"
 let g:phpqa_open_loc = 1
