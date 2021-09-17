@@ -97,9 +97,6 @@
 [submodule "vim/bundle/vim-sort-imports"]
 	path = vim/bundle/vim-sort-imports
 	url = https://github.com/ruanyl/vim-sort-imports.git
-[submodule "vim/bundle/syntastic-local-eslint.vim"]
-	path = vim/bundle/syntastic-local-eslint.vim
-	url = https://github.com/mtscout6/syntastic-local-eslint.vim.git
 [submodule "vim/bundle/lightline"]
 	path = vim/bundle/lightline
 	url = https://github.com/itchyny/lightline.vim.git
