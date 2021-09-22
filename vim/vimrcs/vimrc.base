@@ -1,28 +1,50 @@
-""
-"" Pathogen setup
-""
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
 
-execute pathogen#infect()
-""
-"" Customisations
-""
-"if filereadable(expand("~/.vim/vimrcs/vimrc.before"))
-"  source ~/.vim/vimrcs/vimrc.before
-"endif
+" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
+Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'preservim/nerdtree'
+Plug 'vim-syntastic/syntastic'
+" Plug 'altercation/vim-colors-solarized'
+" Plug 'tpope/vim-fugitive'
+" Plug 'airblade/vim-gitgutter'
+" Plug 'tpope/vim-surround'
+" Plug 'tpope/vim-endwise'
 
+" https://github.com/sjl/gundo.vim.git
+" https://github.com/scrooloose/nerdcommenter.git
+" https://github.com/alfredodeza/pytest.vim.git
+" https://github.com/majutsushi/tagbar.git
+" https://github.com/vim-scripts/taglist.vim.git
+" https://github.com/tomtom/tlib_vim.git
+" https://github.com/xsbeats/vim-blade.git
+" https://github.com/tpope/vim-bundler.git
+" https://github.com/tpope/vim-commentary.git
+" https://github.com/terryma/vim-expand-region.git
+" https://github.com/nvie/vim-flake8.git
+" https://github.com/airblade/vim-gitgutter.git
+" https://github.com/tpope/vim-rails.git
+" https://github.com/tpope/vim-repeat.git
+" https://github.com/vim-ruby/vim-ruby.git
+" https://github.com/t9md/vim-surround_custom_mapping.git
+" https://github.com/kana/vim-textobj-entire.git
+" https://github.com/kana/vim-textobj-indent.git
+" https://github.com/kana/vim-textobj-line.git
+" https://github.com/kana/vim-textobj-user.git
+" https://github.com/MarcWeber/vim-addon-mw-utils.git
+" https://github.com/joonty/vim-phpqa.git
+" https://github.com/kchmck/vim-coffee-script.git
+" https://github.com/leafgarland/typescript-vim.git
+" https://github.com/mustache/vim-mustache-handlebars.git
+" https://github.com/tpope/vim-unimpaired.git
+" https://github.com/ruanyl/vim-sort-imports.git
+" https://github.com/itchyny/lightline.vim.git
+" https://github.com/elixir-lang/vim-elixir.git
 
-" .vimrc.after is loaded after the plugins have loaded
-"
-"if filereadable(expand("~/.vim/vimrcs/vimrc.after"))
-"  source ~/.vim/vimrcs/vimrc.after
-"endif
-
-
-" .vimrc.custom is loaded after the 'after' have loaded
-"
-"if filereadable(expand("~/.vim/vimrcs/vimrc.custom"))
-"  source ~/.vim/vimrcs/vimrc.custom
-"endif
+" Initialize plugin system
+call plug#end()
 
 syntax on
 filetype on
@@ -47,11 +69,75 @@ set cursorline
 set undofile
 set backspace=2
 set backupcopy=yes
-"set autochdir
-
+set background=dark
 set tabstop=4 softtabstop=4 expandtab shiftwidth=4 smarttab
+set t_Co=256
 
-" status line
+
+let g:molokai_original = 1
+if has('gui_running')
+  "set background=light
+  set guifont=Monospace\ 12
+  colorscheme solarized
+else
+  colorscheme molokai
+endif
+
+let g:solarized_termcolors=256
+colorscheme solarized"
+
+"Multiple Paste
+xnoremap p pgvy
+set clipboard="+
+
+"Toggle Paste
+nnoremap <F2> :set invpaste paste?<CR>
+set pastetoggle=<F2>
+set showmode
+
+"remove trailing spaces
+autocmd BufWritePre * :%s/\s\+$//e
+
+"Underline Search
+highlight Search term=underline cterm=underline ctermbg=NONE ctermfg=Red
+
+let g:surround_custom_mapping = {}
+let g:surround_custom_mapping.python = {
+            \ 'p':  "print( \r)",
+            \ '[':  "[\r]",
+            \ }
+
+"do not insert *newline* chars when a line has exceeded its size
+set textwidth=0 wrapmargin=0
+
+
+" highlight trailing spaces
+:nnoremap <Leader>wn :match ExtraWhitespace /\s\+$/<CR>
+:highlight ExtraWhitespace ctermbg=161 guibg=#F92672
+:autocmd ColorScheme * highlight ExtraWhitespace ctermbg=161 guibg=#F92672
+:autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+:autocmd BufWinEnter * match ExtraWhitespace /^\t\+/
+:autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+:autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+:autocmd InsertLeave * match ExtraWhitespace /^\t\+/
+:autocmd BufWinLeave * call clearmatches()
+
+" SYNTASTIC
+"
+let g:syntastic_filetype_map = { "javascriptreact": "javascript" }
+let $NODE_PATH=system('npm config get prefix').'/lib/node_modules' . ':' . $NODE_PATH
+let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_javascript_eslint_exe = 'NODE_PATH="$(npm config get prefix)/lib/node_modules" eslint'
+let g:phpqa_messdetector_ruleset = "/root/.apparatus/linters/phpmd/phpmd.xml"
+let g:phpqa_open_loc = 1
+let g:phpqa_codecoverage_autorun = 0
+let g:syntastic_json_jsonlint_args = "-V config.schema.json"
+"Syntastic for php
+let g:syntastic_php_phpcs_args="--report=csv --standard=Laravel"
+
+
+" LIGHTLINE
+"
 set laststatus=2
 set noshowmode
 let g:lightline = {
@@ -74,58 +160,9 @@ function! LightLineFilename()
   return expand('%')
 endfunction
 
-"leader key
-let mapleader = ","
-let g:mapleader = ","
+" CtrlP
+"
 
-
-
-" highlight trailing spaces
-:highlight ExtraWhitespace ctermbg=161 guibg=#F92672
-:autocmd ColorScheme * highlight ExtraWhitespace ctermbg=161 guibg=#F92672
-:autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-:autocmd BufWinEnter * match ExtraWhitespace /^\t\+/
-:autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-:autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-:autocmd InsertLeave * match ExtraWhitespace /^\t\+/
-:autocmd BufWinLeave * call clearmatches()
-
-:nnoremap <Leader>wn :match ExtraWhitespace /\s\+$/<CR>
-:nnoremap <Leader>wf :match<CR>
-
-"" remove whitespaces
-:nnoremap <Leader>wnf :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
-
-" If using a dark background within the editing area and syntax highlighting
-" turn on this option as well
-set t_Co=256
-set background=dark
-let g:molokai_original = 1
-
-if has('gui_running')
-  "set background=light
-  set guifont=Monospace\ 12
-  colorscheme solarized
-else
-  colorscheme molokai
-endif
-
-let g:solarized_termcolors=256
-set background=dark
-colorscheme solarized"
-
-"Movement sortcuts
-map <c-j> <c-w>j
-map <c-k> <c-w>k
-map <c-l> <c-w>l
-map <c-h> <c-w>h
-nnoremap tl :tabnext<CR>
-nnoremap th :tabprev<CR>
-nnoremap tn :tabnew<CR>
-
-
-
-"CtrlP
 nnoremap <leader>t :CtrlP<CR>
 let g:ctrlp_use_caching = 1
 let g:ctrlp_clear_cache_on_exit = 0
@@ -136,92 +173,22 @@ let g:ctrlp_user_command = [
     \ 'find %s -type f'
     \ ]
 
-"easyytags
-let g:easytags_by_filetype = '/home/mike/.vim/tags/'
-let g:easytags_file = '/home/mike/.vim/tags/tags'
-let g:easytags_auto_highlight = 0
+" GITGUTTER
+"
+let g:gitgutter_enabled = 1
 
-"nerdtree
+
+
+" NERDTREE
+"
 map <C-n> :NERDTreeToggle<CR>
+map <C-o> :NERDTreeToggle %<CR>
 let g:NERDTreeDirArrows=0
 let NERDTreeShowHidden=1
-"autocmd BufEnter * lcd %:p:h
-
-" gitgutter
-let g:gitgutter_enabled = 1
-nmap <leader>gd :GitGutterToggle<CR>:GitGutterLineHighlightsToggle<CR>
-nnoremap <leader>gh :GitGutterNextHunk<CR>
-nnoremap <leader>gH :GitGutterPrevHunk<CR>
-
-" Gundo
-nnoremap <leader>gun :GundoToggle<CR>
-let g:gundo_right = 1
-
-"Tagbar
-nmap <silent><Leader>b :TagbarToggle<CR>
 
 
-"Pytest
-nmap <silent><Leader>f <Esc>:Pytest file<CR>
-nmap <silent><Leader>p <Esc>:Pytest project<CR>
-nmap <silent><Leader>c <Esc>:Pytest class<CR>
-nmap <silent><Leader>m <Esc>:Pytest method<CR>
-
-
-"Multiple Paste
-xnoremap p pgvy
-set clipboard="+
-
-"Toggle Paste
-nnoremap <F2> :set invpaste paste?<CR>
-set pastetoggle=<F2>
-set showmode
-
-
-"vim-expand-region
-vmap v <Plug>(expand_region_expand)
-vmap <C-v> <Plug>(expand_region_shrink)
-
-"remove trailing spaces
-"autocmd BufWritePre * :%s/\t/    /e
-autocmd BufWritePre * :%s/\s\+$//e
-"autocmd BufWritePre * :retab
-
-"Makefiles
-:autocmd FileType make set noexpandtab
-
-"Syntastic for php
-let g:syntastic_php_phpcs_args="--report=csv --standard=Laravel"
-autocmd FileType php setlocal expandtab textwidth=120 colorcolumn=120
-
-"Underline Search
-highlight Search term=underline cterm=underline ctermbg=NONE ctermfg=Red
-
-let g:surround_custom_mapping = {}
-let g:surround_custom_mapping.python = {
-            \ 'p':  "print( \r)",
-            \ '[':  "[\r]",
-            \ }
-
-
-"replace all selected text with Ctrl-r
-vnoremap <C-R> "hy:%s/<C-r>h//gc<left><left><left>
-
-"do not insert *newline* chars when a line has exceeded its size
-set textwidth=0 wrapmargin=0
-
-"Syntastic for javascript
-let g:syntastic_filetype_map = { "javascriptreact": "javascript" }
-let $NODE_PATH=system('npm config get prefix').'/lib/node_modules' . ':' . $NODE_PATH
-let g:syntastic_javascript_checkers = ['eslint']
-let g:syntastic_javascript_eslint_exe = 'NODE_PATH="$(npm config get prefix)/lib/node_modules" eslint'
-
-let g:phpqa_messdetector_ruleset = "/root/.apparatus/linters/phpmd/phpmd.xml"
-let g:phpqa_open_loc = 1
-let g:phpqa_codecoverage_autorun = 0
-
-let g:syntastic_json_jsonlint_args = "-V config.schema.json"
-
+" FILETYPES
+"
 autocmd FileType html setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
 autocmd FileType javascript setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
 autocmd FileType javascriptreact setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
@@ -229,5 +196,25 @@ autocmd FileType json setlocal tabstop=4 softtabstop=4 expandtab shiftwidth=4 sm
 autocmd FileType yaml setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
 autocmd FileType coffee setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
 autocmd FileType typescript setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
+autocmd FileType php setlocal expandtab textwidth=120 colorcolumn=120
+autocmd FileType make set noexpandtab
 
-map <C-o> :NERDTreeToggle %<CR>
+
+" SHORTCUTS
+"
+"replace all selected text with Ctrl-r
+vnoremap <C-R> "hy:%s/<C-r>h//gc<left><left><left>
+"Movement sortcuts
+map <c-j> <c-w>j
+map <c-k> <c-w>k
+map <c-l> <c-w>l
+map <c-h> <c-w>h
+nnoremap tl :tabnext<CR>
+nnoremap th :tabprev<CR>
+nnoremap tn :tabnew<CR>
+"leader key
+let mapleader = ","
+let g:mapleader = ","
+:nnoremap <Leader>wf :match<CR>
+"" remove whitespaces
+:nnoremap <Leader>wnf :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
