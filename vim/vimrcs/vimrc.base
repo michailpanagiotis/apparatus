@@ -211,11 +211,10 @@ vnoremap <C-R> "hy:%s/<C-r>h//gc<left><left><left>
 set textwidth=0 wrapmargin=0
 
 "Syntastic for javascript
+let g:syntastic_filetype_map = { "javascriptreact": "javascript" }
 let $NODE_PATH=system('npm config get prefix').'/lib/node_modules' . ':' . $NODE_PATH
 let g:syntastic_javascript_checkers = ['eslint']
-let g:syntastic_javascript_eslint_exe = '$(npm bin)/eslint'
-let g:syntastic_javascriptreact_checkers = ['eslint']
-let g:syntastic_javascriptreact_eslint_exe = '$(npm bin)/eslint'
+let g:syntastic_javascript_eslint_exe = 'NODE_PATH="$(npm config get prefix)/lib/node_modules" eslint'
 
 let g:phpqa_messdetector_ruleset = "/root/.apparatus/linters/phpmd/phpmd.xml"
 let g:phpqa_open_loc = 1
@@ -225,6 +224,7 @@ let g:syntastic_json_jsonlint_args = "-V config.schema.json"
 
 autocmd FileType html setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
 autocmd FileType javascript setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
+autocmd FileType javascriptreact setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
 autocmd FileType json setlocal tabstop=4 softtabstop=4 expandtab shiftwidth=4 smarttab
 autocmd FileType yaml setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
 autocmd FileType coffee setlocal tabstop=2 softtabstop=2 expandtab shiftwidth=2 smarttab
