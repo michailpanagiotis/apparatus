@@ -5,13 +5,14 @@ call plug#begin('~/.vim/plugged')
 
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'ctrlpvim/ctrlp.vim'
-" Plug 'preservim/nerdtree'
+Plug 'preservim/nerdtree'
 Plug 'vim-syntastic/syntastic'
-" Plug 'altercation/vim-colors-solarized'
-" Plug 'tpope/vim-fugitive'
-" Plug 'airblade/vim-gitgutter'
-" Plug 'tpope/vim-surround'
-" Plug 'tpope/vim-endwise'
+Plug 'altercation/vim-colors-solarized'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-endwise'
+Plug 'github/copilot.vim'
 
 " https://github.com/sjl/gundo.vim.git
 " https://github.com/scrooloose/nerdcommenter.git
@@ -76,7 +77,6 @@ set t_Co=256
 
 let g:molokai_original = 1
 if has('gui_running')
-  "set background=light
   set guifont=Monospace\ 12
   colorscheme solarized
 else
@@ -85,6 +85,7 @@ endif
 
 let g:solarized_termcolors=256
 colorscheme solarized"
+highlight! link SignColumn LineNr
 
 "Multiple Paste
 xnoremap p pgvy
@@ -106,6 +107,8 @@ let g:surround_custom_mapping.python = {
             \ 'p':  "print( \r)",
             \ '[':  "[\r]",
             \ }
+
+
 
 "do not insert *newline* chars when a line has exceeded its size
 set textwidth=0 wrapmargin=0
@@ -176,7 +179,7 @@ let g:ctrlp_user_command = [
 " GITGUTTER
 "
 let g:gitgutter_enabled = 1
-
+let g:gitgutter_async = 1
 
 
 " NERDTREE
