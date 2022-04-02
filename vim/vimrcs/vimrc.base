@@ -13,6 +13,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-endwise'
 Plug 'github/copilot.vim'
+Plug 'chrisbra/NrrwRgn'
 
 " https://github.com/sjl/gundo.vim.git
 " https://github.com/scrooloose/nerdcommenter.git
@@ -138,7 +139,6 @@ let g:syntastic_json_jsonlint_args = "-V config.schema.json"
 "Syntastic for php
 let g:syntastic_php_phpcs_args="--report=csv --standard=Laravel"
 
-
 " LIGHTLINE
 "
 set laststatus=2
@@ -216,8 +216,11 @@ nnoremap tl :tabnext<CR>
 nnoremap th :tabprev<CR>
 nnoremap tn :tabnew<CR>
 "leader key
-let mapleader = ","
-let g:mapleader = ","
+"let mapleader = ","
+"let g:mapleader = ","
 :nnoremap <Leader>wf :match<CR>
 "" remove whitespaces
 :nnoremap <Leader>wnf :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
+
+
+highlight SyntasticWarningSign ctermbg=NONE ctermfg=10
