@@ -4,16 +4,53 @@
 call plug#begin('~/.vim/plugged')
 
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
-Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'ctrlpvim/ctrlp.vim'
 Plug 'preservim/nerdtree'
-Plug 'vim-syntastic/syntastic'
-Plug 'altercation/vim-colors-solarized'
+" Plug 'altercation/vim-colors-solarized'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-endwise'
 Plug 'github/copilot.vim'
 Plug 'chrisbra/NrrwRgn'
+" if has('nvim') || has('patch-8.0.902')
+"   Plug 'mhinz/vim-signify'
+" else
+"   Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
+" endif
+Plug 'mhinz/vim-startify'
+" Plug 'vim-syntastic/syntastic'
+Plug 'dense-analysis/ale'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'RRethy/nvim-treesitter-textsubjects'
+Plug 'RRethy/nvim-base16'
+Plug 'm-demare/hlargs.nvim'
+Plug 'windwp/nvim-autopairs'
+Plug 'windwp/nvim-ts-autotag'
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'ray-x/cmp-treesitter'
+Plug 'ray-x/lsp_signature.nvim'
+
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'cpea2506/one_monokai.nvim'
+Plug 'aktersnurra/no-clown-fiesta.nvim'
+Plug 'mcchrish/zenbones.nvim'
+Plug 'rktjmp/lush.nvim'
+Plug 'mhartington/oceanic-next'
+Plug 'AckslD/nvim-neoclip.lua'
+Plug 'sunjon/shade.nvim'
+Plug 'RRethy/vim-illuminate'
+Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'danymat/neogen'
+Plug 'ggandor/lightspeed.nvim'
+Plug 'petertriho/nvim-scrollbar'
+Plug 'kosayoda/nvim-lightbulb'
+Plug 'sainnhe/sonokai'
+Plug 'navarasu/onedark.nvim'
 
 " https://github.com/sjl/gundo.vim.git
 " https://github.com/scrooloose/nerdcommenter.git
@@ -75,17 +112,11 @@ set background=dark
 set tabstop=4 softtabstop=4 expandtab shiftwidth=4 smarttab
 set t_Co=256
 
-
-let g:molokai_original = 1
-if has('gui_running')
-  set guifont=Monospace\ 12
-  colorscheme solarized
-else
-  colorscheme molokai
-endif
-
-let g:solarized_termcolors=256
-colorscheme solarized"
+set termguicolors
+" colorscheme OceanicNext
+" let g:sonokai_better_performance = 1
+" colorscheme sonokai
+colorscheme onedark
 highlight! link SignColumn LineNr
 
 "Multiple Paste
@@ -128,16 +159,40 @@ set textwidth=0 wrapmargin=0
 
 " SYNTASTIC
 "
-let g:syntastic_filetype_map = { "javascriptreact": "javascript" }
-let $NODE_PATH=system('npm config get prefix').'/lib/node_modules' . ':' . $NODE_PATH
-let g:syntastic_javascript_checkers = ['eslint']
-let g:syntastic_javascript_eslint_exe = 'NODE_PATH="$(npm config get prefix)/lib/node_modules" eslint'
-let g:phpqa_messdetector_ruleset = "/root/.apparatus/linters/phpmd/phpmd.xml"
-let g:phpqa_open_loc = 1
-let g:phpqa_codecoverage_autorun = 0
-let g:syntastic_json_jsonlint_args = "-V config.schema.json"
-"Syntastic for php
-let g:syntastic_php_phpcs_args="--report=csv --standard=Laravel"
+" let g:syntastic_filetype_map = { "javascriptreact": "javascript" }
+" let $NODE_PATH=system('npm config get prefix').'/lib/node_modules' . ':' . $NODE_PATH
+" let g:syntastic_javascript_checkers = ['eslint']
+" let g:syntastic_javascript_eslint_exe = 'NODE_PATH="$(npm config get prefix)/lib/node_modules" eslint'
+" let g:phpqa_messdetector_ruleset = "/root/.apparatus/linters/phpmd/phpmd.xml"
+" let g:phpqa_open_loc = 1
+" let g:phpqa_codecoverage_autorun = 0
+" let g:syntastic_json_jsonlint_args = "-V config.schema.json"
+" "Syntastic for php
+" let g:syntastic_php_phpcs_args="--report=csv --standard=Laravel"
+" highlight SyntasticWarningSign ctermbg=NONE ctermfg=10
+
+
+" ALE
+"
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
+let g:ale_echo_cursor = 1
+let g:ale_virtualtext_cursor = 0
+" You can disable this option too
+" if you don't want linters to run on opening a file
+let g:ale_lint_on_enter = 0
+let g:ale_linter_aliases = {'javascriptreact': ['javascript']}
+let g:ale_linters = {
+\   'javascript': ['eslint'],
+\}
+let g:ale_linters = {'javascriptreact': ['eslint']}
+let g:ale_command_wrapper = 'NODE_PATH="$(npm config get prefix)/lib/node_modules"'
+let g:ale_javascript_eslint_executable = 'eslint'
+let g:ale_javascript_eslint_options = "--format compact"
+highlight ALEWarningSign ctermbg=NONE ctermfg=10
+highlight ALEWarning ctermbg=NONE ctermfg=NONE
+highlight ALEError ctermbg=NONE ctermfg=NONE
+set cmdheight=2
 
 " LIGHTLINE
 "
@@ -163,24 +218,34 @@ function! LightLineFilename()
   return expand('%')
 endfunction
 
+" Telescope
+
+:nnoremap <silent> <C-p> :lua require'telescope.builtin'.git_files(require('telescope.themes').get_ivy({}))<CR>
+
 " CtrlP
 "
 
-nnoremap <leader>t :CtrlP<CR>
-let g:ctrlp_use_caching = 1
-let g:ctrlp_clear_cache_on_exit = 0
-let g:ctrlp_max_height = 20
-let g:ctrlp_match_window_reversed = 0
-let g:ctrlp_user_command = [
-    \ '.git', "cd %s && git ls-files . -co --exclude-standard | perl -lne 'print tr:/::, \" $_\"' | sort -n | cut -d' ' -f2",
-    \ 'find %s -type f'
-    \ ]
+" nnoremap <leader>t :CtrlP<CR>
+" let g:ctrlp_use_caching = 1
+" let g:ctrlp_clear_cache_on_exit = 0
+" let g:ctrlp_max_height = 20
+" let g:ctrlp_match_window_reversed = 0
+" let g:ctrlp_user_command = [
+"     \ '.git', "cd %s && git ls-files . -co --exclude-standard | perl -lne 'print tr:/::, \" $_\"' | sort -n | cut -d' ' -f2",
+"     \ 'find %s -type f'
+"     \ ]
 
 " GITGUTTER
 "
 let g:gitgutter_enabled = 1
 let g:gitgutter_async = 1
 
+
+" SIGNIFY
+" default updatetime 4000ms is not good for async update
+" set updatetime=100
+" let g:signify_priority = 5
+" let g:signify_sign_change = '~'
 
 " NERDTREE
 "
@@ -221,6 +286,3 @@ nnoremap tn :tabnew<CR>
 :nnoremap <Leader>wf :match<CR>
 "" remove whitespaces
 :nnoremap <Leader>wnf :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
-
-
-highlight SyntasticWarningSign ctermbg=NONE ctermfg=10
