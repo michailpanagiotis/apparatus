@@ -1,0 +1,39 @@
+IMAPStore talentdesk-remote
+Host imap.gmail.com
+SSLType IMAPS
+AuthMechs LOGIN
+User panos@talentdesk.io
+PassCmd "gpg -d ~/.mutt/talentdeskpass.gpg"
+
+MaildirStore talentdesk-local
+Path ~/.mail/talentdesk/
+Inbox ~/.mail/talentdesk/INBOX
+Subfolders Verbatim
+
+Channel talentdesk
+Far :talentdesk-remote:
+Near :talentdesk-local:
+Create Both
+Expunge Both
+Patterns * !"[Gmail]/All Mail" !"[Gmail]/Important" !"[Gmail]/Starred" !"[Gmail]/Bin"
+SyncState *
+
+IMAPStore gmail-remote
+Host imap.gmail.com
+SSLType IMAPS
+AuthMechs LOGIN
+User michailpanagiotis@gmail.com
+PassCmd "gpg -d ~/.mutt/gmailpass.gpg"
+
+MaildirStore gmail-local
+Path ~/.mail/gmail/
+Inbox ~/.mail/gmail/INBOX
+Subfolders Verbatim
+
+Channel gmail
+Far :gmail-remote:
+Near :gmail-local:
+Create Both
+Expunge Both
+Patterns * !"[Gmail]/All Mail" !"[Gmail]/Important" !"[Gmail]/Starred" !"[Gmail]/Bin"
+SyncState *
