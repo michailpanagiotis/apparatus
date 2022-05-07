@@ -51,6 +51,7 @@ Plug 'petertriho/nvim-scrollbar'
 Plug 'kosayoda/nvim-lightbulb'
 Plug 'sainnhe/sonokai'
 Plug 'navarasu/onedark.nvim'
+Plug 'felipec/notmuch-vim'
 
 " https://github.com/sjl/gundo.vim.git
 " https://github.com/scrooloose/nerdcommenter.git
@@ -286,3 +287,5 @@ nnoremap tn :tabnew<CR>
 :nnoremap <Leader>wf :match<CR>
 "" remove whitespaces
 :nnoremap <Leader>wnf :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
+
+set undodir=~/.vim/undodir
