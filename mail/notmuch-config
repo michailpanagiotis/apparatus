@@ -47,6 +47,8 @@ other_email=panos@talentdesk.io;panos@toptal.com;panos_wert@hotmail.com;michai@c
 #		in the mail store.
 #
 [new]
+tags=new
+ignore=/.*[.](json|lock|bak)$/
 
 # Search configuration
 #

@@ -31,13 +31,13 @@ set nm_query_type = "threads"
 set nm_default_uri = "notmuch:///Users/pmichail/.mail"
 
 set nm_default_uri="notmuch:///Users/pmichail/.mail" # path to the maildir
-set virtual_spoolfile=yes                          # enable virtual folders
 set sendmail="/PATH/TO/bin/nm_sendmail"            # enables parsing of outgoing mail
+set virtual_spoolfile = yes
 virtual-mailboxes \
-    "INBOX"     "notmuch://?query=tag:INBOX and NOT tag:archive"\
-    "Unread"    "notmuch://?query=tag:unread"\
-    "Starred"   "notmuch://?query=tag:*"\
-    "Sent"      "notmuch://?query=tag:sent"        # sets up queries for virtual folders
+    "Gmail: To me"   "notmuch://?query=tag:to-me and folder:/gmail/"\
+    "Gmail: Sent"   "notmuch://?query=tag:sent and folder:/gmail/"\
+    "TD: To me"   "notmuch://?query=tag:to-me and folder:/talentdesk/"\
+    "TD: Sent"      "notmuch://?query=tag:sent and folder:/talentdesk/"        # sets up queries for virtual folders
 
 # notmuch bindings
     macro index \\\\ "<vfolder-from-query>"              # looks up a hand made query
@@ -47,11 +47,16 @@ virtual-mailboxes \
     macro index + "<modify-labels>+*\\n<sync-mailbox>"               # tag as starred
     macro index - "<modify-labels>-*\\n<sync-mailbox>"               # tag as unstarred
 
-
  # sidebar
-set sidebar_width   = 20
+set sidebar_width   = 22
 set sidebar_visible = yes               # set to "no" to disable sidebar view at startup
 color sidebar_new yellow default
+set sidebar_short_path = yes
+set sidebar_next_new_wrap = yes
+set mail_check_stats
+set sidebar_format = '%D%?F? [%F]?%* %?N?%N/? %?S?%S?'
+
+
 # sidebar bindings
 bind index <left> sidebar-prev          # got to previous folder in sidebar
 bind index <right> sidebar-next         # got to next folder in sidebar
@@ -60,3 +65,5 @@ bind index <space> sidebar-open         # open selected folder from sidebar
 macro index ,@) "<enter-command> set sidebar_visible=no; macro index ~ ,@( 'Toggle sidebar'<Enter>"
 macro index ,@( "<enter-command> set sidebar_visible=yes; macro index ~ ,@) 'Toggle sidebar'<Enter>"
 macro index ~ ,@( 'Toggle sidebar'      # toggle the sidebar
+
+set nm_query_window_timebase = 'month'
