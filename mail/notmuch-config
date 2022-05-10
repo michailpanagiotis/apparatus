@@ -10,6 +10,7 @@
 # Notmuch will store its database within a sub-directory of the path
 # configured here named ".notmuch".
 #
+
 [database]
 path=/Users/pmichail/.mail
 
@@ -28,6 +29,7 @@ path=/Users/pmichail/.mail
 # recipient list of replies, and will set the From address based on the
 # address to which the original email was addressed.
 #
+
 [user]
 primary_email=michailpanagiotis@gmail.com
 other_email=panos@talentdesk.io;panos@toptal.com;panos_wert@hotmail.com;michai@ceid.upatras.gr;
@@ -46,9 +48,10 @@ other_email=panos@talentdesk.io;panos@toptal.com;panos_wert@hotmail.com;michai@c
 #		names will be ignored, independent of its depth/location
 #		in the mail store.
 #
+
 [new]
 tags=new
-ignore=/.*[.](json|lock|bak)$/
+ignore=/.*[.](json|lock|bak|uidvalidity|mbsyncstate|sh)$/
 
 # Search configuration
 #
@@ -59,6 +62,7 @@ ignore=/.*[.](json|lock|bak)$/
 #		search results by default.  Using an excluded tag in a
 #		query will override that exclusion.
 #
+
 [search]
 
 # Maildir compatibility configuration
@@ -66,6 +70,7 @@ ignore=/.*[.](json|lock|bak)$/
 # The following option is supported here:
 #
 #	synchronize_flags      Valid values are true and false.
+# synchronize_flags=true
 #
 #	If true, then the following maildir flags (in message filenames)
 #	will be synchronized with the corresponding notmuch tags:
@@ -82,4 +87,6 @@ ignore=/.*[.](json|lock|bak)$/
 #	and update tags, while the "notmuch tag" and "notmuch restore"
 #	commands will notice tag changes and update flags in filenames
 #
+
 [maildir]
+synchronize_flags=true
