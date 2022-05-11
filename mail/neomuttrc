@@ -8,7 +8,6 @@ set index_format="%4C %-15.15g %Z %{%b %d} %-15.15L (%?l?%4l&%4c?) %s"
 color index_tag red white "unread"
 color index_date green default
 
-
 # Mailcap file is used to tell mutt how to open different types of file
 set mailcap_path = "~/.mutt/mailcap"
 bind  attach  <return>  view-mailcap
@@ -17,6 +16,7 @@ alternative_order multipart/mixed text/calendar application/ics text/html text/p
 unauto_view *
 auto_view text/html
 
+set sendmail="/PATH/TO/bin/nm_sendmail"            # enables parsing of outgoing mail
 
 ######################
 #  NotMuch Settings  #
@@ -26,18 +26,18 @@ auto_view text/html
 # Points to the notmuch directory
 # set nm_default_url = "notmuch://$HOME/.mail/work"
 # Makes notmuch return threads rather than messages
-set nm_query_type = "threads"
+# set nm_db_limit = 10
+set nm_query_type = "messages"
 # Binding for notmuch search
 set nm_default_uri = "notmuch:///Users/pmichail/.mail"
+set nm_unread_tag = "unread"
 
-set nm_default_uri="notmuch:///Users/pmichail/.mail" # path to the maildir
-set sendmail="/PATH/TO/bin/nm_sendmail"            # enables parsing of outgoing mail
 set virtual_spoolfile = yes
 virtual-mailboxes \
-    "Gmail: To me"   "notmuch://?query=tag:to-me and folder:/gmail/"\
-    "Gmail: Sent"   "notmuch://?query=tag:sent and folder:/gmail/"\
-    "TD: To me"   "notmuch://?query=tag:to-me and folder:/talentdesk/"\
-    "TD: Sent"      "notmuch://?query=tag:sent and folder:/talentdesk/"        # sets up queries for virtual folders
+    "Gmail: new"   "notmuch://?query=tag:gmail and tag:unread"\
+    "Gmail: sent"   "notmuch://?query=tag:gmail-sent"\
+    "TD: new"      "notmuch://?query=tag:td and tag:unread"\
+    "TD: sent"      "notmuch://?query=tag:td-sent"
 
 # notmuch bindings
     macro index \\\\ "<vfolder-from-query>"              # looks up a hand made query
@@ -67,3 +67,5 @@ macro index ,@( "<enter-command> set sidebar_visible=yes; macro index ~ ,@) 'Tog
 macro index ~ ,@( 'Toggle sidebar'      # toggle the sidebar
 
 set nm_query_window_timebase = 'month'
+
+set pager = less

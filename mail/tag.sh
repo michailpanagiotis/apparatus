@@ -33,4 +33,8 @@ notmuch tag +sent from:panos@toptal.com and not tag:sent
 notmuch tag +sent from:michai@ceid.upatras.gr and not tag:sent
 notmuch tag +sent from:panos_wert@hotmail.com and not tag:sent
 
+echo "Tagging known services"
+notmuch tag +td-info from:info@talentdesk.io and not tag:td-info
+notmuch tag +jira from:jira@talentdesk.atlassian.net and not tag:jira
+
 echo "Done."

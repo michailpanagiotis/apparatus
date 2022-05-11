@@ -90,3 +90,5 @@ ignore=/.*[.](json|lock|bak|uidvalidity|mbsyncstate|sh)$/
 
 [maildir]
 synchronize_flags=true
+
+#https://www.reddit.com/r/emacs/comments/jzr0ik/notmuch_email_workflow/

@@ -293,5 +293,5 @@ set undodir=~/.vim/undodir
 
 autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif
 
-# Send Ctrl-S from terminal as an alternative to Cmd keys (e.g. Cmd-C)
+" send Ctrl-s instead of Cmd-c
 noremap <silent> <C-S> y
