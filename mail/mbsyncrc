@@ -8,7 +8,7 @@ PassCmd "gpg -d ~/.mutt/talentdeskpass.gpg"
 MaildirStore talentdesk-local
 Path ~/.mail/talentdesk/
 Inbox ~/.mail/talentdesk/INBOX
-Subfolders Verbatim
+Flatten .
 
 Channel talentdesk
 Far :talentdesk-remote:
@@ -28,7 +28,7 @@ PassCmd "gpg -d ~/.mutt/gmailpass.gpg"
 MaildirStore gmail-local
 Path ~/.mail/gmail/
 Inbox ~/.mail/gmail/INBOX
-Subfolders Verbatim
+Flatten .
 
 Channel gmail
 Far :gmail-remote:

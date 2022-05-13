@@ -6,16 +6,16 @@ notmuch new
 echo "Running global tag additions to tag new mail"
 
 echo "Tagging accounts"
-notmuch tag +gmail folder:'"/gmail/"' and not folder:'"/gmail/\[Gmail\]/Sent Mail/"' and not tag:gmail
-notmuch tag +td folder:'"/talentdesk/"' and not folder:'"/talentdesk/\[Gmail\]/Sent Mail/"' and not tag:td
+notmuch tag +gmail folder:'"/gmail/"' and not folder:'"/gmail/\[Gmail\].Sent Mail/"' and not tag:gmail
+notmuch tag +td folder:'"/talentdesk/"' and not folder:'"/talentdesk/\[Gmail\].Sent Mail/"' and not tag:td
 
 echo "Adding gmail labels"
-notmuch tag +gmail-sent folder:'"/gmail/\[Gmail\]/Sent Mail/"' and not tag:gmail-sent
-notmuch tag +td-sent folder:'"/talentdesk/\[Gmail\]/Sent Mail/"' and not tag:td-sent
+notmuch tag +gmail-sent folder:'"/gmail/\[Gmail\].Sent Mail/"' and not tag:gmail-sent
+notmuch tag +td-sent folder:'"/talentdesk/\[Gmail\].Sent Mail/"' and not tag:td-sent
 
-notmuch tag +draft folder:'"/.*/\[Gmail\]/Drafts/"' and not tag:draft
-notmuch tag +spam folder:'"/.*/\[Gmail\]/Spam/"' and not tag:spam
-notmuch tag +trash folder:'"/.*/\[Gmail\]/Trash/"' and not tag:trash
+notmuch tag +draft folder:'"/.*/\[Gmail\].Drafts/"' and not tag:draft
+notmuch tag +spam folder:'"/.*/\[Gmail\].Spam/"' and not tag:spam
+notmuch tag +trash folder:'"/.*/\[Gmail\].Trash/"' and not tag:trash
 
 echo "Tagging inbound email"
 # Note mail sent specifically to me (excluding bug mail)

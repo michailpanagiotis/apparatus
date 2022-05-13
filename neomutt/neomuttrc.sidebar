@@ -1,0 +1,36 @@
+# sidebar
+set sidebar_width   = 22
+set sidebar_visible = yes               # set to "no" to disable sidebar view at startup
+set mail_check_stats = yes
+set sidebar_format = '%D %?N?(%N)?%* %S'
+# set sidebar_format = '%D%?F? [%F]?%* %?N?%N/? %?S?%S?'
+
+# color sidebar_new yellow default
+# set sidebar_next_new_wrap = yes
+# set sidebar_format = '%D%?F? [%F]?%* %?N?%N/? %?S?%S?'
+
+# sidebar bindings
+bind index <left> sidebar-prev          # got to previous folder in sidebar
+bind index <right> sidebar-next         # got to next folder in sidebar
+bind index <space> sidebar-open         # open selected folder from sidebar
+# sidebar toggle
+# macro index ,@) "<enter-command> set sidebar_visible=no; macro index ~ ,@( 'Toggle sidebar'<Enter>"
+# macro index ,@( "<enter-command> set sidebar_visible=yes; macro index ~ ,@) 'Toggle sidebar'<Enter>"
+# macro index ~ ,@( 'Toggle sidebar'      # toggle the sidebar
+
+
+# Sidebar mappings
+# set sidebar_visible = yes
+# set sidebar_width = 20
+# set sidebar_next_new_wrap = yes
+# set mail_check_stats
+# set sidebar_format = '%D%?F? [%F]?%* %?N?%N/? %?S?%S?'
+# bind index,pager \Ck sidebar-prev
+# bind index,pager \Cj sidebar-next
+# bind index,pager s sidebar-open
+# bind index,pager \Cn sidebar-toggle-visible
+
+set sidebar_short_path=yes
+set sidebar_component_depth=1
+set sidebar_folder_indent
+set sidebar_delim_chars="."
