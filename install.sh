@@ -1,5 +1,3 @@
-sudo apt-get install curl git flatpak
-
 echo 'Please, manually install kitty and kinto'
 
 flatpak install --noninteractive bitwarden
@@ -9,6 +7,15 @@ flatpak install --noninteractive spotify
 flatpak install --noninteractive brave
 
 cd $HOME/.apparatus/
+
+if test -f "JetBrainsMono-2.242.zip"; then
+    echo "JetBrains Mono exists"
+else
+    curl -Ls -o jetbrains_mono.zip https://download-cdn.jetbrains.com/fonts/JetBrainsMono-2.242.zip?_gl=1*uv3l58*_ga*MjAzODU5MDk1LjE2NTM1NzczMTg.*_ga_9J976DJZ68*MTY1MzU3NzMxNi4xLjEuMTY1MzU3NzMyOC4w&_ga=2.27630709.816184028.1653577318-203859095.1653577318
+fi
+unzip -o jetbrains_mono.zip -d ~/.local/share/fonts
+fc-cache -f -v
+
 
 if test -f "nvim.appimage"; then
     echo "nvim.appimage exists."
@@ -32,10 +39,26 @@ sudo update-alternatives --install /usr/bin/view view "${CUSTOM_NVIM_PATH}" 110
 sudo update-alternatives --install /usr/bin/vim vim "${CUSTOM_NVIM_PATH}" 110
 sudo update-alternatives --install /usr/bin/vimdiff vimdiff "${CUSTOM_NVIM_PATH}" 110
 
+echo 'Setting config for ssh'
+rm -rf $HOME/.ssh/config
+ln -s $HOME/.apparatus/ssh/config $HOME/.ssh/config
+echo 'Setting config for vim'
+rm -rf $HOME/.vimrc
 ln -s $HOME/.apparatus/vim/vimrcs/vimrc.base $HOME/.vimrc
+rm -rf $HOME/.vim
 ln -s $HOME/.apparatus/vim $HOME/.vim
-ln -s $HOME/.apparatus/git/gitconfig $HOME/.gitconfig
-rm -rf $HOME/.config/kitty
-ln -s $HOME/.apparatus/kitty/ $HOME/.config/
 rm -rf $HOME/.config/nvim
 ln -s $HOME/.apparatus/nvim/ $HOME/.config/
+echo 'Setting config for git'
+rm -rf $HOME/.gitconfig
+ln -s $HOME/.apparatus/git/gitconfig $HOME/.gitconfig
+echo 'Setting config for kitty'
+rm -rf $HOME/.config/kitty
+ln -s $HOME/.apparatus/kitty/ $HOME/.config/
+echo 'Setting config for kinto'
+rm -rf $HOME/.config/kinto/kinto.py
+ln -s $HOME/.apparatus/kinto/kinto.py $HOME/.config/kinto/kinto.py
+sudo systemctl restart xkeysnail
+
+# Pop OS
+gsettings set org.gnome.shell.extensions.pop-shell activate-launcher "['<Super>space']"

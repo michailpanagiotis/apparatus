@@ -3,3 +3,4 @@
 vim/plugged
 vim/undodir
 *.appimage
+*.zip

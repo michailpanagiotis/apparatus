@@ -289,7 +289,7 @@ nnoremap tn :tabnew<CR>
 "" remove whitespaces
 :nnoremap <Leader>wnf :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
 
-set clipboard=unnamedplus
+" set clipboard=unnamedplus
 set undodir=~/.vim/undodir
 
 autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif
