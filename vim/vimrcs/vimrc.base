@@ -286,3 +286,5 @@ nnoremap tn :tabnew<CR>
 :nnoremap <Leader>wf :match<CR>
 "" remove whitespaces
 :nnoremap <Leader>wnf :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
+
+set clipboard=unnamedplus
