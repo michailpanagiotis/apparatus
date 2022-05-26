@@ -51,6 +51,8 @@ Plug 'petertriho/nvim-scrollbar'
 Plug 'kosayoda/nvim-lightbulb'
 Plug 'sainnhe/sonokai'
 Plug 'navarasu/onedark.nvim'
+Plug 'felipec/notmuch-vim'
+Plug 'ojroques/vim-oscyank', {'branch': 'main'}
 
 " https://github.com/sjl/gundo.vim.git
 " https://github.com/scrooloose/nerdcommenter.git
@@ -288,3 +290,9 @@ nnoremap tn :tabnew<CR>
 :nnoremap <Leader>wnf :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
 
 set clipboard=unnamedplus
+set undodir=~/.vim/undodir
+
+autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif
+
+" send Ctrl-s instead of Cmd-c
+noremap <silent> <C-S> y

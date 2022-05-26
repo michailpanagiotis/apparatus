@@ -1,3 +1,5 @@
 *.un~
 *.swp
 vim/plugged
+vim/undodir
+*.appimage
