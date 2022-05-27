@@ -174,8 +174,9 @@ define_conditional_modmap(re.compile(termStr, re.IGNORECASE), {
     # Key.RIGHT_CTRL: Key.LEFT_CTRL,  # Mac - Multi-language (Remove)
 })
 
-
 define_keymap(re.compile(termStr, re.IGNORECASE),{
+    K("C-T"):   K("C-Shift-T"),
+    K("RC-W"):   K("C-Shift-W"),
 }, "terminals")
 
 define_keymap(lambda wm_class: wm_class.casefold() not in remotes,{
