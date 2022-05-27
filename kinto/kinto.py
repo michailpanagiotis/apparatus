@@ -175,8 +175,46 @@ define_conditional_modmap(re.compile(termStr, re.IGNORECASE), {
 })
 
 define_keymap(re.compile(termStr, re.IGNORECASE),{
-    K("C-T"):   K("C-Shift-T"),
-    K("RC-W"):   K("C-Shift-W"),
+    # Converts Cmd to use Ctrl-Shift
+    K("RC-MINUS"): K("C-MINUS"),
+    K("RC-EQUAL"): K("C-Shift-EQUAL"),
+    K("RC-BACKSPACE"): K("M-BACKSPACE"),
+    K("RC-W"): K("C-Shift-W"),
+    K("RC-E"): K("C-Shift-E"),
+    K("RC-R"): K("C-Shift-R"),
+    K("RC-T"): K("C-Shift-t"),
+    K("RC-Y"): K("C-Shift-Y"),
+    K("RC-U"): K("C-Shift-U"),
+    K("RC-I"): K("C-Shift-I"),
+    K("RC-O"): K("C-Shift-O"),
+    K("RC-P"): K("C-Shift-P"),
+    K("RC-LEFT_BRACE"): K("C-Shift-LEFT_BRACE"),
+    K("RC-RIGHT_BRACE"): K("C-Shift-RIGHT_BRACE"),
+    K("RC-Shift-Left_Brace"):   K("C-Shift-Left"),     # Go to prior tab (Left)
+    K("RC-Shift-Right_Brace"):  K("C-Shift-Right"),   # Go to next tab (Right)
+    K("RC-A"): K("C-Shift-A"),
+    K("RC-S"): K("C-Shift-S"),
+    K("RC-D"): K("C-Shift-D"),
+    K("RC-F"): K("C-Shift-F"),
+    K("RC-G"): K("C-Shift-G"),
+    K("RC-H"): K("C-Shift-H"),
+    K("RC-J"): K("C-Shift-J"),
+    K("RC-K"): K("C-Shift-K"),
+    K("RC-L"): K("C-Shift-L"),
+    K("RC-SEMICOLON"): K("C-Shift-SEMICOLON"),
+    K("RC-APOSTROPHE"): K("C-Shift-APOSTROPHE"),
+    K("RC-GRAVE"): K("C-Shift-GRAVE"),
+    K("RC-Z"): K("C-Shift-Z"),
+    K("RC-X"): K("C-Shift-X"),
+    K("RC-C"): K("C-Shift-C"),
+    K("RC-V"): K("C-Shift-V"),
+    K("RC-B"): K("C-Shift-B"),
+    K("RC-N"): K("C-Shift-N"),
+    K("RC-M"): K("C-Shift-M"),
+    K("RC-COMMA"): K("C-Shift-COMMA"),
+    K("RC-Dot"): K("LC-c"),
+    K("RC-SLASH"): K("C-Shift-SLASH"),
+    K("RC-KPASTERISK"): K("C-Shift-KPASTERISK"),
 }, "terminals")
 
 define_keymap(lambda wm_class: wm_class.casefold() not in remotes,{
