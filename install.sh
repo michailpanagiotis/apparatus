@@ -1,10 +1,11 @@
-echo 'Please, manually install kitty and kinto'
+echo 'Please, manually install brave, kitty, kinto and bitwarden cli (bw)'
+
+sudo apt-get install jq
 
 flatpak install --noninteractive bitwarden
 flatpak install --noninteractive slack
 flatpak install --noninteractive zoom
 flatpak install --noninteractive spotify
-flatpak install --noninteractive brave
 
 cd $HOME/.apparatus/
 
@@ -59,6 +60,11 @@ echo 'Setting config for kinto'
 rm -rf $HOME/.config/kinto/kinto.py
 ln -s $HOME/.apparatus/kinto/kinto.py $HOME/.config/kinto/kinto.py
 sudo systemctl restart xkeysnail
+
+# SSH
+bw list items --search id_rsa | jq -r '.[0].fields[0].value' > $HOME/.ssh/id_rsa
+chmod 0600 $HOME/.ssh/id_rsa
+mkdir $HOME/.ssh/controlmasters
 
 # Pop OS
 gsettings set org.gnome.shell.extensions.pop-shell activate-launcher "['<Super>space']"

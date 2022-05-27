@@ -296,3 +296,4 @@ autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | exe
 
 " send Ctrl-s instead of Cmd-c
 noremap <silent> <C-S> y
+set nofoldenable    " disable folding
