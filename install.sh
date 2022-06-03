@@ -35,6 +35,8 @@ echo 'Setting config for kitty'
 rm -rf $HOME/.config/kitty
 ln -s $HOME/.apparatus/kitty/ $HOME/.config/
 
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+
 if [ "$machine" = "Mac" ]; then
     ./install_mac.sh
 else
