@@ -299,5 +299,3 @@ noremap <silent> <C-S> y
 set nofoldenable    " disable folding
 
 set wildmode=longest,list,full
-set splitbelow splitright
-autocmd InsertEnter * norm zz
