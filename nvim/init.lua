@@ -162,7 +162,7 @@ vim.g.maplocalleader = ' '
 vim.keymap.set('v', '<C-R>', [["hy:%s/<C-r>h//gc<left><left><left>]], {});
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { silent = true })
-vim.keymap.set('n', '<C-l>', ':TroubleToggle<CR>', { silent = true })
+vim.keymap.set('n', '<C-l>', ':TroubleToggle document_diagnostics<CR>', { silent = true })
 vim.keymap.set('n', '<C-h>', ':HopWord<CR>', { silent = true })
 
 -- Remap for dealing with word wrap
@@ -233,7 +233,7 @@ vim.api.nvim_set_keymap('i', '<c-s>', '<cmd>lua vim.lsp.buf.signature_help()<CR>
 
 require("null-ls").setup({
   sources = {
-    require("null-ls").builtins.diagnostics.eslint,
+    require("null-ls").builtins.diagnostics.eslint_d,
   },
 })
 

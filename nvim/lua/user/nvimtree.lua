@@ -39,7 +39,7 @@ local nvimtreeConfig = {
   sync_root_with_cwd = true,
   respect_buf_cwd = true,
   diagnostics = {
-    enable = true,
+    enable = false,
     show_on_dirs = false,
     icons = {
       hint = "",
@@ -57,6 +57,10 @@ local nvimtreeConfig = {
   system_open = {
     cmd = nil,
     args = {},
+  },
+  filesystem_watchers = {
+    enable = false,
+    debounce_delay = 50,
   },
   git = {
     enable = true,
@@ -129,7 +133,7 @@ local nvimtreeConfig = {
   },
   filters = {
     dotfiles = false,
-    custom = { "node_modules", "\\.cache" },
+    custom = { "node_modules", "\\.cache", "\\.git", "\\.eslint-cache", "\\.aws", "\\tmp" },
     exclude = {},
   },
   trash = {
