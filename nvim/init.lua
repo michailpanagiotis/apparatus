@@ -85,14 +85,16 @@ require('packer').startup(function(use)
   -- Illuminate word under cursor
   use 'RRethy/vim-illuminate'
 
-  use {
-    'phaazon/hop.nvim',
-    branch = 'v2', -- optional but strongly recommended
-    config = function()
-      -- you can configure Hop the way you like here; see :h hop-config
-      require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
-    end
-  }
+  use 'AndrewRadev/splitjoin.vim'
+  use 'vim-scripts/ReplaceWithRegister'
+  use 'whiteinge/diffconflicts'
+
+  use 'tpope/vim-fugitive'
+  use 'tpope/vim-surround'
+  use 'ggandor/leap.nvim'
+  use 'folke/which-key.nvim'
+
+  use("nathom/filetype.nvim")
 
   if is_bootstrap then
     require('packer').sync()
@@ -163,7 +165,7 @@ vim.keymap.set('v', '<C-R>', [["hy:%s/<C-r>h//gc<left><left><left>]], {});
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { silent = true })
 vim.keymap.set('n', '<C-l>', ':TroubleToggle<CR>', { silent = true })
-vim.keymap.set('n', '<C-h>', ':HopWord<CR>', { silent = true })
+
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
@@ -238,6 +240,7 @@ require("null-ls").setup({
 })
 
 require"fidget".setup{}
+require"which-key".setup{}
 
 require'shade'.setup({
   overlay_opacity = 50,
@@ -249,7 +252,11 @@ require'shade'.setup({
   }
 })
 
-require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
+require('leap').set_default_keymaps()
+require('leap').setup({
+  higlight_unlabeled = true,
+  case_sensitive = true
+})
 
 -- nvim-cmp setup
 require 'user/cmp'
@@ -262,5 +269,8 @@ require 'user/lsp'
 require 'user/lualine'
 require 'user/comment'
 require 'user/autopairs'
+require 'user/whichkey'
 
 require "user/neovide"
+
+vim.g.did_load_filetypes = 1
