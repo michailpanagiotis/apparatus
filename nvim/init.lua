@@ -264,3 +264,11 @@ require 'user/comment'
 require 'user/autopairs'
 
 require "user/neovide"
+
+require "telescope".setup {
+  pickers = {
+    colorscheme = {
+      enable_preview = true
+    }
+  }
+}
