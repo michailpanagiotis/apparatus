@@ -48,11 +48,6 @@ require('packer').startup(function(use)
   use 'JoosepAlviste/nvim-ts-context-commentstring'
 
   -- MISC
-  use 'ojroques/vim-oscyank'
-  use 'antoinemadec/FixCursorHold.nvim'
-  use 'lukas-reineke/indent-blankline.nvim'                                       -- Add indentation guides even on blank lines
-  -- trim trailing space
-  use 'cappyzawa/trim.nvim'
   use 'kyazdani42/nvim-web-devicons'
   use 'b0o/schemastore.nvim'
   use 'Tastyep/structlog.nvim'
@@ -86,7 +81,14 @@ require('packer').startup(function(use)
   use 'tpope/vim-surround'
   use 'ggandor/leap.nvim'
   use 'folke/which-key.nvim'
-  use 'nathom/filetype.nvim'
+
+  -- Minor Enhancements
+  use 'ojroques/vim-oscyank'                -- yank in clipboard
+  use 'antoinemadec/FixCursorHold.nvim'
+  use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
+  use 'cappyzawa/trim.nvim'                 -- trim trailing space
+  use 'nathom/filetype.nvim'                -- faster filetype recognition
+  use 'godlygeek/tabular'                   -- align columns
 
   if is_bootstrap then
     require('packer').sync()
