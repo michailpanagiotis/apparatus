@@ -20,5 +20,5 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, {})
 vim.api.nvim_set_keymap('i', '<c-s>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', {})
 
 
-vim.keymap.set('n', '<leader>g', ':Git ', { silent = true })
-vim.keymap.set('n', '<C-g>', ':Git<CR>', { silent = true })
+vim.keymap.set('n', '<leader>g', ':Git<CR>', { silent = true })
+vim.keymap.set('n', '<C-g>', ':Git ', { silent = true })
