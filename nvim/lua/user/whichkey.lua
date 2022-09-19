@@ -126,6 +126,7 @@ local config = {
     g = {
       name = "Git",
       s = { ":Git status<cr>", "Status" },
+      g = { ":Ggr ", "Grep" },
     },
     l = {
       name = "LSP",

@@ -12,16 +12,16 @@ require('packer').startup(function(use)
   -- Package manager
   use 'wbthomason/packer.nvim'
   -- Dev setup for nvim lua API.
-  use { 'folke/lua-dev.nvim' }
+  use 'folke/lua-dev.nvim'
   -- File browser
-  use { 'kyazdani42/nvim-tree.lua' }
+  use 'kyazdani42/nvim-tree.lua'
   -- Autocompletion
   use { 'hrsh7th/nvim-cmp', requires = { 'hrsh7th/cmp-nvim-lsp' } }
-  use { 'hrsh7th/cmp-nvim-lsp-signature-help' }
-  use { 'hrsh7th/cmp-path' }
-  use { 'hrsh7th/cmp-buffer' }
+  use 'hrsh7th/cmp-nvim-lsp-signature-help'
+  use 'hrsh7th/cmp-path'
+  use 'hrsh7th/cmp-buffer'
 
-  use { 'rcarriga/nvim-notify' }
+  use 'rcarriga/nvim-notify'
   use 'nvim-treesitter/nvim-treesitter'                                           -- Highlight, edit, and navigate code
   use 'nvim-treesitter/nvim-treesitter-textobjects'                               -- Additional textobjects for treesitter
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }       -- Add git related info in the signs columns and popups
@@ -39,44 +39,34 @@ require('packer').startup(function(use)
   use 'mjlbach/onedark.nvim'                                                      -- Theme inspired by Atom
 
   use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Fuzzy Finder (files, lsp, etc)
-  use { 'nvim-telescope/telescope-ui-select.nvim' }
+  use 'nvim-telescope/telescope-ui-select.nvim'
   -- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', cond = vim.fn.executable "make" == 1 }
   use 'nvim-lualine/lualine.nvim'                                                 -- Fancier statusline
-  use { 'windwp/nvim-autopairs' }
+  use 'windwp/nvim-autopairs'
   use 'numToStr/Comment.nvim'                                                     -- "gc" to comment visual regions/lines
-  use { 'JoosepAlviste/nvim-ts-context-commentstring' }
+  use 'JoosepAlviste/nvim-ts-context-commentstring'
 
   -- MISC
   use 'ojroques/vim-oscyank'
-  use { 'antoinemadec/FixCursorHold.nvim' }
+  use 'antoinemadec/FixCursorHold.nvim'
   use 'lukas-reineke/indent-blankline.nvim'                                       -- Add indentation guides even on blank lines
   -- trim trailing space
-  use { 'cappyzawa/trim.nvim' }
-  use { 'kyazdani42/nvim-web-devicons' }
-  use { 'b0o/schemastore.nvim' }
-  use { 'Tastyep/structlog.nvim' }
-  use { 'mhinz/vim-startify' }
+  use 'cappyzawa/trim.nvim'
+  use 'kyazdani42/nvim-web-devicons'
+  use 'b0o/schemastore.nvim'
+  use 'Tastyep/structlog.nvim'
+  use 'mhinz/vim-startify'
 
 
   -- Lunar vim extras
   -- https://www.lunarvim.org/plugins/01-core-plugins-list.html
   -- use { 'nvim-lua/popup.nvim')
-  use { 'jose-elias-alvarez/null-ls.nvim' }
+  use 'jose-elias-alvarez/null-ls.nvim'
 
   -- User plugins
   use 'tpope/vim-sleuth'                                                          -- Detect tabstop and shiftwidth automatically
-  use {
-    "folke/trouble.nvim",
-    requires = "kyazdani42/nvim-web-devicons",
-    config = function()
-      require("trouble").setup {
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-      }
-    end
-  }
+  use { "folke/trouble.nvim", requires = "kyazdani42/nvim-web-devicons" }
   -- Progress bar for LSP
   use 'j-hui/fidget.nvim'
 
@@ -85,7 +75,10 @@ require('packer').startup(function(use)
   -- Illuminate word under cursor
   use 'RRethy/vim-illuminate'
 
+  -- splitting/joining lines
   use 'AndrewRadev/splitjoin.vim'
+  use 'AckslD/nvim-trevJ.lua'
+
   use 'vim-scripts/ReplaceWithRegister'
   use 'whiteinge/diffconflicts'
 
@@ -93,8 +86,7 @@ require('packer').startup(function(use)
   use 'tpope/vim-surround'
   use 'ggandor/leap.nvim'
   use 'folke/which-key.nvim'
-
-  use("nathom/filetype.nvim")
+  use 'nathom/filetype.nvim'
 
   if is_bootstrap then
     require('packer').sync()
@@ -158,18 +150,6 @@ vim.o.completeopt = 'menuone,noselect'
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- Keymaps for better default experience
--- See `:help vim.keymap.set()`
--- Search/replace
-vim.keymap.set('v', '<C-R>', [["hy:%s/<C-r>h//gc<left><left><left>]], {});
-vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
-vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { silent = true })
-vim.keymap.set('n', '<C-l>', ':TroubleToggle document_diagnostics<CR>', { silent = true })
-
--- Remap for dealing with word wrap
-vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
@@ -181,18 +161,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
-vim.api.nvim_exec([[ autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif ]], false)
-
--- Set lualine as statusline
--- See `:help lualine.txt`
-require('lualine').setup {
-  options = {
-    icons_enabled = true,
-    theme = 'onedark',
-    component_separators = '|',
-    section_separators = '',
-  },
-}
 
 -- Enable `lukas-reineke/indent-blankline.nvim`
 -- See `:help indent_blankline.txt`
@@ -223,32 +191,10 @@ require('trim').setup({
   },
 })
 
--- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, {})
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, {})
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, {})
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, {})
-
-vim.api.nvim_set_keymap('i', '<c-s>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', {})
-
-
 require("null-ls").setup({
   sources = {
     require("null-ls").builtins.diagnostics.eslint_d,
   },
-})
-
-require"fidget".setup{}
-require"which-key".setup{}
-
-require'shade'.setup({
-  overlay_opacity = 50,
-  opacity_step = 1,
-  keys = {
-    brightness_up    = '<C-Up>',
-    brightness_down  = '<C-Down>',
-    toggle           = '<Leader>s',
-  }
 })
 
 require('leap').set_default_keymaps()
@@ -269,14 +215,15 @@ require 'user/lualine'
 require 'user/comment'
 require 'user/autopairs'
 require 'user/whichkey'
+require 'user/splitjoin'
+require 'user/keys'
 
-require "user/neovide"
+-- vanilla
+require"fidget".setup{}
+require"which-key".setup{}
+require"shade".setup{}
+require"trouble".setup{}
 
-require "telescope".setup {
-  pickers = {
-    colorscheme = {
-      enable_preview = true
-    }
-  }
-}
 vim.g.did_load_filetypes = 1
+vim.api.nvim_exec([[ autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif ]], false)
+vim.cmd([[ command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw! ]], false)

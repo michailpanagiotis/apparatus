@@ -72,6 +72,9 @@ local config = {
       --@usage don't include the filename in the search results
       only_sort_text = true,
     },
+    colorscheme = {
+      enable_preview = true,
+    },
     sort_mru = true,
   },
   extensions = {

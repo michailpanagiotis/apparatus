@@ -1,7 +1,7 @@
 local config = {
   on_config_done = nil,
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'lua', 'typescript', 'rust', 'go', 'python' },
+  ensure_installed = { 'lua', 'typescript', 'javascript', 'rust', 'go', 'python' },
   ignore_install = {},
   matchup = {
     enable = false, -- mandatory, false will disable the whole extension
