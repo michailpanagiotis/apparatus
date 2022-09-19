@@ -10,22 +10,16 @@ end
 -- stylua: ignore start
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'   -- Package manager
-  use 'folke/lua-dev.nvim'       -- Dev setup for nvim lua API
-  -- MISC
+
+  -- Syntax & diagnostics
+  use 'folke/lua-dev.nvim'                                                -- Dev setup for nvim lua API
   use 'b0o/schemastore.nvim'
-  use 'Tastyep/structlog.nvim'
+  use 'neovim/nvim-lspconfig'                                             -- Collection of configurations for built-in LSP client
+  use 'williamboman/nvim-lsp-installer'                                   -- Automatically install language servers to stdpath
+  use 'nvim-treesitter/nvim-treesitter'                                   -- Highlight, edit, and navigate code
+  use 'nvim-treesitter/nvim-treesitter-textobjects'                       -- Additional textobjects for treesitter
   use 'jose-elias-alvarez/null-ls.nvim'
   use { "folke/trouble.nvim", requires = "kyazdani42/nvim-web-devicons" }
-  use 'whiteinge/diffconflicts'
-  use 'tpope/vim-fugitive'
-  use 'ggandor/leap.nvim'
-  use 'folke/which-key.nvim'
-
-  -- Syntax
-  use 'neovim/nvim-lspconfig'                                               -- Collection of configurations for built-in LSP client
-  use 'williamboman/nvim-lsp-installer'                                     -- Automatically install language servers to stdpath
-  use 'nvim-treesitter/nvim-treesitter'                                     -- Highlight, edit, and navigate code
-  use 'nvim-treesitter/nvim-treesitter-textobjects'                         -- Additional textobjects for treesitter
 
   -- Autocomplete
   use {
@@ -52,6 +46,9 @@ require('packer').startup(function(use)
     cond = vim.fn.executable "make" == 1
   }
 
+  -- Moving
+  use 'ggandor/leap.nvim'
+
   -- Editing
   use 'AndrewRadev/splitjoin.vim'                   -- splitting/joining lines
   use 'AckslD/nvim-trevJ.lua'                       -- splitting lines according to treesitter
@@ -62,15 +59,19 @@ require('packer').startup(function(use)
   use 'windwp/nvim-autopairs'
 
   -- Layout & Display
+  use 'kyazdani42/nvim-web-devicons'
   use 'kyazdani42/nvim-tree.lua'     -- File browser
   use 'mjlbach/onedark.nvim'         -- Theme inspired by Atom
   use 'nvim-lualine/lualine.nvim'    -- Fancier statusline
   use 'j-hui/fidget.nvim'            -- Progress bar for LSP
   use 'sunjon/shade.nvim'            -- shade inactive windows
-  use 'kyazdani42/nvim-web-devicons'
   use 'mhinz/vim-startify'           -- The fancy start screen for Vim
   use 'rcarriga/nvim-notify'
+
+  -- Git
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Add git related info in the signs columns and popups
+  use 'tpope/vim-fugitive'
+  use 'whiteinge/diffconflicts'
 
   -- Minor Enhancements
   use 'ojroques/vim-oscyank'                -- yank in clipboard
@@ -81,6 +82,7 @@ require('packer').startup(function(use)
   use 'godlygeek/tabular'                   -- align columns
   use 'RRethy/vim-illuminate'               -- Illuminate word under cursor
   use 'antoinemadec/FixCursorHold.nvim'
+  use 'folke/which-key.nvim'
 
   if is_bootstrap then
     require('packer').sync()
