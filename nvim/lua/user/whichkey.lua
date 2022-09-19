@@ -123,11 +123,11 @@ local config = {
     -- " Debug Adapter protocol:
     -- "   https://microsoft.github.io/debug-adapter-protocol/
     -- " Debugging
-    g = {
-      name = "Git",
-      s = { ":Git status<cr>", "Status" },
-      g = { ":Ggr ", "Grep" },
-    },
+    -- g = {
+    --   name = "Git",
+    --   s = { ":Git status<cr>", "Status" },
+    --   g = { ":Ggr ", "Grep" },
+    -- },
     l = {
       name = "LSP",
       a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },

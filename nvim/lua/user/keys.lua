@@ -18,3 +18,6 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, {})
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, {})
 
 vim.api.nvim_set_keymap('i', '<c-s>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', {})
+
+
+vim.keymap.set('n', '<leader>g', ':Git ', { silent = true })
