@@ -1,7 +1,7 @@
 -- Install packer
 local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
 local is_bootstrap = false
-if vim.fn.empty(vim.fn.glob(install_path, false, {}, false)) > 0 then
+if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   is_bootstrap = true
   vim.fn.execute('!git clone https://github.com/wbthomason/packer.nvim ' .. install_path)
   vim.cmd [[packadd packer.nvim]]
@@ -9,25 +9,25 @@ end
 
 -- stylua: ignore start
 require('packer').startup(function(use)
-  -- Package manager
-  use 'wbthomason/packer.nvim'
-  -- Dev setup for nvim lua API.
-  use 'folke/lua-dev.nvim'
-  -- File browser
-  use 'kyazdani42/nvim-tree.lua'
-  -- Autocompletion
-  use { 'hrsh7th/nvim-cmp', requires = { 'hrsh7th/cmp-nvim-lsp' } }
-  use 'hrsh7th/cmp-nvim-lsp-signature-help'
-  use 'hrsh7th/cmp-path'
-  use 'hrsh7th/cmp-buffer'
+  use 'wbthomason/packer.nvim'   -- Package manager
+  use 'folke/lua-dev.nvim'       -- Dev setup for nvim lua API
+  -- MISC
+  use 'b0o/schemastore.nvim'
+  use 'Tastyep/structlog.nvim'
+  use 'jose-elias-alvarez/null-ls.nvim'
+  use { "folke/trouble.nvim", requires = "kyazdani42/nvim-web-devicons" }
+  use 'whiteinge/diffconflicts'
+  use 'tpope/vim-fugitive'
+  use 'ggandor/leap.nvim'
+  use 'folke/which-key.nvim'
 
-  use 'rcarriga/nvim-notify'
-  use 'nvim-treesitter/nvim-treesitter'                                     -- Highlight, edit, and navigate code
-  use 'nvim-treesitter/nvim-treesitter-textobjects'                         -- Additional textobjects for treesitter
-  use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Add git related info in the signs columns and popups
+  -- Syntax
   use 'neovim/nvim-lspconfig'                                               -- Collection of configurations for built-in LSP client
   use 'williamboman/nvim-lsp-installer'                                     -- Automatically install language servers to stdpath
-  -- Snippet Engine and Snippet Expansion
+  use 'nvim-treesitter/nvim-treesitter'                                     -- Highlight, edit, and navigate code
+  use 'nvim-treesitter/nvim-treesitter-textobjects'                         -- Additional textobjects for treesitter
+
+  -- Autocomplete
   use {
     'L3MON4D3/LuaSnip',
     requires = { 'saadparwaiz1/cmp_luasnip', 'rafamadriz/friendly-snippets' },
@@ -35,60 +35,52 @@ require('packer').startup(function(use)
       require("luasnip.loaders.from_vscode").lazy_load()
     end,
   }
-  -- Theme
-  use 'mjlbach/onedark.nvim'                                                      -- Theme inspired by Atom
+  use { 'hrsh7th/nvim-cmp', requires = { 'hrsh7th/cmp-nvim-lsp' } }-- Autocompletion
+  use 'hrsh7th/cmp-nvim-lsp-signature-help'
+  use 'hrsh7th/cmp-path'
+  use 'hrsh7th/cmp-buffer'
 
-  use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Fuzzy Finder (files, lsp, etc)
+  -- Searching & Browsing
+  use {
+    'nvim-telescope/telescope.nvim',            -- Fuzzy Finder (files, lsp, etc)
+    requires = { 'nvim-lua/plenary.nvim' }
+  }
   use 'nvim-telescope/telescope-ui-select.nvim'
-  -- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
-  use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', cond = vim.fn.executable "make" == 1 }
-  use 'nvim-lualine/lualine.nvim'                                                 -- Fancier statusline
-  use 'windwp/nvim-autopairs'
-  use 'numToStr/Comment.nvim'                                                     -- "gc" to comment visual regions/lines
-  use 'JoosepAlviste/nvim-ts-context-commentstring'
+  use {
+    'nvim-telescope/telescope-fzf-native.nvim', -- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
+    run = 'make',
+    cond = vim.fn.executable "make" == 1
+  }
 
-  -- MISC
-  use 'kyazdani42/nvim-web-devicons'
-  use 'b0o/schemastore.nvim'
-  use 'Tastyep/structlog.nvim'
-  use 'mhinz/vim-startify'
-
-
-  -- Lunar vim extras
-  -- https://www.lunarvim.org/plugins/01-core-plugins-list.html
-  -- use { 'nvim-lua/popup.nvim')
-  use 'jose-elias-alvarez/null-ls.nvim'
-
-  -- User plugins
-  use 'tpope/vim-sleuth'                                                          -- Detect tabstop and shiftwidth automatically
-  use { "folke/trouble.nvim", requires = "kyazdani42/nvim-web-devicons" }
-  -- Progress bar for LSP
-  use 'j-hui/fidget.nvim'
-
-  use 'sunjon/shade.nvim'
-
-  -- Illuminate word under cursor
-  use 'RRethy/vim-illuminate'
-
-  -- splitting/joining lines
-  use 'AndrewRadev/splitjoin.vim'
-  use 'AckslD/nvim-trevJ.lua'
-
-  use 'vim-scripts/ReplaceWithRegister'
-  use 'whiteinge/diffconflicts'
-
-  use 'tpope/vim-fugitive'
+  -- Editing
+  use 'AndrewRadev/splitjoin.vim'                   -- splitting/joining lines
+  use 'AckslD/nvim-trevJ.lua'                       -- splitting lines according to treesitter
   use 'tpope/vim-surround'
-  use 'ggandor/leap.nvim'
-  use 'folke/which-key.nvim'
+  use 'tpope/vim-sleuth'                            -- Detect tabstop and shiftwidth automatically
+  use 'numToStr/Comment.nvim'                       -- "gc" to comment visual regions/lines
+  use 'JoosepAlviste/nvim-ts-context-commentstring'
+  use 'windwp/nvim-autopairs'
+
+  -- Layout & Display
+  use 'kyazdani42/nvim-tree.lua'     -- File browser
+  use 'mjlbach/onedark.nvim'         -- Theme inspired by Atom
+  use 'nvim-lualine/lualine.nvim'    -- Fancier statusline
+  use 'j-hui/fidget.nvim'            -- Progress bar for LSP
+  use 'sunjon/shade.nvim'            -- shade inactive windows
+  use 'kyazdani42/nvim-web-devicons'
+  use 'mhinz/vim-startify'           -- The fancy start screen for Vim
+  use 'rcarriga/nvim-notify'
+  use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Add git related info in the signs columns and popups
 
   -- Minor Enhancements
   use 'ojroques/vim-oscyank'                -- yank in clipboard
-  use 'antoinemadec/FixCursorHold.nvim'
+  use 'vim-scripts/ReplaceWithRegister'     -- multiple pastes after yank
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
   use 'cappyzawa/trim.nvim'                 -- trim trailing space
   use 'nathom/filetype.nvim'                -- faster filetype recognition
   use 'godlygeek/tabular'                   -- align columns
+  use 'RRethy/vim-illuminate'               -- Illuminate word under cursor
+  use 'antoinemadec/FixCursorHold.nvim'
 
   if is_bootstrap then
     require('packer').sync()
