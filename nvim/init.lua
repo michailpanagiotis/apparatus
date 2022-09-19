@@ -1,7 +1,7 @@
 -- Install packer
 local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
 local is_bootstrap = false
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+if vim.fn.empty(vim.fn.glob(install_path, false, {}, false)) > 0 then
   is_bootstrap = true
   vim.fn.execute('!git clone https://github.com/wbthomason/packer.nvim ' .. install_path)
   vim.cmd [[packadd packer.nvim]]
@@ -22,11 +22,11 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-buffer'
 
   use 'rcarriga/nvim-notify'
-  use 'nvim-treesitter/nvim-treesitter'                                           -- Highlight, edit, and navigate code
-  use 'nvim-treesitter/nvim-treesitter-textobjects'                               -- Additional textobjects for treesitter
-  use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }       -- Add git related info in the signs columns and popups
-  use 'neovim/nvim-lspconfig'                                                     -- Collection of configurations for built-in LSP client
-  use 'williamboman/nvim-lsp-installer'                                           -- Automatically install language servers to stdpath
+  use 'nvim-treesitter/nvim-treesitter'                                     -- Highlight, edit, and navigate code
+  use 'nvim-treesitter/nvim-treesitter-textobjects'                         -- Additional textobjects for treesitter
+  use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Add git related info in the signs columns and popups
+  use 'neovim/nvim-lspconfig'                                               -- Collection of configurations for built-in LSP client
+  use 'williamboman/nvim-lsp-installer'                                     -- Automatically install language servers to stdpath
   -- Snippet Engine and Snippet Expansion
   use {
     'L3MON4D3/LuaSnip',
@@ -228,4 +228,4 @@ require"trouble".setup{}
 
 vim.g.did_load_filetypes = 1
 vim.api.nvim_exec([[ autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif ]], false)
-vim.cmd([[ command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw! ]], false)
+vim.cmd([[ command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw! ]])
