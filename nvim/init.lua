@@ -88,6 +88,8 @@ require('packer').startup(function(use)
     require("toggleterm").setup()
   end}
 
+  use 'nanozuki/tabby.nvim'
+
   if is_bootstrap then
     require('packer').sync()
   end
@@ -205,8 +207,10 @@ require('leap').setup({
 
 require("toggleterm").setup{
   open_mapping = [[<c-t>]],
-  direction ="float"
+  direction ="tab"
 }
+
+vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
 -- nvim-cmp setup
 require 'user/cmp'
 require 'user/nvimtree'
@@ -233,3 +237,24 @@ vim.api.nvim_exec([[ autocmd TextYankPost * if v:event.operator is 'y' && v:even
 vim.cmd([[ command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw! ]])
 
 vim.cmd([[ set autochdir ]])
+
+local map = require("user/utils").map
+
+require('tabby.tabline').use_preset('tab_only', {
+  theme = {
+    fill = 'TabLineFill', -- tabline background
+    head = 'TabLine', -- head element highlight
+    current_tab = 'TabLineSel', -- current tab label highlight
+    tab = 'TabLine', -- other tab label highlight
+    win = 'TabLine', -- window highlight
+    tail = 'TabLine', -- tail element highlight
+  },
+  buf_name = {
+      mode = "'unique'|'relative'|'tail'|'shorten'",
+  },
+})
+
+map('n', '<C-;>', ':tabprevious<CR>', { silent = true })
+map('n', '<C-,>', ':tabnext<CR>', { silent = true })
+map('t', '<C-,>', [[<C-\><C-n>:tabprevious<CR>]], { silent = true })
+map('t', '<C-,>', [[<C-\><C-n>:tabnext<CR>]], { silent = true })
