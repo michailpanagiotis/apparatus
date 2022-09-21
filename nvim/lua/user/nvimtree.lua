@@ -18,8 +18,8 @@ local nvimtreeConfig = {
   },
   open_on_tab = false,
   hijack_cursor = false,
-  -- sync_root_with_cwd = true,
-  -- respect_buf_cwd = true,
+  sync_root_with_cwd = true,
+  respect_buf_cwd = true,
   diagnostics = {
     enable = false,
     show_on_dirs = false,
@@ -32,7 +32,7 @@ local nvimtreeConfig = {
   },
   update_focused_file = {
     enable = true,
-    -- update_cwd = true,
+    update_cwd = true,
     update_root = true,
     ignore_list = {},
   },

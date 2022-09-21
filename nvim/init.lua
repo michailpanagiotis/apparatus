@@ -91,6 +91,10 @@ require('packer').startup(function(use)
   use 'nanozuki/tabby.nvim'
   use 'NvChad/nvim-colorizer.lua'
 
+  use 'https://gitlab.com/__tpb/monokai-pro.nvim'
+
+  use 'ahmedkhalf/project.nvim'
+
   if is_bootstrap then
     require('packer').sync()
   end
@@ -198,6 +202,7 @@ require("null-ls").setup({
   sources = {
     require("null-ls").builtins.diagnostics.eslint_d,
   },
+  root_dir = nil,
 })
 
 require('leap').set_default_keymaps()
@@ -211,7 +216,6 @@ require("toggleterm").setup{
   direction ="tab"
 }
 
-vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
 -- nvim-cmp setup
 require 'user/cmp'
 require 'user/nvimtree'
@@ -233,13 +237,18 @@ require"which-key".setup{}
 require"shade".setup{}
 require"trouble".setup{}
 require"colorizer".setup{}
+require("project_nvim").setup({
+  detection_methods = { "lsp", "pattern" },
+  patterns = { "=src", ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json" },
+  silent_chdir = false,
+})
 
 vim.g.did_load_filetypes = 1
 vim.api.nvim_exec([[ autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif ]], false)
 -- vim.cmd([[ command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | tabnew | cw | redraw! ]])
 vim.cmd([[ command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw! ]])
 
-vim.cmd([[ set autochdir ]])
+-- vim.cmd([[ set autochdir ]])
 
 local map = require("user/utils").map
 
