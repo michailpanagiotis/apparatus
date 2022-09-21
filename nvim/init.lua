@@ -89,6 +89,7 @@ require('packer').startup(function(use)
   end}
 
   use 'nanozuki/tabby.nvim'
+  use 'NvChad/nvim-colorizer.lua'
 
   if is_bootstrap then
     require('packer').sync()
@@ -231,6 +232,7 @@ require"fidget".setup{}
 require"which-key".setup{}
 require"shade".setup{}
 require"trouble".setup{}
+require"colorizer".setup{}
 
 vim.g.did_load_filetypes = 1
 vim.api.nvim_exec([[ autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif ]], false)
