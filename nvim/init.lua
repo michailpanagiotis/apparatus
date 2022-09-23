@@ -40,11 +40,7 @@ require('packer').startup(function(use)
     requires = { 'nvim-lua/plenary.nvim' }
   }
   use 'nvim-telescope/telescope-ui-select.nvim'
-  use {
-    'nvim-telescope/telescope-fzf-native.nvim', -- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
-    run = 'make',
-    cond = vim.fn.executable "make" == 1
-  }
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
   -- Moving
   use 'ggandor/leap.nvim'
@@ -94,6 +90,8 @@ require('packer').startup(function(use)
   use 'https://gitlab.com/__tpb/monokai-pro.nvim'
 
   use 'ahmedkhalf/project.nvim'
+
+  use { "nvim-telescope/telescope-file-browser.nvim" }
 
   if is_bootstrap then
     require('packer').sync()
@@ -200,7 +198,7 @@ require('trim').setup({
 
 require("null-ls").setup({
   sources = {
-    require("null-ls").builtins.diagnostics.eslint_d,
+    require("null-ls").builtins.diagnostics.eslint,
   },
   root_dir = nil,
 })

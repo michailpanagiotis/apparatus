@@ -1,5 +1,4 @@
 local previewers = require "telescope.previewers"
-local sorters = require "telescope.sorters"
 local actions = require "telescope.actions"
 
 local config = {
@@ -67,6 +66,17 @@ local config = {
   pickers = {
     find_files = {
       hidden = true,
+      previewer = false,
+      layout_config = {
+        prompt_position="bottom",
+      },
+    },
+    git_files = {
+      hidden = true,
+      previewer = false,
+      layout_config = {
+        prompt_position="bottom",
+      },
     },
     live_grep = {
       --@usage don't include the filename in the search results
@@ -84,12 +94,24 @@ local config = {
       override_file_sorter = true, -- override the file sorter
       case_mode = "smart_case", -- or "ignore_case" or "respect_case"
     },
+    file_browser = {
+      theme = "ivy",
+      -- disables netrw and use telescope-file-browser in its place
+      hijack_netrw = true,
+      mappings = {
+        ["i"] = {
+          -- your custom insert mode mappings
+        },
+        ["n"] = {
+          -- your custom normal mode mappings
+        },
+      },
+    },
   }
 }
 
 local telescope = require "telescope"
 telescope.setup(config)
-
 
 pcall(function()
   require("telescope").load_extension "notify"
@@ -104,6 +126,18 @@ pcall(function()
   require("telescope").load_extension "attempt"
 end)
 
+pcall(function()
+  require("telescope").load_extension "file_browser"
+end)
+
+
+vim.api.nvim_set_keymap(
+  "n",
+  "<space>fb",
+  ":Telescope file_browser",
+  { noremap = true }
+)
+
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
@@ -115,8 +149,8 @@ vim.keymap.set('n', '<leader>/', function()
   })
 end, { desc = '[/] Fuzzily search in current buffer]' })
 
-vim.keymap.set('n', '<C-p>', require('telescope.builtin').git_files, { desc = '[S]earch [F]iles' })
--- vim.keymap.set('n', '<C-p>', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+-- vim.keymap.set('n', '<C-p>', require('telescope.builtin').git_files, { desc = '[S]earch [F]iles' })
+vim.keymap.set('n', '<C-p>', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
