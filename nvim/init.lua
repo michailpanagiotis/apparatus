@@ -56,7 +56,7 @@ require('packer').startup(function(use)
 
   -- Layout & Display
   use 'kyazdani42/nvim-web-devicons'
-  use 'kyazdani42/nvim-tree.lua'     -- File browser
+  -- use 'kyazdani42/nvim-tree.lua'     -- File browser
   use 'mjlbach/onedark.nvim'         -- Theme inspired by Atom
   use 'nvim-lualine/lualine.nvim'    -- Fancier statusline
   use 'j-hui/fidget.nvim'            -- Progress bar for LSP
@@ -76,7 +76,7 @@ require('packer').startup(function(use)
   use 'cappyzawa/trim.nvim'                 -- trim trailing space
   use 'nathom/filetype.nvim'                -- faster filetype recognition
   use 'godlygeek/tabular'                   -- align columns
-  use 'RRethy/vim-illuminate'               -- Illuminate word under cursor
+  -- use 'RRethy/vim-illuminate'               -- Illuminate word under cursor
   use 'antoinemadec/FixCursorHold.nvim'
   use 'folke/which-key.nvim'
 
@@ -91,7 +91,13 @@ require('packer').startup(function(use)
 
   use 'ahmedkhalf/project.nvim'
 
-  use { "nvim-telescope/telescope-file-browser.nvim" }
+  use 'nvim-telescope/telescope-file-browser.nvim'
+
+  use 'preservim/nerdtree'
+
+  use 'tpope/vim-vinegar'
+
+  use 'nvim-treesitter/nvim-treesitter-refactor'
 
   if is_bootstrap then
     require('packer').sync()
@@ -216,7 +222,7 @@ require("toggleterm").setup{
 
 -- nvim-cmp setup
 require 'user/cmp'
-require 'user/nvimtree'
+-- require 'user/nvimtree'
 require 'user/notify'
 require 'user/treesitter'
 require 'user/gitsigns'

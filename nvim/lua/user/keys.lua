@@ -3,8 +3,10 @@
 -- Search/replace
 vim.keymap.set('v', '<C-R>', [["hy:%s/<C-r>h//gc<left><left><left>]], {});
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
-vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { silent = true })
 vim.keymap.set('n', '<C-l>', ':TroubleToggle document_diagnostics<CR>', { silent = true })
+
+-- vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { silent = true })
+vim.keymap.set('n', '<C-n>', ':NERDTreeToggle<CR>', { silent = true })
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
