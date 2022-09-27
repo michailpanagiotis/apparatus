@@ -130,6 +130,9 @@ local config = {
       clear_on_cursor_move = true,
     },
   },
+  autopairs = {
+    enable = true,
+  }
 }
 
 local treesitter_configs = require "nvim-treesitter.configs"

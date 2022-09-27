@@ -1,3 +1,5 @@
+-- Split Join
+
 require"trevj".setup{}
 
 vim.g.splitjoin_split_mapping = ''

@@ -46,12 +46,9 @@ require('packer').startup(function(use)
   use 'ggandor/leap.nvim'
 
   -- Editing
-  use 'AndrewRadev/splitjoin.vim'                   -- splitting/joining lines
-  use 'AckslD/nvim-trevJ.lua'                       -- splitting lines according to treesitter
-  use 'tpope/vim-surround'
-  use 'tpope/vim-sleuth'                            -- Detect tabstop and shiftwidth automatically
-  use 'numToStr/Comment.nvim'                       -- "gc" to comment visual regions/lines
   use 'JoosepAlviste/nvim-ts-context-commentstring'
+  use 'AckslD/nvim-trevJ.lua'                       -- splitting lines according to treesitter
+  use 'numToStr/Comment.nvim'                       -- "gc" to comment visual regions/lines
   use 'windwp/nvim-autopairs'
 
   -- Layout & Display
@@ -70,8 +67,6 @@ require('packer').startup(function(use)
   use 'whiteinge/diffconflicts'
 
   -- Minor Enhancements
-  use 'ojroques/vim-oscyank'                -- yank in clipboard
-  use 'vim-scripts/ReplaceWithRegister'     -- multiple pastes after yank
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
   use 'cappyzawa/trim.nvim'                 -- trim trailing space
   use 'nathom/filetype.nvim'                -- faster filetype recognition
@@ -86,18 +81,19 @@ require('packer').startup(function(use)
 
   use 'nanozuki/tabby.nvim'
   use 'NvChad/nvim-colorizer.lua'
-
   use 'https://gitlab.com/__tpb/monokai-pro.nvim'
-
   use 'ahmedkhalf/project.nvim'
-
   use 'nvim-telescope/telescope-file-browser.nvim'
-
-  use 'preservim/nerdtree'
-
-  use 'tpope/vim-vinegar'
-
   use 'nvim-treesitter/nvim-treesitter-refactor'
+
+  -- VIM
+  use 'preservim/nerdtree'
+  use 'tpope/vim-vinegar'
+  use 'ojroques/vim-oscyank'                -- yank in clipboard
+  use 'vim-scripts/ReplaceWithRegister'     -- multiple pastes after yank
+  use 'tpope/vim-surround'
+  use 'tpope/vim-sleuth'                            -- Detect tabstop and shiftwidth automatically
+  use 'AndrewRadev/splitjoin.vim'                   -- splitting/joining lines
 
   if is_bootstrap then
     require('packer').sync()
@@ -171,25 +167,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = highlight_group,
   pattern = '*',
 })
+vim.api.nvim_exec([[ autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif ]], false)
 
 
--- Enable `lukas-reineke/indent-blankline.nvim`
--- See `:help indent_blankline.txt`
 require('indent_blankline').setup {
   char = '┊',
   show_trailing_blankline_indent = false,
-}
-
--- Gitsigns
--- See `:help gitsigns.txt`
-require('gitsigns').setup {
-  signs = {
-    add = { text = '+' },
-    change = { text = '~' },
-    delete = { text = '_' },
-    topdelete = { text = '‾' },
-    changedelete = { text = '~' },
-  },
 }
 
 require('trim').setup({
@@ -200,13 +183,6 @@ require('trim').setup({
     [[%s/\%^\n\+//]],          -- trim first line
     -- [[%s/\(\n\n\)\n\+/\1/]],   -- replace multiple blank lines with a single line
   },
-})
-
-require("null-ls").setup({
-  sources = {
-    require("null-ls").builtins.diagnostics.eslint,
-  },
-  root_dir = nil,
 })
 
 require('leap').set_default_keymaps()
@@ -220,20 +196,19 @@ require("toggleterm").setup{
   direction ="tab"
 }
 
--- nvim-cmp setup
-require 'user/cmp'
+require 'user/lsp'
+require 'user/treesitter'
+require 'user/completion'
+require 'user/telescope'
+require 'user/git'
+require 'user/lint'
 -- require 'user/nvimtree'
 require 'user/notify'
-require 'user/treesitter'
-require 'user/gitsigns'
-require 'user/telescope'
-require 'user/lsp'
-require 'user/lualine'
-require 'user/comment'
-require 'user/autopairs'
+require 'user/layout'
 require 'user/whichkey'
-require 'user/splitjoin'
+require 'user/editing'
 require 'user/keys'
+require 'user/tabs'
 
 -- vanilla
 require"fidget".setup{}
@@ -248,29 +223,7 @@ require("project_nvim").setup({
 })
 
 vim.g.did_load_filetypes = 1
-vim.api.nvim_exec([[ autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif ]], false)
 -- vim.cmd([[ command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | tabnew | cw | redraw! ]])
 vim.cmd([[ command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw! ]])
 
 -- vim.cmd([[ set autochdir ]])
-
-local map = require("user/utils").map
-
-require('tabby.tabline').use_preset('tab_only', {
-  theme = {
-    fill = 'TabLineFill', -- tabline background
-    head = 'TabLine', -- head element highlight
-    current_tab = 'TabLineSel', -- current tab label highlight
-    tab = 'TabLine', -- other tab label highlight
-    win = 'TabLine', -- window highlight
-    tail = 'TabLine', -- tail element highlight
-  },
-  buf_name = {
-      mode = "'unique'|'relative'|'tail'|'shorten'",
-  },
-})
-
-map('n', '<C-;>', ':tabprevious<CR>', { silent = true })
-map('n', '<C-,>', ':tabnext<CR>', { silent = true })
-map('t', '<C-,>', [[<C-\><C-n>:tabprevious<CR>]], { silent = true })
-map('t', '<C-,>', [[<C-\><C-n>:tabnext<CR>]], { silent = true })

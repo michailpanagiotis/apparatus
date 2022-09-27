@@ -15,19 +15,9 @@ local colors = {
 
 local window_width_limit = 70
 
-local conditions = {
-  buffer_not_empty = function()
-    return vim.fn.empty(vim.fn.expand "%:t") ~= 1
-  end,
-  hide_in_width = function()
-    return vim.fn.winwidth(0) > window_width_limit
-  end,
-  -- check_git_workspace = function()
-  --   local filepath = vim.fn.expand "%:p:h"
-  --   local gitdir = vim.fn.finddir(".git", filepath .. ";")
-  --   return gitdir and #gitdir > 0 and #gitdir < #filepath
-  -- end,
-}
+local function hideInWidth()
+  return vim.fn.winwidth(0) > window_width_limit
+end
 
 local function diff_source()
   local gitsigns = vim.b.gitsigns_status_dict
@@ -93,7 +83,7 @@ local components = {
     "b:gitsigns_head",
     icon = " ",
     color = { gui = "bold" },
-    cond = conditions.hide_in_width,
+    cond = hideInWidth,
   },
   filename = {
     "filename",
@@ -124,13 +114,13 @@ local components = {
       return ""
     end,
     color = { fg = colors.green },
-    cond = conditions.hide_in_width,
+    cond = hideInWidth,
   },
   diagnostics = {
     "diagnostics",
     sources = { "nvim_diagnostic" },
     symbols = { error = " ", warn = " ", info = " ", hint = " " },
-    cond = conditions.hide_in_width,
+    cond = hideInWidth,
   },
   treesitter = {
     function()
@@ -141,7 +131,7 @@ local components = {
       local ts = vim.treesitter.highlighter.active[buf]
       return { fg = ts and not vim.tbl_isempty(ts) and colors.green or colors.red }
     end,
-    cond = conditions.hide_in_width,
+    cond = hideInWidth,
   },
   lsp = {
     function(msg)
@@ -178,10 +168,10 @@ local components = {
       return "[" .. table.concat(unique_client_names, ", ") .. "]"
     end,
     color = { gui = "bold" },
-    cond = conditions.hide_in_width,
+    cond = hideInWidth,
   },
-  location = { "location", cond = conditions.hide_in_width, color = {} },
-  progress = { "progress", cond = conditions.hide_in_width, color = {} },
+  location = { "location", cond = hideInWidth, color = {} },
+  progress = { "progress", cond = hideInWidth, color = {} },
   spaces = {
     function()
       if not vim.api.nvim_buf_get_option(0, "expandtab") then
@@ -193,16 +183,16 @@ local components = {
       end
       return "Spaces: " .. size .. " "
     end,
-    cond = conditions.hide_in_width,
+    cond = hideInWidth,
     color = {},
   },
   encoding = {
     "o:encoding",
     fmt = string.upper,
     color = {},
-    cond = conditions.hide_in_width,
+    cond = hideInWidth,
   },
-  filetype = { "filetype", cond = conditions.hide_in_width },
+  filetype = { "filetype", cond = hideInWidth },
   scrollbar = {
     function()
       local current_line = vim.fn.line "."
@@ -218,7 +208,7 @@ local components = {
   },
 }
 
-local config = {
+local lualineConfig = {
   options = {
     theme = "auto",
     icons_enabled = true,
@@ -265,5 +255,4 @@ local config = {
 }
 
 local lualine = require "lualine"
-
-lualine.setup(config)
+lualine.setup(lualineConfig)

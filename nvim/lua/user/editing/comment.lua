@@ -1,25 +1,6 @@
-local pre_hook = nil
-pre_hook = function(ctx)
-  local U = require "Comment.utils"
+-- Comment
 
-  -- Determine whether to use linewise or blockwise commentstring
-  local type = ctx.ctype == U.ctype.linewise and "__default" or "__multiline"
-
-  -- Determine the location where to calculate commentstring from
-  local location = nil
-  if ctx.ctype == U.ctype.blockwise then
-    location = require("ts_context_commentstring.utils").get_cursor_location()
-  elseif ctx.cmotion == U.cmotion.v or ctx.cmotion == U.cmotion.V then
-    location = require("ts_context_commentstring.utils").get_visual_start_location()
-  end
-
-  return require("ts_context_commentstring.internal").calculate_commentstring {
-    key = type,
-    location = location,
-  }
-end
-
-local config = {
+local commentConfig = {
   active = true,
   on_config_done = nil,
   ---Add a space b/w comment and the line
@@ -66,7 +47,25 @@ local config = {
 
   ---Pre-hook, called before commenting the line
   ---@type function|nil
-  pre_hook = pre_hook,
+  pre_hook = function(ctx)
+    local U = require "Comment.utils"
+
+    -- Determine whether to use linewise or blockwise commentstring
+    local type = ctx.ctype == U.ctype.linewise and "__default" or "__multiline"
+
+    -- Determine the location where to calculate commentstring from
+    local location = nil
+    if ctx.ctype == U.ctype.blockwise then
+      location = require("ts_context_commentstring.utils").get_cursor_location()
+    elseif ctx.cmotion == U.cmotion.v or ctx.cmotion == U.cmotion.V then
+      location = require("ts_context_commentstring.utils").get_visual_start_location()
+    end
+
+    return require("ts_context_commentstring.internal").calculate_commentstring {
+      key = type,
+      location = location,
+    }
+  end,
 
   ---Post-hook, called after commenting is done
   ---@type function|nil
@@ -75,4 +74,4 @@ local config = {
 
 local nvim_comment = require "Comment"
 
-nvim_comment.setup(config)
+nvim_comment.setup(commentConfig)

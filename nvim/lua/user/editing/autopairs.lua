@@ -1,4 +1,7 @@
-local config = {
+-- Autopairs
+--
+--
+local autopairsConfig = {
   active = true,
   on_config_done = nil,
   ---@usage  modifies the function or method delimiter by filetypes
@@ -43,25 +46,9 @@ local config = {
 }
 
 local autopairs = require "nvim-autopairs"
+autopairs.setup(autopairsConfig)
+
 local Rule = require "nvim-autopairs.rule"
-
-autopairs.setup {
-  check_ts = config.check_ts,
-  enable_check_bracket_line = config.enable_check_bracket_line,
-  ts_config = config.ts_config,
-  disable_filetype = config.disable_filetype,
-  disable_in_macro = config.disable_in_macro,
-  ignored_next_char = config.ignored_next_char,
-  enable_moveright = config.enable_moveright,
-  enable_afterquote = config.enable_afterquote,
-  map_c_w = config.map_c_w,
-  map_bs = config.map_bs,
-  disable_in_visualblock = config.disable_in_visualblock,
-  fast_wrap = config.fast_wrap,
-}
-
-require("nvim-treesitter.configs").setup { autopairs = { enable = true } }
-
 local ts_conds = require "nvim-autopairs.ts-conds"
 
 -- TODO: can these rules be safely added from "config.lua" ?
@@ -70,8 +57,3 @@ autopairs.add_rules {
   Rule("%", "%", "lua"):with_pair(ts_conds.is_ts_node { "string", "comment" }),
   Rule("$", "$", "lua"):with_pair(ts_conds.is_not_ts_node { "function" }),
 }
-
-pcall(function()
-  local cmp_autopairs = require "nvim-autopairs.completion.cmp"
-  require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
-end)
