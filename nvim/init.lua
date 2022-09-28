@@ -17,6 +17,7 @@ require('packer').startup(function(use)
   use 'kyazdani42/nvim-web-devicons'
   use 'nathom/filetype.nvim'                -- faster filetype recognition
   use 'antoinemadec/FixCursorHold.nvim'
+  use 'ahmedkhalf/project.nvim'
 
   -- Syntax & diagnostics
   use 'neovim/nvim-lspconfig'                                             -- Collection of configurations for built-in LSP client
@@ -81,7 +82,6 @@ require('packer').startup(function(use)
 
   -- Minor Enhancements
   -- use 'RRethy/vim-illuminate'               -- Illuminate word under cursor
-  use 'ahmedkhalf/project.nvim'
 
   -- VIM
   use 'mhinz/vim-startify'           -- The fancy start screen for Vim
@@ -157,18 +157,14 @@ vim.o.completeopt = 'menuone,noselect'
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- [[ Highlight on yank ]]
--- See `:help vim.highlight.on_yank()`
-local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
-vim.api.nvim_create_autocmd('TextYankPost', {
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-  group = highlight_group,
-  pattern = '*',
-})
-vim.api.nvim_exec([[ autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif ]], false)
+vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
+-- Remap for dealing with word wrap
+vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
+-- Search/replace
+vim.keymap.set('v', '<C-R>', [["hy:%s/<C-r>h//gc<left><left><left>]], {});
 
 require 'user/core'
 require 'user/lsp'
@@ -177,21 +173,9 @@ require 'user/completion'
 require 'user/telescope'
 require 'user/git'
 require 'user/lint'
--- require 'user/nvimtree'
 require 'user/layout'
 require 'user/display'
 require 'user/editing'
-require 'user/keys'
-require 'user/tabs'
 
--- vanilla
-require("project_nvim").setup({
-  detection_methods = { "lsp", "pattern" },
-  patterns = { "=src", ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json" },
-  silent_chdir = false,
-})
-
--- vim.cmd([[ command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | tabnew | cw | redraw! ]])
-vim.cmd([[ command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw! ]])
 
 -- vim.cmd([[ set autochdir ]])

@@ -12,3 +12,7 @@ require("toggleterm").setup{
 }
 
 require"trouble".setup{}
+
+vim.keymap.set('n', '<C-l>', ':TroubleToggle document_diagnostics<CR>', { silent = true })
+
+vim.keymap.set('n', '<C-n>', ':NERDTreeToggle<CR>', { silent = true })

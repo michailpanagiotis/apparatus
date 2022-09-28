@@ -1,12 +1,20 @@
+local map = require("user/utils").map
 local theme = {
-  fill = 'TabLineFill',
-  -- Also you can do this: fill = { fg='#f2e9de', bg='#907aa9', style='italic' }
-  head = 'TabLine',
-  current_tab = 'TabLineSel',
-  tab = 'TabLine',
-  win = 'TabLine',
-  tail = 'TabLine',
+  fill = 'TabLineFill', -- tabline background
+  head = 'TabLine', -- head element highlight
+  current_tab = 'TabLineSel', -- current tab label highlight
+  tab = 'TabLine', -- other tab label highlight
+  win = 'TabLine', -- window highlight
+  tail = 'TabLine', -- tail element highlight
 }
+
+require('tabby.tabline').use_preset('tab_only', {
+  theme = theme,
+  buf_name = {
+      mode = "'unique'|'relative'|'tail'|'shorten'",
+  },
+})
+
 require('tabby.tabline').set(function(line)
   return {
     {
@@ -44,3 +52,8 @@ require('tabby.tabline').set(function(line)
     hl = theme.fill,
   }
 end)
+
+map('n', '<C-;>', ':tabprevious<CR>', { silent = true })
+map('n', '<C-,>', ':tabnext<CR>', { silent = true })
+map('t', '<C-,>', [[<C-\><C-n>:tabprevious<CR>]], { silent = true })
+map('t', '<C-,>', [[<C-\><C-n>:tabnext<CR>]], { silent = true })
