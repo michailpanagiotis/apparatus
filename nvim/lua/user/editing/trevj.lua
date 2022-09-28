@@ -1,9 +1,5 @@
--- Split Join
-
 require"trevj".setup{}
 
-vim.g.splitjoin_split_mapping = ''
-vim.g.splitjoin_join_mapping  = 'gj'
-vim.keymap.set('n', 'gs', function()
+vim.keymap.set('n', '<C-s>', function()
   require('trevj').format_at_cursor()
 end)

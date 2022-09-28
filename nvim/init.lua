@@ -11,19 +11,28 @@ end
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'   -- Package manager
 
-  -- Core
-  use 'folke/lua-dev.nvim'                                                -- Dev setup for nvim lua API
+  -- Vim Core
+  use 'vim-scripts/ReplaceWithRegister' -- multiple pastes after yank
+  use 'tpope/vim-surround'
+  use 'tpope/vim-sleuth'                -- Detect tabstop and shiftwidth automatically
+  use 'tpope/vim-vinegar'
+  use 'godlygeek/tabular'               -- align columns
+
+  -- Neovim Core
+  use 'folke/lua-dev.nvim'                          -- Dev setup for nvim lua API
+  use 'lewis6991/impatient.nvim'                    -- Improve startup time for Neovim
   use 'b0o/schemastore.nvim'
   use 'kyazdani42/nvim-web-devicons'
-  use 'nathom/filetype.nvim'                -- faster filetype recognition
+  use 'nathom/filetype.nvim'                        -- faster filetype recognition
   use 'antoinemadec/FixCursorHold.nvim'
   use 'ahmedkhalf/project.nvim'
+  use 'mjlbach/onedark.nvim'                        -- Theme inspired by Atom
 
   -- Syntax & diagnostics
-  use 'neovim/nvim-lspconfig'                                             -- Collection of configurations for built-in LSP client
-  use 'williamboman/nvim-lsp-installer'                                   -- Automatically install language servers to stdpath
-  use 'nvim-treesitter/nvim-treesitter'                                   -- Highlight, edit, and navigate code
-  use 'nvim-treesitter/nvim-treesitter-textobjects'                       -- Additional textobjects for treesitter
+  use 'neovim/nvim-lspconfig'                       -- Collection of configurations for built-in LSP client
+  use 'williamboman/nvim-lsp-installer'             -- Automatically install language servers to stdpath
+  use 'nvim-treesitter/nvim-treesitter'             -- Highlight, edit, and navigate code
+  use 'nvim-treesitter/nvim-treesitter-textobjects' -- Additional textobjects for treesitter
   use 'nvim-treesitter/nvim-treesitter-refactor'
   use 'JoosepAlviste/nvim-ts-context-commentstring'
   use 'jose-elias-alvarez/null-ls.nvim'
@@ -32,11 +41,9 @@ require('packer').startup(function(use)
   use {
     'L3MON4D3/LuaSnip',
     requires = { 'saadparwaiz1/cmp_luasnip', 'rafamadriz/friendly-snippets' },
-    config = function()
-      require("luasnip.loaders.from_vscode").lazy_load()
-    end,
+    config = function() require("luasnip.loaders.from_vscode").lazy_load() end,
   }
-  use { 'hrsh7th/nvim-cmp', requires = { 'hrsh7th/cmp-nvim-lsp' } }-- Autocompletion
+  use { 'hrsh7th/nvim-cmp', requires = { 'hrsh7th/cmp-nvim-lsp' } }
   use 'hrsh7th/cmp-nvim-lsp-signature-help'
   use 'hrsh7th/cmp-path'
   use 'hrsh7th/cmp-buffer'
@@ -51,49 +58,40 @@ require('packer').startup(function(use)
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
   -- Git
+  use 'tpope/vim-fugitive'
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Add git related info in the signs columns and popups
 
   -- Editing
-  use 'AckslD/nvim-trevJ.lua'                       -- splitting lines according to treesitter
-  use 'numToStr/Comment.nvim'                       -- "gc" to comment visual regions/lines
+  use 'AckslD/nvim-trevJ.lua' -- splitting lines according to treesitter
+  use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
   use 'windwp/nvim-autopairs'
-  use 'cappyzawa/trim.nvim'                 -- trim trailing space
+  use 'cappyzawa/trim.nvim'   -- trim trailing space
+  use 'ojroques/nvim-osc52'
 
   -- Layout
-  use 'nvim-lualine/lualine.nvim'    -- Fancier statusline
-  use 'j-hui/fidget.nvim'            -- Progress bar for LSP
+  use 'nvim-lualine/lualine.nvim'              -- Fancier statusline
+  use 'j-hui/fidget.nvim'                      -- Progress bar for LSP
+  use 'goolord/alpha-nvim'                     -- start screen
   use 'rcarriga/nvim-notify'
   use 'akinsho/toggleterm.nvim'
-  use { "folke/trouble.nvim", requires = "kyazdani42/nvim-web-devicons" }
+  use {
+    "folke/trouble.nvim",
+    requires = "kyazdani42/nvim-web-devicons",
+  }
   use 'folke/which-key.nvim'
   use 'nanozuki/tabby.nvim'
 
   -- Display
-  use 'sunjon/shade.nvim'            -- shade inactive windows
+  use 'sunjon/shade.nvim'                   -- shade inactive windows
   use 'NvChad/nvim-colorizer.lua'
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
 
   -- Moving
   use 'ggandor/leap.nvim'
 
-  -- Layout & Display
-  -- use 'kyazdani42/nvim-tree.lua'     -- File browser
-  use 'mjlbach/onedark.nvim'         -- Theme inspired by Atom
-
-  -- Minor Enhancements
-  -- use 'RRethy/vim-illuminate'               -- Illuminate word under cursor
-
   -- VIM
-  use 'mhinz/vim-startify'           -- The fancy start screen for Vim
+
   use 'preservim/nerdtree'
-  use 'ojroques/vim-oscyank'                -- yank in clipboard
-  use 'vim-scripts/ReplaceWithRegister'     -- multiple pastes after yank
-  use 'tpope/vim-vinegar'
-  use 'tpope/vim-fugitive'
-  use 'tpope/vim-surround'
-  use 'tpope/vim-sleuth'                            -- Detect tabstop and shiftwidth automatically
-  use 'AndrewRadev/splitjoin.vim'                   -- splitting/joining lines
-  use 'godlygeek/tabular'                   -- align columns
 
   if is_bootstrap then
     require('packer').sync()
@@ -176,6 +174,3 @@ require 'user/lint'
 require 'user/layout'
 require 'user/display'
 require 'user/editing'
-
-
--- vim.cmd([[ set autochdir ]])
