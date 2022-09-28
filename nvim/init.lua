@@ -11,15 +11,21 @@ end
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'   -- Package manager
 
-  -- Syntax & diagnostics
+  -- Core
   use 'folke/lua-dev.nvim'                                                -- Dev setup for nvim lua API
   use 'b0o/schemastore.nvim'
+  use 'kyazdani42/nvim-web-devicons'
+  use 'nathom/filetype.nvim'                -- faster filetype recognition
+  use 'antoinemadec/FixCursorHold.nvim'
+
+  -- Syntax & diagnostics
   use 'neovim/nvim-lspconfig'                                             -- Collection of configurations for built-in LSP client
   use 'williamboman/nvim-lsp-installer'                                   -- Automatically install language servers to stdpath
   use 'nvim-treesitter/nvim-treesitter'                                   -- Highlight, edit, and navigate code
   use 'nvim-treesitter/nvim-treesitter-textobjects'                       -- Additional textobjects for treesitter
+  use 'nvim-treesitter/nvim-treesitter-refactor'
+  use 'JoosepAlviste/nvim-ts-context-commentstring'
   use 'jose-elias-alvarez/null-ls.nvim'
-  use { "folke/trouble.nvim", requires = "kyazdani42/nvim-web-devicons" }
 
   -- Autocomplete
   use {
@@ -40,60 +46,54 @@ require('packer').startup(function(use)
     requires = { 'nvim-lua/plenary.nvim' }
   }
   use 'nvim-telescope/telescope-ui-select.nvim'
+  use 'nvim-telescope/telescope-file-browser.nvim'
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+
+  -- Git
+  use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Add git related info in the signs columns and popups
+
+  -- Editing
+  use 'AckslD/nvim-trevJ.lua'                       -- splitting lines according to treesitter
+  use 'numToStr/Comment.nvim'                       -- "gc" to comment visual regions/lines
+  use 'windwp/nvim-autopairs'
+  use 'cappyzawa/trim.nvim'                 -- trim trailing space
+
+  -- Layout
+  use 'nvim-lualine/lualine.nvim'    -- Fancier statusline
+  use 'j-hui/fidget.nvim'            -- Progress bar for LSP
+  use 'rcarriga/nvim-notify'
+  use 'akinsho/toggleterm.nvim'
+  use { "folke/trouble.nvim", requires = "kyazdani42/nvim-web-devicons" }
+  use 'folke/which-key.nvim'
+  use 'nanozuki/tabby.nvim'
+
+  -- Display
+  use 'sunjon/shade.nvim'            -- shade inactive windows
+  use 'NvChad/nvim-colorizer.lua'
+  use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
 
   -- Moving
   use 'ggandor/leap.nvim'
 
-  -- Editing
-  use 'JoosepAlviste/nvim-ts-context-commentstring'
-  use 'AckslD/nvim-trevJ.lua'                       -- splitting lines according to treesitter
-  use 'numToStr/Comment.nvim'                       -- "gc" to comment visual regions/lines
-  use 'windwp/nvim-autopairs'
-
   -- Layout & Display
-  use 'kyazdani42/nvim-web-devicons'
   -- use 'kyazdani42/nvim-tree.lua'     -- File browser
   use 'mjlbach/onedark.nvim'         -- Theme inspired by Atom
-  use 'nvim-lualine/lualine.nvim'    -- Fancier statusline
-  use 'j-hui/fidget.nvim'            -- Progress bar for LSP
-  use 'sunjon/shade.nvim'            -- shade inactive windows
-  use 'mhinz/vim-startify'           -- The fancy start screen for Vim
-  use 'rcarriga/nvim-notify'
-
-  -- Git
-  use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Add git related info in the signs columns and popups
-  use 'tpope/vim-fugitive'
-  use 'whiteinge/diffconflicts'
 
   -- Minor Enhancements
-  use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-  use 'cappyzawa/trim.nvim'                 -- trim trailing space
-  use 'nathom/filetype.nvim'                -- faster filetype recognition
-  use 'godlygeek/tabular'                   -- align columns
   -- use 'RRethy/vim-illuminate'               -- Illuminate word under cursor
-  use 'antoinemadec/FixCursorHold.nvim'
-  use 'folke/which-key.nvim'
-
-  use {"akinsho/toggleterm.nvim", tag = '*', config = function()
-    require("toggleterm").setup()
-  end}
-
-  use 'nanozuki/tabby.nvim'
-  use 'NvChad/nvim-colorizer.lua'
-  use 'https://gitlab.com/__tpb/monokai-pro.nvim'
   use 'ahmedkhalf/project.nvim'
-  use 'nvim-telescope/telescope-file-browser.nvim'
-  use 'nvim-treesitter/nvim-treesitter-refactor'
 
   -- VIM
+  use 'mhinz/vim-startify'           -- The fancy start screen for Vim
   use 'preservim/nerdtree'
-  use 'tpope/vim-vinegar'
   use 'ojroques/vim-oscyank'                -- yank in clipboard
   use 'vim-scripts/ReplaceWithRegister'     -- multiple pastes after yank
+  use 'tpope/vim-vinegar'
+  use 'tpope/vim-fugitive'
   use 'tpope/vim-surround'
   use 'tpope/vim-sleuth'                            -- Detect tabstop and shiftwidth automatically
   use 'AndrewRadev/splitjoin.vim'                   -- splitting/joining lines
+  use 'godlygeek/tabular'                   -- align columns
 
   if is_bootstrap then
     require('packer').sync()
@@ -170,32 +170,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.api.nvim_exec([[ autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif ]], false)
 
 
-require('indent_blankline').setup {
-  char = '┊',
-  show_trailing_blankline_indent = false,
-}
-
-require('trim').setup({
-  -- if you want to ignore space of top
-  patterns = {
-    [[%s/\s\+$//e]],           -- remove unwanted spaces
-    [[%s/\($\n\s*\)\+\%$//]],  -- trim last line
-    [[%s/\%^\n\+//]],          -- trim first line
-    -- [[%s/\(\n\n\)\n\+/\1/]],   -- replace multiple blank lines with a single line
-  },
-})
-
-require('leap').set_default_keymaps()
-require('leap').setup({
-  higlight_unlabeled = true,
-  case_sensitive = true
-})
-
-require("toggleterm").setup{
-  open_mapping = [[<c-t>]],
-  direction ="tab"
-}
-
+require 'user/core'
 require 'user/lsp'
 require 'user/treesitter'
 require 'user/completion'
@@ -203,26 +178,19 @@ require 'user/telescope'
 require 'user/git'
 require 'user/lint'
 -- require 'user/nvimtree'
-require 'user/notify'
 require 'user/layout'
-require 'user/whichkey'
+require 'user/display'
 require 'user/editing'
 require 'user/keys'
 require 'user/tabs'
 
 -- vanilla
-require"fidget".setup{}
-require"which-key".setup{}
-require"shade".setup{}
-require"trouble".setup{}
-require"colorizer".setup{}
 require("project_nvim").setup({
   detection_methods = { "lsp", "pattern" },
   patterns = { "=src", ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json" },
   silent_chdir = false,
 })
 
-vim.g.did_load_filetypes = 1
 -- vim.cmd([[ command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | tabnew | cw | redraw! ]])
 vim.cmd([[ command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw! ]])
 
