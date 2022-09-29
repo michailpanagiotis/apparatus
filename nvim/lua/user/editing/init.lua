@@ -27,3 +27,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = highlight_group,
   pattern = '*',
 })
+
+
+require('nvim-surround').setup({
+    -- Configuration here, or leave empty to use defaults
+})

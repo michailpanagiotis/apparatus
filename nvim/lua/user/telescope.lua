@@ -97,6 +97,7 @@ local config = {
   }
 }
 
+require('neoclip').setup()
 local telescope = require "telescope"
 telescope.setup(config)
 
@@ -111,6 +112,10 @@ end)
 
 pcall(function()
   require("telescope").load_extension "attempt"
+end)
+
+pcall(function()
+  require("telescope").load_extension "neoclip"
 end)
 
 -- See `:help telescope.builtin`
