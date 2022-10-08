@@ -99,9 +99,37 @@ require('packer').startup(function(use)
   -- TODO
   --
   -- RRethy/nvim-treesitter-textsubjects
-  -- gennaro-tedesco/nvim-jqx
+  use 'gennaro-tedesco/nvim-jqx'
   -- tversteeg/registers.nvim
   use 'tamago324/lir.nvim'
+
+  use 'doums/darcula'
+
+  use { "briones-gabriel/darcula-solid.nvim", requires = "rktjmp/lush.nvim" }
+
+  use { "ellisonleao/gruvbox.nvim" }
+
+  use { "kunzaatko/nord.nvim" }
+
+  use {
+    "phha/zenburn.nvim",
+    config = function() require("zenburn").setup() end
+  }
+  use {
+    "mcchrish/zenbones.nvim",
+    requires = "rktjmp/lush.nvim"
+  }
+
+  use 'RRethy/nvim-base16'
+
+  use 'https://gitlab.com/__tpb/monokai-pro.nvim'
+
+  use 'sainnhe/sonokai'
+
+  use 'tanvirtin/monokai.nvim'
+
+  -- TODO
+  -- cd from out of a project and find project folder for cwd
 
   if is_bootstrap then
     require('packer').sync()
@@ -153,7 +181,15 @@ vim.wo.signcolumn = 'yes'
 
 -- Set colorscheme
 vim.o.termguicolors = true
-vim.cmd [[colorscheme onedark]]
+vim.o.background = "dark"
+
+vim.g.monokaipro_filter = "default"
+vim.g.monokaipro_transparent = false
+vim.g.monokaipro_hide_inactive_statusline = false
+vim.g.monokaipro_flat_float = false
+vim.g.monokaipro_sidebars = { "packer", "Trouble" }
+vim.g.sonokai_style = 'default'
+vim.cmd [[colorscheme sonokai]]
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -180,11 +216,11 @@ require 'user/treesitter'
 require 'user/completion'
 require 'user/telescope'
 require 'user/git'
-require 'user/lint'
 require 'user/layout'
 require 'user/display'
 require 'user/editing'
 require 'user/moving'
+require 'user/lint'
 
 -- vim.keymap.set('n', '<C-n>', ':NERDTreeToggle<CR>', { silent = true })
 -- vim.keymap.set('n', '<C-n>', ':Ve<CR>', { silent = true })

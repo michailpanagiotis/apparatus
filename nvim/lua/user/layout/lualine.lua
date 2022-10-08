@@ -210,7 +210,7 @@ local components = {
 
 local lualineConfig = {
   options = {
-    theme = "auto",
+    theme = "monokaipro",
     icons_enabled = true,
     component_separators = { left = "", right = "" },
     section_separators = { left = "", right = "" },

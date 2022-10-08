@@ -101,6 +101,21 @@ end
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
 
+local snip = luasnip.snippet
+local text = luasnip.text_node
+local insert = luasnip.insert_node
+luasnip.add_snippets(nil, {
+    all = {
+        snip({
+            trig = "jst",
+            namr = "Console stringify",
+            dscr = "console.log(JSON.stringify...",
+        }, {
+            text("console.log(JSON.stringify("), insert(0), text(", null, 2));")
+        }),
+    },
+})
+
 CmpConfig = {
     confirm_opts = {
       behavior = cmp.ConfirmBehavior.Replace,
@@ -150,7 +165,7 @@ CmpConfig = {
         calc = "(Calc)",
         cmp_tabnine = "(Tabnine)",
         vsnip = "(Snippet)",
-        luasnip = "(Snippet)",
+        luasnip = "(Snip)",
         buffer = "(Buffer)",
         tmux = "(TMUX)",
         nvim_lsp_signature_help = "(Signature)"
@@ -254,7 +269,7 @@ CmpConfig = {
         if jumpable(1) and luasnip.jump(1) then
           return -- success, exit early
         end
-        fallback() -- if not exited early, always fallback
+        fallback() -- if not exited early, lys fallback
       end),
   }
 }
