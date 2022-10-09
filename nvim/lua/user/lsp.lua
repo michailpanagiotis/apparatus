@@ -155,7 +155,7 @@ vim.api.nvim_create_autocmd('CursorMoved', {
 })
 
 vim.diagnostic.config({ underline = true, signs = true, virtual_text = false })
-vim.highlight.create('DiagnosticUnderlineError', { ctermbg=0, guisp="#5C6370", guifg=0 })
+vim.api.nvim_set_hl(0,'DiagnosticUnderlineError',{ ctermbg=0, sp="#5C6370", fg=0 })
 
 local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 for type, icon in pairs(signs) do

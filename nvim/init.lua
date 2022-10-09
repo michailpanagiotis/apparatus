@@ -25,8 +25,8 @@ require('packer').startup(function(use)
   use 'kyazdani42/nvim-web-devicons'
   use 'nathom/filetype.nvim'                        -- faster filetype recognition
   use 'antoinemadec/FixCursorHold.nvim'
+  use 'gennaro-tedesco/nvim-jqx'                    -- Json formatter
   use 'ahmedkhalf/project.nvim'
-  use 'mjlbach/onedark.nvim'                        -- Theme inspired by Atom
 
   -- Syntax & diagnostics
   use 'neovim/nvim-lspconfig'                       -- Collection of configurations for built-in LSP client
@@ -71,6 +71,7 @@ require('packer').startup(function(use)
   use 'kylechui/nvim-surround'
 
   -- Layout
+  use 'tamago324/lir.nvim'                     -- File browser
   use 'nvim-lualine/lualine.nvim'              -- Fancier statusline
   use 'j-hui/fidget.nvim'                      -- Progress bar for LSP
   use 'goolord/alpha-nvim'                     -- start screen
@@ -81,52 +82,56 @@ require('packer').startup(function(use)
     requires = "kyazdani42/nvim-web-devicons",
   }
   use 'folke/which-key.nvim'
-  use 'nanozuki/tabby.nvim'
+  use 'nanozuki/tabby.nvim'                     -- Tabs
 
   -- Display
   use 'sunjon/shade.nvim'                   -- shade inactive windows
-  use 'NvChad/nvim-colorizer.lua'
+  use 'NvChad/nvim-colorizer.lua'           -- color highlighter
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
 
   -- Moving
   use 'ggandor/leap.nvim'
   use 'gaborvecsei/memento.nvim'
 
-  -- VIM
-  -- use 'preservim/nerdtree'
-  --
-  --
+  -- Themes
+  use { "briones-gabriel/darcula-solid.nvim", requires = "rktjmp/lush.nvim" }
+  use { "mcchrish/zenbones.nvim", requires = "rktjmp/lush.nvim" }
+  use { "phha/zenburn.nvim", config = function() require("zenburn").setup() end }
+  use 'mjlbach/onedark.nvim'                        -- Theme inspired by Atom
+  use 'ellisonleao/gruvbox.nvim'
+  use 'kunzaatko/nord.nvim'
+  use 'doums/darcula'
+  use 'RRethy/nvim-base16'
+  use 'https://gitlab.com/__tpb/monokai-pro.nvim'
+  use 'sainnhe/sonokai'
+  use 'tanvirtin/monokai.nvim'
+
   -- TODO
   --
   -- RRethy/nvim-treesitter-textsubjects
-  use 'gennaro-tedesco/nvim-jqx'
+  -- https://github.com/max397574/better-escape.nvim
+  -- autocomplete when <Tab>
+  -- https://github.com/Pocco81/true-zen.nvim
+  -- https://github.com/folke/zen-mode.nvim
+  -- https://github.com/gbprod/yanky.nvim
+  -- https://github.com/danymat/neogen
+  -- https://github.com/NMAC427/guess-indent.nvim
+  -- https://github.com/Abstract-IDE/penvim
+  -- https://github.com/yaocccc/nvim-hlchunk
+  -- https://github.com/notomo/cmdbuf.nvim
+  -- https://github.com/gelguy/wilder.nvim
+  -- https://github.com/chipsenkbeil/distant.nvim
+  -- https://github.com/luukvbaal/stabilize.nvim
+  -- https://github.com/beauwilliams/focus.nvim
+  -- https://github.com/andrewferrier/debugprint.nvim
+  -- https://github.com/jghauser/kitty-runner.nvim
+  -- https://github.com/m-demare/attempt.nvim
+  -- https://github.com/xiyaowong/virtcolumn.nvim
+  -- https://github.com/ghillb/cybu.nvim
+  -- https://github.com/toppair/reach.nvim
+  -- https://github.com/matbme/JABS.nvim
   -- tversteeg/registers.nvim
-  use 'tamago324/lir.nvim'
 
-  use 'doums/darcula'
-
-  use { "briones-gabriel/darcula-solid.nvim", requires = "rktjmp/lush.nvim" }
-
-  use { "ellisonleao/gruvbox.nvim" }
-
-  use { "kunzaatko/nord.nvim" }
-
-  use {
-    "phha/zenburn.nvim",
-    config = function() require("zenburn").setup() end
-  }
-  use {
-    "mcchrish/zenbones.nvim",
-    requires = "rktjmp/lush.nvim"
-  }
-
-  use 'RRethy/nvim-base16'
-
-  use 'https://gitlab.com/__tpb/monokai-pro.nvim'
-
-  use 'sainnhe/sonokai'
-
-  use 'tanvirtin/monokai.nvim'
 
   -- TODO
   -- cd from out of a project and find project folder for cwd
@@ -179,18 +184,6 @@ vim.o.smartcase = true
 vim.o.updatetime = 250
 vim.wo.signcolumn = 'yes'
 
--- Set colorscheme
-vim.o.termguicolors = true
-vim.o.background = "dark"
-
-vim.g.monokaipro_filter = "default"
-vim.g.monokaipro_transparent = false
-vim.g.monokaipro_hide_inactive_statusline = false
-vim.g.monokaipro_flat_float = false
-vim.g.monokaipro_sidebars = { "packer", "Trouble" }
-vim.g.sonokai_style = 'default'
-vim.cmd [[colorscheme sonokai]]
-
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 
@@ -210,6 +203,7 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 -- Search/replace
 vim.keymap.set('v', '<C-R>', [["hy:%s/<C-r>h//gc<left><left><left>]], {});
 
+require 'user/theme'
 require 'user/core'
 require 'user/lsp'
 require 'user/treesitter'
@@ -224,3 +218,14 @@ require 'user/lint'
 
 -- vim.keymap.set('n', '<C-n>', ':NERDTreeToggle<CR>', { silent = true })
 -- vim.keymap.set('n', '<C-n>', ':Ve<CR>', { silent = true })
+--
+function _G.reload_nvim_conf()
+  for name,_ in pairs(package.loaded) do
+    if name:match('^user/') then
+      package.loaded[name] = nil
+    end
+  end
+
+  dofile(vim.env.MYVIMRC)
+  vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO)
+end

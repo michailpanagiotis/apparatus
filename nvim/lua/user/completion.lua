@@ -123,7 +123,7 @@ CmpConfig = {
     },
     completion = {
       ---@usage The minimum length of a word to complete on.
-      keyword_length = 1,
+      keyword_length = 2,
     },
     experimental = {
       ghost_text = true,
@@ -243,7 +243,12 @@ CmpConfig = {
       end, { "i", "s" }),
       ["<S-Tab>"] = cmp.mapping(function(fallback)
         if cmp.visible() then
-          cmp.select_prev_item()
+          if cmp.get_active_entry() then
+            cmp.select_prev_item()
+          else
+            cmp.close()
+            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Tab>', true, true, true), 'nt', true)
+          end
         elseif luasnip.jumpable(-1) then
           luasnip.jump(-1)
         else

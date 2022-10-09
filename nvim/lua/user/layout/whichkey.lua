@@ -175,6 +175,10 @@ local config = {
       name = "Treesitter",
       i = { ":TSConfigInfo<cr>", "Info" },
     },
+    v = {
+      name = 'Vim',
+      r = { ":<cmd>lua reload_nvim_conf()<CR>", "Reload" },
+    },
   },
 }
 
