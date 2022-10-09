@@ -13,9 +13,7 @@ require('packer').startup(function(use)
 
   -- Vim Core
   use 'vim-scripts/ReplaceWithRegister' -- multiple pastes after yank
-  -- use 'tpope/vim-surround'
   use 'tpope/vim-sleuth'                -- Detect tabstop and shiftwidth automatically
-  -- use 'tpope/vim-vinegar'
   use 'godlygeek/tabular'               -- align columns
 
   -- Neovim Core
@@ -69,6 +67,7 @@ require('packer').startup(function(use)
   use 'cappyzawa/trim.nvim'   -- trim trailing space
   use 'ojroques/nvim-osc52'
   use 'kylechui/nvim-surround'
+  use 'max397574/better-escape.nvim'
 
   -- Layout
   use 'tamago324/lir.nvim'                     -- File browser
@@ -88,15 +87,17 @@ require('packer').startup(function(use)
   use 'sunjon/shade.nvim'                   -- shade inactive windows
   use 'NvChad/nvim-colorizer.lua'           -- color highlighter
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
+  use 'luukvbaal/stabilize.nvim'
+  use 'xiyaowong/virtcolumn.nvim'
 
   -- Moving
   use 'ggandor/leap.nvim'
-  use 'gaborvecsei/memento.nvim'
+  use 'gaborvecsei/memento.nvim'            -- remember previous buffers
+  use 'ghillb/cybu.nvim'                    -- Cycle through buffers
 
   -- Themes
   use { "briones-gabriel/darcula-solid.nvim", requires = "rktjmp/lush.nvim" }
   use { "mcchrish/zenbones.nvim", requires = "rktjmp/lush.nvim" }
-  use { "phha/zenburn.nvim", config = function() require("zenburn").setup() end }
   use 'mjlbach/onedark.nvim'                        -- Theme inspired by Atom
   use 'ellisonleao/gruvbox.nvim'
   use 'kunzaatko/nord.nvim'
@@ -106,10 +107,10 @@ require('packer').startup(function(use)
   use 'sainnhe/sonokai'
   use 'tanvirtin/monokai.nvim'
 
+
   -- TODO
   --
   -- RRethy/nvim-treesitter-textsubjects
-  -- https://github.com/max397574/better-escape.nvim
   -- autocomplete when <Tab>
   -- https://github.com/Pocco81/true-zen.nvim
   -- https://github.com/folke/zen-mode.nvim
@@ -117,20 +118,12 @@ require('packer').startup(function(use)
   -- https://github.com/danymat/neogen
   -- https://github.com/NMAC427/guess-indent.nvim
   -- https://github.com/Abstract-IDE/penvim
-  -- https://github.com/yaocccc/nvim-hlchunk
   -- https://github.com/notomo/cmdbuf.nvim
   -- https://github.com/gelguy/wilder.nvim
   -- https://github.com/chipsenkbeil/distant.nvim
-  -- https://github.com/luukvbaal/stabilize.nvim
-  -- https://github.com/beauwilliams/focus.nvim
   -- https://github.com/andrewferrier/debugprint.nvim
   -- https://github.com/jghauser/kitty-runner.nvim
   -- https://github.com/m-demare/attempt.nvim
-  -- https://github.com/xiyaowong/virtcolumn.nvim
-  -- https://github.com/ghillb/cybu.nvim
-  -- https://github.com/toppair/reach.nvim
-  -- https://github.com/matbme/JABS.nvim
-  -- tversteeg/registers.nvim
 
 
   -- TODO
@@ -229,3 +222,5 @@ function _G.reload_nvim_conf()
   dofile(vim.env.MYVIMRC)
   vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO)
 end
+
+vim.api.nvim_set_option_value("colorcolumn", "79", {})

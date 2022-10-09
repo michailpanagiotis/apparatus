@@ -8,4 +8,4 @@ vim.g.monokaipro_hide_inactive_statusline = false
 vim.g.monokaipro_flat_float = false
 vim.g.monokaipro_sidebars = { "packer", "Trouble" }
 vim.g.sonokai_style = 'default'
-vim.cmd [[colorscheme monokaipro]]
+vim.cmd [[colorscheme base16-everforest]]

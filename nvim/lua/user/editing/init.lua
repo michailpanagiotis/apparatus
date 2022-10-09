@@ -32,3 +32,5 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 require('nvim-surround').setup({
     -- Configuration here, or leave empty to use defaults
 })
+
+require('better_escape').setup()

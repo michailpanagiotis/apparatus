@@ -100,6 +100,11 @@ _G.packer_plugins = {
     path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/alpha-nvim",
     url = "https://github.com/goolord/alpha-nvim"
   },
+  ["better-escape.nvim"] = {
+    loaded = true,
+    path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/better-escape.nvim",
+    url = "https://github.com/max397574/better-escape.nvim"
+  },
   ["cmp-buffer"] = {
     loaded = true,
     path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/cmp-buffer",
@@ -330,6 +335,11 @@ _G.packer_plugins = {
     path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/project.nvim",
     url = "https://github.com/ahmedkhalf/project.nvim"
   },
+  ["reach.nvim"] = {
+    loaded = true,
+    path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/reach.nvim",
+    url = "https://github.com/toppair/reach.nvim"
+  },
   ["schemastore.nvim"] = {
     loaded = true,
     path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/schemastore.nvim",
@@ -344,6 +354,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/sonokai",
     url = "https://github.com/sainnhe/sonokai"
+  },
+  ["stabilize.nvim"] = {
+    loaded = true,
+    path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/stabilize.nvim",
+    url = "https://github.com/luukvbaal/stabilize.nvim"
   },
   ["tabby.nvim"] = {
     loaded = true,
@@ -395,6 +410,11 @@ _G.packer_plugins = {
     path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/vim-sleuth",
     url = "https://github.com/tpope/vim-sleuth"
   },
+  ["virtcolumn.nvim"] = {
+    loaded = true,
+    path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/virtcolumn.nvim",
+    url = "https://github.com/xiyaowong/virtcolumn.nvim"
+  },
   ["which-key.nvim"] = {
     loaded = true,
     path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/which-key.nvim",
@@ -404,12 +424,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/zenbones.nvim",
     url = "https://github.com/mcchrish/zenbones.nvim"
-  },
-  ["zenburn.nvim"] = {
-    config = { "\27LJ\2\n5\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\fzenburn\frequire\0" },
-    loaded = true,
-    path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/zenburn.nvim",
-    url = "https://github.com/phha/zenburn.nvim"
   }
 }
 
@@ -418,10 +432,6 @@ time([[Defining packer_plugins]], false)
 time([[Config for LuaSnip]], true)
 try_loadstring("\27LJ\2\nM\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\14lazy_load luasnip.loaders.from_vscode\frequire\0", "config", "LuaSnip")
 time([[Config for LuaSnip]], false)
--- Config for: zenburn.nvim
-time([[Config for zenburn.nvim]], true)
-try_loadstring("\27LJ\2\n5\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\fzenburn\frequire\0", "config", "zenburn.nvim")
-time([[Config for zenburn.nvim]], false)
 
 _G._packer.inside_compile = false
 if _G._packer.needs_bufread == true then

@@ -17,3 +17,14 @@ vim.keymap.set({'n', 'x', 'o'}, 's', function() require'leap'.leap({ target_wind
 -- )}
 --
 vim.keymap.set('n', '<leader>me', "<cmd>lua require('memento').toggle()<CR>", { silent = true })
+
+
+local ok, cybu = pcall(require, "cybu")
+if not ok then
+  return
+end
+cybu.setup()
+vim.keymap.set("n", "{", "<Plug>(CybuPrev)")
+vim.keymap.set("n", "}", "<Plug>(CybuNext)")
+vim.keymap.set({"n", "v"}, "<c-s-tab>", "<plug>(CybuLastusedPrev)")
+vim.keymap.set({"n", "v"}, "<c-tab>", "<plug>(CybuLastusedNext)")
