@@ -15,6 +15,7 @@ require('packer').startup(function(use)
   use 'vim-scripts/ReplaceWithRegister' -- multiple pastes after yank
   use 'tpope/vim-sleuth'                -- Detect tabstop and shiftwidth automatically
   use 'godlygeek/tabular'               -- align columns
+  use 'andymass/vim-matchup'
 
   -- Neovim Core
   use 'folke/lua-dev.nvim'                          -- Dev setup for nvim lua API
@@ -29,11 +30,15 @@ require('packer').startup(function(use)
   -- Syntax & diagnostics
   use 'neovim/nvim-lspconfig'                       -- Collection of configurations for built-in LSP client
   use 'williamboman/nvim-lsp-installer'             -- Automatically install language servers to stdpath
+  use 'jose-elias-alvarez/null-ls.nvim'
+
+  -- Treesitter
   use 'nvim-treesitter/nvim-treesitter'             -- Highlight, edit, and navigate code
   use 'nvim-treesitter/nvim-treesitter-textobjects' -- Additional textobjects for treesitter
+  use 'RRethy/nvim-treesitter-textsubjects'
   use 'nvim-treesitter/nvim-treesitter-refactor'
   use 'JoosepAlviste/nvim-ts-context-commentstring'
-  use 'jose-elias-alvarez/null-ls.nvim'
+  use 'windwp/nvim-ts-autotag'
 
   -- Autocomplete
   use {
@@ -48,8 +53,9 @@ require('packer').startup(function(use)
 
   -- Searching & Browsing
   use {
-    'nvim-telescope/telescope.nvim',            -- Fuzzy Finder (files, lsp, etc)
-    requires = { 'nvim-lua/plenary.nvim' }
+    'nvim-telescope/telescope.nvim',
+    -- Fuzzy Finder (files, lsp, etc)
+    requires = { 'nvim-lua/plenary.nvim' },
   }
   use 'nvim-telescope/telescope-ui-select.nvim'
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
@@ -68,6 +74,7 @@ require('packer').startup(function(use)
   use 'ojroques/nvim-osc52'
   use 'kylechui/nvim-surround'
   use 'max397574/better-escape.nvim'
+  use 'danymat/neogen'        -- Documentation generation
 
   -- Layout
   use 'tamago324/lir.nvim'                     -- File browser
@@ -112,11 +119,7 @@ require('packer').startup(function(use)
   --
   -- RRethy/nvim-treesitter-textsubjects
   -- autocomplete when <Tab>
-  -- https://github.com/Pocco81/true-zen.nvim
-  -- https://github.com/folke/zen-mode.nvim
   -- https://github.com/gbprod/yanky.nvim
-  -- https://github.com/danymat/neogen
-  -- https://github.com/NMAC427/guess-indent.nvim
   -- https://github.com/Abstract-IDE/penvim
   -- https://github.com/notomo/cmdbuf.nvim
   -- https://github.com/gelguy/wilder.nvim
@@ -124,7 +127,9 @@ require('packer').startup(function(use)
   -- https://github.com/andrewferrier/debugprint.nvim
   -- https://github.com/jghauser/kitty-runner.nvim
   -- https://github.com/m-demare/attempt.nvim
-
+  -- kevinhwang91/nvim-bqf
+  use 'ibhagwan/fzf-lua'
+  use {'kevinhwang91/nvim-bqf', ft = 'qf'}
 
   -- TODO
   -- cd from out of a project and find project folder for cwd
@@ -196,11 +201,12 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 -- Search/replace
 vim.keymap.set('v', '<C-R>', [["hy:%s/<C-r>h//gc<left><left><left>]], {});
 
-require 'user/theme'
 require 'user/core'
+require 'user/theme'
 require 'user/lsp'
 require 'user/treesitter'
 require 'user/completion'
+require 'user/fzf'
 require 'user/telescope'
 require 'user/git'
 require 'user/layout'

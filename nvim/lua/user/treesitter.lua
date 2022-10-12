@@ -4,7 +4,7 @@ local config = {
   ensure_installed = { 'lua', 'typescript', 'javascript', 'rust', 'go', 'python' },
   ignore_install = {},
   matchup = {
-    enable = false, -- mandatory, false will disable the whole extension
+    enable = true, -- mandatory, false will disable the whole extension
     -- disable = { "c", "ruby" },  -- optional, list of language that will be disabled
   },
   highlight = {
@@ -26,8 +26,8 @@ local config = {
       json = "",
     },
   },
-  indent = { enable = true, disable = { "yaml", "python" } },
-  autotag = { enable = false },
+  indent = { enable = false, disable = { "yaml", "python" } },
+  autotag = { enable = true },
   textobjects = {
     swap = {
       enable = false,
@@ -35,62 +35,39 @@ local config = {
     },
     -- move = textobj_move_keymaps,
     select = {
-      enable = false,
-      -- keymaps = textobj_sel_keymaps,
-    },
-  },
-  textsubjects = {
-    enable = false,
-    keymaps = { ["."] = "textsubjects-smart", [";"] = "textsubjects-big" },
-    select = {
       enable = true,
-      lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+
+      -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,
+
       keymaps = {
         -- You can use the capture groups defined in textobjects.scm
-        ['af'] = '@function.outer',
-        ['if'] = '@function.inner',
-        ['ac'] = '@class.outer',
-        ['ic'] = '@class.inner',
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        -- you can optionally set descriptions to the mappings (used in the desc parameter of nvim_buf_set_keymap
+        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
       },
-    },
-    move = {
-      enable = true,
-      set_jumps = true, -- whether to set jumps in the jumplist
-      goto_next_start = {
-        [']m'] = '@function.outer',
-        [']]'] = '@class.outer',
+      -- You can choose the select mode (default is charwise 'v')
+      selection_modes = {
+        ['@parameter.outer'] = 'v', -- charwise
+        ['@function.outer'] = 'V', -- linewise
+        ['@class.outer'] = '<c-v>', -- blockwise
       },
-      goto_next_end = {
-        [']M'] = '@function.outer',
-        [']['] = '@class.outer',
-      },
-      goto_previous_start = {
-        ['[m'] = '@function.outer',
-        ['[['] = '@class.outer',
-      },
-      goto_previous_end = {
-        ['[M'] = '@function.outer',
-        ['[]'] = '@class.outer',
-      },
-    },
-    swap = {
-      enable = true,
-      swap_next = {
-        ['<leader>a'] = '@parameter.inner',
-      },
-      swap_previous = {
-        ['<leader>A'] = '@parameter.inner',
-      },
+      -- If you set this to `true` (default is `false`) then any textobject is
+      -- extended to include preceding xor succeeding whitespace. Succeeding
+      -- whitespace has priority in order to act similarly to eg the built-in
+      -- `ap`.
+      include_surrounding_whitespace = true,
     },
   },
   incremental_selection = {
     enable = true,
     keymaps = {
-      init_selection = '<c-space>',
-      node_incremental = '<c-space>',
-      -- TODO: I'm not sure for this one.
-      scope_incremental = '<c-s>',
-      node_decremental = '<c-backspace>',
+      init_selection = "gnn",
+      node_incremental = ".",
+      scope_incremental = "grc",
+      node_decremental = ",",
     },
   },
   playground = {

@@ -82,6 +82,7 @@ local config = {
     ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment toggle current line" },
     ["c"] = { "<cmd>BufferKill<CR>", "Close Buffer" },
     ["h"] = { "<cmd>nohlsearch<CR>", "No Highlight" },
+    ["d"] = { "<cmd>Neogen<CR>", "Generate docs" },
     b = {
       name = "Buffers",
       j = { "<cmd>BufferLinePick<cr>", "Jump" },
