@@ -175,3 +175,11 @@ require'fzf-lua'.setup {
 vim.keymap.set('n', '<c-P>',
     "<cmd>lua require('fzf-lua').files()<CR>",
     { silent = true })
+
+vim.keymap.set('n', 'git',
+    "<cmd>lua require('fzf-lua').git_status()<CR>",
+    { silent = true })
+
+vim.keymap.set('n', 'glog',
+    "<cmd>lua require('fzf-lua').git_commits()<CR>",
+    { silent = true })

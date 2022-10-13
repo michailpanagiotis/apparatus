@@ -1,5 +1,4 @@
 require 'user.layout.lualine'
-require 'user.layout.notify'
 require 'user.layout.tabby'
 require 'user.layout.lir'
 

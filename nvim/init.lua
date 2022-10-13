@@ -14,16 +14,19 @@ require('packer').startup(function(use)
   -- Vim Core
   use 'godlygeek/tabular'               -- align columns
   use 'andymass/vim-matchup'            -- navigate and highlight matching words
+  use 'tpope/vim-sleuth'                -- heuristically set buffer options
 
   -- Neovim Core
+  use 'nvim-lua/plenary.nvim'
   use 'folke/lua-dev.nvim'                          -- Dev setup for nvim lua API
   use 'lewis6991/impatient.nvim'                    -- Improve startup time for Neovim
   use 'b0o/schemastore.nvim'
   use 'kyazdani42/nvim-web-devicons'
+  use 'cappyzawa/trim.nvim'   			    -- trim trailing space
   use 'nathom/filetype.nvim'                        -- faster filetype recognition
   use 'antoinemadec/FixCursorHold.nvim'
-  use 'gennaro-tedesco/nvim-jqx'                    -- Json formatter
   use 'ahmedkhalf/project.nvim'
+  use 'ojroques/nvim-osc52'
 
   -- Syntax & diagnostics
   use 'neovim/nvim-lspconfig'                       -- Collection of configurations for built-in LSP client
@@ -58,14 +61,13 @@ require('packer').startup(function(use)
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Add git related info in the signs columns and popups
 
   -- Editing
-  use 'AckslD/nvim-trevJ.lua' -- splitting lines according to treesitter
-  use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
+  use 'AckslD/nvim-trevJ.lua' 		-- splitting lines according to treesitter
+  use 'numToStr/Comment.nvim' 		-- "gc" to comment visual regions/lines
   use 'windwp/nvim-autopairs'
-  use 'cappyzawa/trim.nvim'   -- trim trailing space
-  use 'ojroques/nvim-osc52'
   use 'kylechui/nvim-surround'
-  use 'max397574/better-escape.nvim'   -- Escape using 'jk'
-  use 'danymat/neogen'        -- Documentation generation
+  use 'max397574/better-escape.nvim'    -- Escape using 'jk'
+  use 'danymat/neogen'        		-- Documentation generation
+  use 'gennaro-tedesco/nvim-jqx'        -- Json formatter
 
   -- Layout
   use 'tamago324/lir.nvim'        -- file browser
@@ -85,7 +87,6 @@ require('packer').startup(function(use)
 
   -- Moving
   use 'ggandor/leap.nvim'                   -- motion plugin
-  use 'gaborvecsei/memento.nvim'            -- remember previous buffers
   use 'ghillb/cybu.nvim'                    -- cycle through buffers
 
   -- Themes
@@ -103,7 +104,6 @@ require('packer').startup(function(use)
   -- RRethy/nvim-treesitter-textsubjects
   -- autocomplete when <Tab>
   -- https://github.com/gbprod/yanky.nvim
-  -- https://github.com/Abstract-IDE/penvim
   -- https://github.com/notomo/cmdbuf.nvim
   -- https://github.com/gelguy/wilder.nvim
   -- https://github.com/chipsenkbeil/distant.nvim
@@ -142,7 +142,7 @@ local packer_group = vim.api.nvim_create_augroup('Packer', { clear = true })
 -- See `:help vim.o`
 
 -- Set highlight on search
-vim.o.hlsearch = false
+vim.o.hlsearch = true
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
