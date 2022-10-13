@@ -397,21 +397,6 @@ _G.packer_plugins = {
     path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/tabular",
     url = "https://github.com/godlygeek/tabular"
   },
-  ["telescope-fzf-native.nvim"] = {
-    loaded = true,
-    path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/telescope-fzf-native.nvim",
-    url = "https://github.com/nvim-telescope/telescope-fzf-native.nvim"
-  },
-  ["telescope-ui-select.nvim"] = {
-    loaded = true,
-    path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/telescope-ui-select.nvim",
-    url = "https://github.com/nvim-telescope/telescope-ui-select.nvim"
-  },
-  ["telescope.nvim"] = {
-    loaded = true,
-    path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/telescope.nvim",
-    url = "https://github.com/nvim-telescope/telescope.nvim"
-  },
   ["toggleterm.nvim"] = {
     loaded = true,
     path = "/home/pmichail/.local/share/nvim/site/pack/packer/start/toggleterm.nvim",

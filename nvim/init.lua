@@ -12,10 +12,8 @@ require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'   -- Package manager
 
   -- Vim Core
-  use 'vim-scripts/ReplaceWithRegister' -- multiple pastes after yank
-  use 'tpope/vim-sleuth'                -- Detect tabstop and shiftwidth automatically
   use 'godlygeek/tabular'               -- align columns
-  use 'andymass/vim-matchup'
+  use 'andymass/vim-matchup'            -- navigate and highlight matching words
 
   -- Neovim Core
   use 'folke/lua-dev.nvim'                          -- Dev setup for nvim lua API
@@ -57,7 +55,6 @@ require('packer').startup(function(use)
   use 'gennaro-tedesco/nvim-peekup'
 
   -- Git
-  use 'tpope/vim-fugitive'
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Add git related info in the signs columns and popups
 
   -- Editing
@@ -67,47 +64,39 @@ require('packer').startup(function(use)
   use 'cappyzawa/trim.nvim'   -- trim trailing space
   use 'ojroques/nvim-osc52'
   use 'kylechui/nvim-surround'
-  use 'max397574/better-escape.nvim'
+  use 'max397574/better-escape.nvim'   -- Escape using 'jk'
   use 'danymat/neogen'        -- Documentation generation
 
   -- Layout
-  use 'tamago324/lir.nvim'                     -- File browser
-  use 'nvim-lualine/lualine.nvim'              -- Fancier statusline
-  use 'j-hui/fidget.nvim'                      -- Progress bar for LSP
-  use 'goolord/alpha-nvim'                     -- start screen
-  use 'rcarriga/nvim-notify'
-  use 'akinsho/toggleterm.nvim'
-  use {
-    "folke/trouble.nvim",
-    requires = "kyazdani42/nvim-web-devicons",
-  }
-  use 'folke/which-key.nvim'
-  use 'nanozuki/tabby.nvim'                     -- Tabs
+  use 'tamago324/lir.nvim'        -- file browser
+  use 'nvim-lualine/lualine.nvim' -- fancier statusline
+  use 'j-hui/fidget.nvim'         -- progress bar for LSP
+  use 'goolord/alpha-nvim'        -- start screen
+  use 'akinsho/toggleterm.nvim'   -- terminal
+  use 'folke/trouble.nvim'        -- pretty diagnostics list
+  use 'nanozuki/tabby.nvim'       -- tabs
 
   -- Display
   use 'sunjon/shade.nvim'                   -- shade inactive windows
   use 'NvChad/nvim-colorizer.lua'           -- color highlighter
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-  use 'luukvbaal/stabilize.nvim'
-  use 'xiyaowong/virtcolumn.nvim'
+  use 'luukvbaal/stabilize.nvim'            -- stabilize window open/close events.
+  use 'xiyaowong/virtcolumn.nvim'           -- display a line as the colorcolumn
 
   -- Moving
-  use 'ggandor/leap.nvim'
+  use 'ggandor/leap.nvim'                   -- motion plugin
   use 'gaborvecsei/memento.nvim'            -- remember previous buffers
-  use 'ghillb/cybu.nvim'                    -- Cycle through buffers
+  use 'ghillb/cybu.nvim'                    -- cycle through buffers
 
   -- Themes
+  use 'mjlbach/onedark.nvim'                        -- Theme inspired by Atom
   use { "briones-gabriel/darcula-solid.nvim", requires = "rktjmp/lush.nvim" }
   use { "mcchrish/zenbones.nvim", requires = "rktjmp/lush.nvim" }
-  use 'mjlbach/onedark.nvim'                        -- Theme inspired by Atom
-  use 'ellisonleao/gruvbox.nvim'
-  use 'kunzaatko/nord.nvim'
   use 'doums/darcula'
   use 'RRethy/nvim-base16'
   use 'https://gitlab.com/__tpb/monokai-pro.nvim'
   use 'sainnhe/sonokai'
   use 'tanvirtin/monokai.nvim'
-
 
   -- TODO
   --
@@ -155,9 +144,6 @@ local packer_group = vim.api.nvim_create_augroup('Packer', { clear = true })
 -- Set highlight on search
 vim.o.hlsearch = false
 
--- Make line numbers default
-vim.wo.number = true
-
 -- Enable mouse mode
 vim.o.mouse = 'a'
 
@@ -173,7 +159,6 @@ vim.o.smartcase = true
 
 -- Decrease update time
 vim.o.updatetime = 250
-vim.wo.signcolumn = 'yes'
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -207,9 +192,6 @@ require 'user/editing'
 require 'user/moving'
 require 'user/lint'
 
--- vim.keymap.set('n', '<C-n>', ':NERDTreeToggle<CR>', { silent = true })
--- vim.keymap.set('n', '<C-n>', ':Ve<CR>', { silent = true })
---
 function _G.reload_nvim_conf()
   for name,_ in pairs(package.loaded) do
     if name:match('^user/') then
@@ -220,5 +202,3 @@ function _G.reload_nvim_conf()
   dofile(vim.env.MYVIMRC)
   vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO)
 end
-
-vim.api.nvim_set_option_value("colorcolumn", "79", {})

@@ -1,9 +1,10 @@
-require('leap').set_default_keymaps()
 require('leap').setup({
   higlight_unlabeled = true,
   case_sensitive = true
 })
 
+require('leap').opts.safe_labels = {}
+vim.api.nvim_set_hl(0, 'LeapBackdrop', { link = 'Comment' })
 vim.keymap.set({'n', 'x', 'o'}, 's', function() require'leap'.leap({ target_windows = { vim.fn.win_getid() } }) end, {})
 
 -- Bidirectional search in the current window is just a specific case of the
