@@ -52,13 +52,7 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-buffer'
 
   -- Searching & Browsing
-  use {
-    'nvim-telescope/telescope.nvim',
-    -- Fuzzy Finder (files, lsp, etc)
-    requires = { 'nvim-lua/plenary.nvim' },
-  }
-  use 'nvim-telescope/telescope-ui-select.nvim'
-  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+  use 'ibhagwan/fzf-lua'
   use 'AckslD/nvim-neoclip.lua'
   use 'gennaro-tedesco/nvim-peekup'
 
@@ -127,8 +121,7 @@ require('packer').startup(function(use)
   -- https://github.com/andrewferrier/debugprint.nvim
   -- https://github.com/jghauser/kitty-runner.nvim
   -- https://github.com/m-demare/attempt.nvim
-  -- kevinhwang91/nvim-bqf
-  use 'ibhagwan/fzf-lua'
+  -- use yorickpeterse/nvim-dd
   use {'kevinhwang91/nvim-bqf', ft = 'qf'}
 
   -- TODO
@@ -207,7 +200,6 @@ require 'user/lsp'
 require 'user/treesitter'
 require 'user/completion'
 require 'user/fzf'
-require 'user/telescope'
 require 'user/git'
 require 'user/layout'
 require 'user/display'
