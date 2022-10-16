@@ -122,6 +122,59 @@ local components = {
     symbols = { error = " ", warn = " ", info = " ", hint = " " },
     cond = hideInWidth,
   },
+  lsp_progress = {
+    'lsp_progress',
+    display_components = { { 'percentage', 'message' }, 'spinner' },
+    -- display_components = { 'lsp_client_name', 'spinner', { 'title', 'percentage', 'message' } },
+    colors = {
+      percentage  = colors.cyan,
+      title  = colors.cyan,
+      message  = colors.cyan,
+      spinner = colors.cyan,
+      lsp_client_name = colors.magenta,
+      use = true,
+    },
+    separators = {
+      component = ' ',
+      progress = ' | ',
+      message = { pre = '[', post = ']', commenced = 'In Progress', completed = 'Completed' },
+      percentage = { pre = '', post = '%% ' },
+      title = { pre = '[', post = ']' },
+      lsp_client_name = { pre = '[', post = ']' },
+      spinner = { pre = '', post = '' },
+    },
+    timer = { progress_enddelay = 0, spinner = 100, lsp_client_name_enddelay = 1000 },
+    spinner_symbols = {
+      "▰▱▱▱▱▱▱",
+      "▰▰▱▱▱▱▱",
+      "▰▰▰▱▱▱▱",
+      "▰▰▰▰▱▱▱",
+      "▰▰▰▰▰▱▱",
+      "▰▰▰▰▰▰▱",
+      "▰▰▰▰▰▰▰",
+
+      -- "🤘 ",
+      -- "🤟 ",
+      -- "🖖 ",
+      -- "✋ ",
+      -- "🤚 ",
+      -- "👆 "
+      --
+      -- "┤",
+      -- "┘",
+      -- "┴",
+      -- "└",
+      -- "├",
+      -- "┌",
+      -- "┬",
+      -- "┐"
+      --
+      -- "◐",
+      -- "◓",
+      -- "◑",
+      -- "◒"
+    }
+  },
   treesitter = {
     function()
       return ""
@@ -227,9 +280,9 @@ local lualineConfig = {
     },
     lualine_c = {
       components.diff,
-      components.python_env,
     },
     lualine_x = {
+      components.lsp_progress,
       components.diagnostics,
       components.treesitter,
       components.lsp,

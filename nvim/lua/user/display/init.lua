@@ -7,7 +7,7 @@ vim.wo.signcolumn = 'yes'
 -- add colorcolumn
 vim.api.nvim_set_option_value("colorcolumn", "79", {})
 
-require"shade".setup{}
+-- require"shade".setup{}
 require"colorizer".setup{}
 
 require('indent_blankline').setup {

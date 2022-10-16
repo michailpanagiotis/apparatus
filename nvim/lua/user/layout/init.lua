@@ -2,7 +2,6 @@ require 'user.layout.lualine'
 require 'user.layout.tabby'
 require 'user.layout.lir'
 
-require"fidget".setup{}
 
 require("toggleterm").setup{
   open_mapping = [[<c-t>]],

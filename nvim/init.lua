@@ -59,6 +59,9 @@ require('packer').startup(function(use)
 
   -- Git
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Add git related info in the signs columns and popups
+  use { 'akinsho/git-conflict.nvim', tag = "*" }
+  use { 'ruifm/gitlinker.nvim', requires = 'nvim-lua/plenary.nvim' }
+  use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' }
 
   -- Editing
   use 'AckslD/nvim-trevJ.lua' 		-- splitting lines according to treesitter
@@ -70,13 +73,13 @@ require('packer').startup(function(use)
   use 'gennaro-tedesco/nvim-jqx'        -- Json formatter
 
   -- Layout
-  use 'tamago324/lir.nvim'        -- file browser
-  use 'nvim-lualine/lualine.nvim' -- fancier statusline
-  use 'j-hui/fidget.nvim'         -- progress bar for LSP
-  use 'goolord/alpha-nvim'        -- start screen
-  use 'akinsho/toggleterm.nvim'   -- terminal
-  use 'folke/trouble.nvim'        -- pretty diagnostics list
-  use 'nanozuki/tabby.nvim'       -- tabs
+  use 'tamago324/lir.nvim'         -- file browser
+  use 'nvim-lualine/lualine.nvim'  -- fancier statusline
+  use 'arkav/lualine-lsp-progress' -- LSP Progress lualine component
+  use 'goolord/alpha-nvim'         -- start screen
+  use 'akinsho/toggleterm.nvim'    -- terminal
+  use 'folke/trouble.nvim'         -- pretty diagnostics list
+  use 'nanozuki/tabby.nvim'        -- tabs
 
   -- Display
   use 'sunjon/shade.nvim'                   -- shade inactive windows

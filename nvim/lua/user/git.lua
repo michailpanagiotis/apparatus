@@ -15,3 +15,20 @@ require('gitsigns').setup {
 
 vim.keymap.set('n', '<leader>g', ':Git ', { silent = true })
 vim.keymap.set('n', '<leader>gg', ':Ggr ', { silent = true })
+
+require('git-conflict').setup()
+
+require"gitlinker".setup()
+
+local neogit = require('neogit')
+
+neogit.setup ({
+  mappings = {
+    -- modify status buffer mappings
+    status = {
+      ["<C-g>"] = "Close",
+    }
+  }
+})
+
+vim.keymap.set('n', '<C-g>', ':Neogit kind=vsplit<CR>', { silent = true })
