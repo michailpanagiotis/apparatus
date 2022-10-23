@@ -19,17 +19,18 @@ require('packer').startup(function(use)
   -- Neovim Core
   use 'nvim-lua/plenary.nvim'
   use 'folke/lua-dev.nvim'                          -- Dev setup for nvim lua API
-  use 'lewis6991/impatient.nvim'                    -- Improve startup time for Neovim
-  use 'b0o/schemastore.nvim'
+  use 'ojroques/nvim-osc52'
   use 'kyazdani42/nvim-web-devicons'
   use 'cappyzawa/trim.nvim'   			    -- trim trailing space
   use 'nathom/filetype.nvim'                        -- faster filetype recognition
   use 'antoinemadec/FixCursorHold.nvim'
   use 'ahmedkhalf/project.nvim'
-  use 'ojroques/nvim-osc52'
+  use 'b0o/schemastore.nvim'
+  use 'lewis6991/impatient.nvim'                    -- Improve startup time for Neovim
 
   -- Syntax & diagnostics
   use 'neovim/nvim-lspconfig'                       -- Collection of configurations for built-in LSP client
+  use 'nanotee/nvim-lsp-basics'
   use 'williamboman/nvim-lsp-installer'             -- Automatically install language servers to stdpath
   use 'jose-elias-alvarez/null-ls.nvim'
 
@@ -69,7 +70,6 @@ require('packer').startup(function(use)
   use 'windwp/nvim-autopairs'
   use 'kylechui/nvim-surround'
   use 'max397574/better-escape.nvim'    -- Escape using 'jk'
-  use 'danymat/neogen'        		-- Documentation generation
   use 'gennaro-tedesco/nvim-jqx'        -- Json formatter
 
   -- Layout
@@ -185,6 +185,7 @@ vim.keymap.set('v', '<C-R>', [["hy:%s/<C-r>h//gc<left><left><left>]], {});
 require 'user/core'
 require 'user/theme'
 require 'user/lsp'
+require 'user/diagnostics'
 require 'user/treesitter'
 require 'user/completion'
 require 'user/fzf'

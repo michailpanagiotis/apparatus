@@ -10,7 +10,3 @@ require('nvim-surround').setup({
 require('better_escape').setup({
   mapping = {"jk", "kj"}
 })
-
-require('neogen').setup({
-  snippet_engine = "luasnip"
-})
