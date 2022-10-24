@@ -4,7 +4,7 @@
   name = Panos Michail
   email = michailpanagiotis@gmail.com
 [core]
-  editor = vim
+  editor = nvim
 [diff]
   tool = vimdiff
 [difftool]
