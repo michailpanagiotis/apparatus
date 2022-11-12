@@ -12,9 +12,10 @@ require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'   -- Package manager
 
   -- Vim Core
-  use 'godlygeek/tabular'               -- align columns
-  use 'andymass/vim-matchup'            -- navigate and highlight matching words
-  use 'tpope/vim-sleuth'                -- heuristically set buffer options
+  use 'godlygeek/tabular'            -- align columns :Tabularize /--
+  use 'andymass/vim-matchup'         -- navigate and highlight matching words
+  use 'tpope/vim-sleuth'             -- heuristically set buffer options
+  -- wellle/targets.vim
 
   -- Neovim Core
   use 'nvim-lua/plenary.nvim'
@@ -29,9 +30,12 @@ require('packer').startup(function(use)
   use 'lewis6991/impatient.nvim'                    -- Improve startup time for Neovim
 
   -- Syntax & diagnostics
-  use 'neovim/nvim-lspconfig'                       -- Collection of configurations for built-in LSP client
+  use "williamboman/mason.nvim"
+  use "williamboman/mason-lspconfig.nvim"
+  use "neovim/nvim-lspconfig"
   use 'nanotee/nvim-lsp-basics'
-  use 'williamboman/nvim-lsp-installer'             -- Automatically install language servers to stdpath
+  use 'hrsh7th/cmp-nvim-lsp'                        -- nvim-cmp source for neovim builtin LSP client
+  use 'jose-elias-alvarez/typescript.nvim'
   use 'jose-elias-alvarez/null-ls.nvim'
 
   -- Treesitter
@@ -117,7 +121,6 @@ require('packer').startup(function(use)
   use {'kevinhwang91/nvim-bqf', ft = 'qf'}
 
   -- TODO
-  -- cd from out of a project and find project folder for cwd
 
   if is_bootstrap then
     require('packer').sync()
@@ -206,3 +209,6 @@ function _G.reload_nvim_conf()
   dofile(vim.env.MYVIMRC)
   vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO)
 end
+
+
+require("kitty-runner").setup()

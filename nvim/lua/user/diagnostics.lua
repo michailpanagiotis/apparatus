@@ -1,5 +1,5 @@
 vim.diagnostic.config({ underline = true, signs = true, virtual_text = false })
-vim.api.nvim_set_hl(0,'DiagnosticUnderlineError',{ ctermbg=0, sp="#5C6370", fg=0 })
+vim.api.nvim_set_hl(0,'DiagnosticUnderlineError',{ sp="#5C6370" })
 
 local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 for type, icon in pairs(signs) do
