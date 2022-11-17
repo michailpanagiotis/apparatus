@@ -115,7 +115,6 @@ require('packer').startup(function(use)
   -- https://github.com/gelguy/wilder.nvim
   -- https://github.com/chipsenkbeil/distant.nvim
   -- https://github.com/andrewferrier/debugprint.nvim
-  -- https://github.com/jghauser/kitty-runner.nvim
   -- https://github.com/m-demare/attempt.nvim
   -- use yorickpeterse/nvim-dd
   use {'kevinhwang91/nvim-bqf', ft = 'qf'}
@@ -209,6 +208,3 @@ function _G.reload_nvim_conf()
   dofile(vim.env.MYVIMRC)
   vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO)
 end
-
-
-require("kitty-runner").setup()
