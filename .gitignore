@@ -5,3 +5,5 @@ vim/undodir
 *.appimage
 *.zip
 bw
+
+nvim/plugin/packer_compiled.lua
