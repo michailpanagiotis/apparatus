@@ -1,13 +1,5 @@
--- Install packer
-local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
-local is_bootstrap = false
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-  is_bootstrap = true
-  vim.fn.execute('!git clone https://github.com/wbthomason/packer.nvim ' .. install_path)
-  vim.cmd [[packadd packer.nvim]]
-end
+ vim.cmd [[packadd packer.nvim]]
 
--- stylua: ignore start
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'   -- Package manager
 
@@ -108,9 +100,6 @@ require('packer').startup(function(use)
 
   -- TODO
   --
-  --https://github.com/danymat/neogen
-  --https://github.com/CKolkey/ts-node-action
-  --https://github.com/barrett-ruth/import-cost.nvim
   -- RRethy/nvim-treesitter-textsubjects
   -- autocomplete when <Tab>
   -- https://github.com/gbprod/yanky.nvim
@@ -128,86 +117,3 @@ require('packer').startup(function(use)
     require('packer').sync()
   end
 end)
--- stylua: ignore end
-
--- When we are bootstrapping a configuration, it doesn't
--- make sense to execute the rest of the init.lua.
---
--- You'll need to restart nvim, and then it will work.
-if is_bootstrap then
-  print '=================================='
-  print '    Plugins are being installed'
-  print '    Wait until Packer completes,'
-  print '       then restart nvim'
-  print '=================================='
-  return
-end
-
--- Automatically source and re-compile packer whenever you save this init.lua
-local packer_group = vim.api.nvim_create_augroup('Packer', { clear = true })
-
--- [[ Setting options ]]
--- See `:help vim.o`
-
--- Set highlight on search
-vim.o.hlsearch = true
-
--- Enable mouse mode
-vim.o.mouse = 'a'
-
--- Enable break indent
-vim.o.breakindent = true
-
--- Save undo history
-vim.o.undofile = true
-
--- Case insensitive searching UNLESS /C or capital in search
-vim.o.ignorecase = true
-vim.o.smartcase = true
-
--- Decrease update time
-vim.o.updatetime = 250
-
--- Set completeopt to have a better completion experience
-vim.o.completeopt = 'menuone,noselect'
-
--- [[ Basic Keymaps ]]
--- Set <space> as the leader key
--- See `:help mapleader`
---  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
-
-vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
-
--- Remap for dealing with word wrap
-vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-
--- Search/replace
-vim.keymap.set('v', '<C-R>', [["hy:%s/<C-r>h//gc<left><left><left>]], {});
-
-require 'user/core'
-require 'user/theme'
-require 'user/lsp'
-require 'user/diagnostics'
-require 'user/treesitter'
-require 'user/completion'
-require 'user/fzf'
-require 'user/git'
-require 'user/layout'
-require 'user/display'
-require 'user/editing'
-require 'user/moving'
-require 'user/lint'
-
-function _G.reload_nvim_conf()
-  for name,_ in pairs(package.loaded) do
-    if name:match('^user/') then
-      package.loaded[name] = nil
-    end
-  end
-
-  dofile(vim.env.MYVIMRC)
-  vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO)
-end
