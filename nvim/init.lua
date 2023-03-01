@@ -12,28 +12,31 @@ require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'   -- Package manager
 
   -- Vim Core
-  use 'godlygeek/tabular'            -- align columns :Tabularize /--
-  use 'andymass/vim-matchup'         -- navigate and highlight matching words
-  use 'tpope/vim-sleuth'             -- heuristically set buffer options
+  use 'matze/vim-move'       -- Plugin to move lines and selections up and down
+  use 'tpope/vim-sleuth'     -- heuristically set buffer options
+  use 'godlygeek/tabular'    -- align columns :Tabularize /--
+  use 'andymass/vim-matchup' -- navigate and highlight matching words
   -- wellle/targets.vim
 
   -- Neovim Core
+  use 'folke/lua-dev.nvim'              -- Dev setup for nvim lua API
   use 'nvim-lua/plenary.nvim'
-  use 'folke/lua-dev.nvim'                          -- Dev setup for nvim lua API
   use 'ojroques/nvim-osc52'
   use 'kyazdani42/nvim-web-devicons'
-  use 'cappyzawa/trim.nvim'   			    -- trim trailing space
-  use 'nathom/filetype.nvim'                        -- faster filetype recognition
+  use 'cappyzawa/trim.nvim'             -- trim trailing space
+  use 'nathom/filetype.nvim'            -- faster filetype recognition
   use 'antoinemadec/FixCursorHold.nvim'
   use 'ahmedkhalf/project.nvim'
   use 'b0o/schemastore.nvim'
-  use 'lewis6991/impatient.nvim'                    -- Improve startup time for Neovim
+  use 'lewis6991/impatient.nvim'        -- Improve startup time for Neovim
+
+  -- LSP
+  use "neovim/nvim-lspconfig"
+  use 'nanotee/nvim-lsp-basics'
 
   -- Syntax & diagnostics
   use "williamboman/mason.nvim"
   use "williamboman/mason-lspconfig.nvim"
-  use "neovim/nvim-lspconfig"
-  use 'nanotee/nvim-lsp-basics'
   use 'hrsh7th/cmp-nvim-lsp'                        -- nvim-cmp source for neovim builtin LSP client
   use 'jose-elias-alvarez/typescript.nvim'
   use 'jose-elias-alvarez/null-ls.nvim'
@@ -106,8 +109,23 @@ require('packer').startup(function(use)
   use 'sainnhe/sonokai'
   use 'tanvirtin/monokai.nvim'
 
+  use {
+    'kkoomen/vim-doge',
+    run = ':call doge#install()'
+  }
+
+  use {
+    "SmiteshP/nvim-navic",
+    requires = "neovim/nvim-lspconfig"
+  }
+
+
   -- TODO
   --
+  --https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-bracketed.md
+  --https://github.com/glepnir/lspsaga.nvim
+  --https://github.com/roobert/node-type.nvim
+  --https://github.com/SmiteshP/nvim-navic
   --https://github.com/danymat/neogen
   --https://github.com/CKolkey/ts-node-action
   --https://github.com/barrett-ruth/import-cost.nvim
@@ -187,6 +205,7 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 -- Search/replace
 vim.keymap.set('v', '<C-R>', [["hy:%s/<C-r>h//gc<left><left><left>]], {});
 
+require 'user/vim'
 require 'user/core'
 require 'user/theme'
 require 'user/lsp'

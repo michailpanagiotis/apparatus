@@ -261,6 +261,7 @@ local components = {
   },
 }
 
+local navic = require("nvim-navic")
 local lualineConfig = {
   options = {
     theme = "monokaipro",
@@ -280,6 +281,7 @@ local lualineConfig = {
     },
     lualine_c = {
       components.diff,
+      { navic.get_location, cond = navic.is_available },
     },
     lualine_x = {
       components.lsp_progress,
