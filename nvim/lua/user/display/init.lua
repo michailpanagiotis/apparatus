@@ -14,8 +14,6 @@ require('indent_blankline').setup {
   show_trailing_blankline_indent = false,
 }
 
-require("stabilize").setup()
-
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })

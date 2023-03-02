@@ -1,6 +1,6 @@
 require('user.editing.trevj')
 require('user.editing.autopairs')
-require('user.editing.comment')
+-- require('user.editing.comment')
 
 
 require('nvim-surround').setup({

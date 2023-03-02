@@ -32,15 +32,14 @@ require'gitlinker'.setup{
   },
 }
 
-local neogit = require('neogit')
-
-neogit.setup ({
-  mappings = {
-    -- modify status buffer mappings
-    status = {
-      ["<C-g>"] = "Close",
-    }
-  }
-})
-
-vim.keymap.set('n', '<C-g>', ':Neogit kind=vsplit<CR>', { silent = true })
+-- local neogit = require('neogit')
+--
+-- neogit.setup ({
+--   mappings = {
+--     -- modify status buffer mappings
+--     status = {
+--       ["<C-g>"] = "Close",
+--     }
+--   }
+-- })
+-- vim.keymap.set('n', '<C-g>', ':Neogit kind=vsplit<CR>', { silent = true })

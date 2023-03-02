@@ -11,4 +11,7 @@ vim.cmd([[
 
   " Trim white space
   autocmd BufWritePre * %s/\s\+$//e
+
+  " Set PWD to current file directory
+  autocmd BufEnter * silent! lcd %:p:h
 ]])

@@ -15,15 +15,12 @@ require('packer').startup(function(use)
   use 'matze/vim-move'       -- Plugin to move lines and selections up and down
   use 'tpope/vim-sleuth'     -- heuristically set buffer options
   use 'godlygeek/tabular'    -- align columns :Tabularize /--
-  use 'andymass/vim-matchup' -- navigate and highlight matching words
   use 'ojroques/vim-oscyank' -- A Vim plugin to copy text through SSH with OSC52
-  use {			     -- documentation generator
+  use 'tomtom/tcomment_vim'  -- "gc" to comment visual regions/lines
+  use {                      -- documentation generator
     'kkoomen/vim-doge', run = ':call doge#install()',
   }
-
-  -- Neovim Core
-  use 'kyazdani42/nvim-web-devicons'
-  use 'ahmedkhalf/project.nvim'
+  use 'mhinz/vim-startify'
 
   -- Optimizations
   use 'nathom/filetype.nvim'            -- faster filetype recognition
@@ -62,18 +59,8 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-path'
   use 'hrsh7th/cmp-buffer'
 
-  -- Git
-  use { -- Add git related info in the signs columns and popups
-    'lewis6991/gitsigns.nvim',
-    requires = { 'nvim-lua/plenary.nvim' },
-  }
-  use { 'akinsho/git-conflict.nvim', tag = "*" }
-  use { 'ruifm/gitlinker.nvim', requires = 'nvim-lua/plenary.nvim' }
-  use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' }
-
   -- Editing
   use 'AckslD/nvim-trevJ.lua' 		-- splitting lines according to treesitter
-  use 'numToStr/Comment.nvim' 		-- "gc" to comment visual regions/lines
   use 'windwp/nvim-autopairs'
   use 'kylechui/nvim-surround'
   use 'max397574/better-escape.nvim'    -- Escape using 'jk'
@@ -81,19 +68,19 @@ require('packer').startup(function(use)
 
   -- Layout
   use 'tamago324/lir.nvim'         -- file browser
-  use 'goolord/alpha-nvim'         -- start screen
-  use 'akinsho/toggleterm.nvim'    -- terminal
   use 'folke/trouble.nvim'         -- pretty diagnostics list
 
   -- Display
   use 'sunjon/shade.nvim'                   -- shade inactive windows
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-  use 'luukvbaal/stabilize.nvim'            -- stabilize window open/close events.
   use 'xiyaowong/virtcolumn.nvim'           -- display a line as the colorcolumn
 
   -- Moving
   use 'ggandor/leap.nvim'                   -- motion plugin
-  use 'ghillb/cybu.nvim'                    -- cycle through buffers
+  use { -- cycle through buffers
+    "ghillb/cybu.nvim",
+    requires = { "nvim-tree/nvim-web-devicons", "nvim-lua/plenary.nvim"}, -- optional for icon support
+  }
 
   -- Themes
   use 'RRethy/nvim-base16'
@@ -106,6 +93,14 @@ require('packer').startup(function(use)
     "SmiteshP/nvim-navic",             -- Simple winbar/statusline plugin that shows your current code context
     requires = "neovim/nvim-lspconfig"
   }
+
+  -- Git
+  use { -- Add git related info in the signs columns and popups
+    'lewis6991/gitsigns.nvim',
+    requires = { 'nvim-lua/plenary.nvim' },
+  }
+  use { 'akinsho/git-conflict.nvim', tag = "*" }
+  use { 'ruifm/gitlinker.nvim', requires = 'nvim-lua/plenary.nvim' }
 
   -- TODO
   --
@@ -190,30 +185,21 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 
+-- essential
 require 'user/vim'
 require 'user/optimizations'
-require 'user/core'
+require 'user/fzf'
 require 'user/theme'
 require 'user/lsp'
 require 'user/diagnostics'
 require 'user/treesitter'
 require 'user/completion'
-require 'user/fzf'
-require 'user/git'
-require 'user/lualine'
 require 'user/layout'
 require 'user/display'
 require 'user/editing'
 require 'user/moving'
 require 'user/lint'
 
-function _G.reload_nvim_conf()
-  for name,_ in pairs(package.loaded) do
-    if name:match('^user/') then
-      package.loaded[name] = nil
-    end
-  end
-
-  dofile(vim.env.MYVIMRC)
-  vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO)
-end
+-- nice-to-have
+require 'user/git'
+require 'user/lualine'
