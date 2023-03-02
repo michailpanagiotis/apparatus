@@ -1,7 +1,4 @@
-require 'user.layout.lualine'
-require 'user.layout.tabby'
 require 'user.layout.lir'
-
 
 require("toggleterm").setup{
   open_mapping = [[<c-t>]],

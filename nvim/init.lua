@@ -16,19 +16,21 @@ require('packer').startup(function(use)
   use 'tpope/vim-sleuth'     -- heuristically set buffer options
   use 'godlygeek/tabular'    -- align columns :Tabularize /--
   use 'andymass/vim-matchup' -- navigate and highlight matching words
-  -- wellle/targets.vim
+  use 'ojroques/vim-oscyank' -- A Vim plugin to copy text through SSH with OSC52
+  use {			     -- documentation generator
+    'kkoomen/vim-doge', run = ':call doge#install()',
+  }
 
   -- Neovim Core
-  use 'folke/lua-dev.nvim'              -- Dev setup for nvim lua API
-  use 'nvim-lua/plenary.nvim'
-  use 'ojroques/nvim-osc52'
   use 'kyazdani42/nvim-web-devicons'
-  use 'cappyzawa/trim.nvim'             -- trim trailing space
-  use 'nathom/filetype.nvim'            -- faster filetype recognition
-  use 'antoinemadec/FixCursorHold.nvim'
   use 'ahmedkhalf/project.nvim'
-  use 'b0o/schemastore.nvim'
+
+  -- Optimizations
+  use 'nathom/filetype.nvim'            -- faster filetype recognition
   use 'lewis6991/impatient.nvim'        -- Improve startup time for Neovim
+
+  -- Searching & Browsing
+  use 'ibhagwan/fzf-lua'
 
   -- LSP
   use "neovim/nvim-lspconfig"
@@ -60,13 +62,11 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-path'
   use 'hrsh7th/cmp-buffer'
 
-  -- Searching & Browsing
-  use 'ibhagwan/fzf-lua'
-  use 'AckslD/nvim-neoclip.lua'
-  use 'gennaro-tedesco/nvim-peekup'
-
   -- Git
-  use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Add git related info in the signs columns and popups
+  use { -- Add git related info in the signs columns and popups
+    'lewis6991/gitsigns.nvim',
+    requires = { 'nvim-lua/plenary.nvim' },
+  }
   use { 'akinsho/git-conflict.nvim', tag = "*" }
   use { 'ruifm/gitlinker.nvim', requires = 'nvim-lua/plenary.nvim' }
   use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' }
@@ -81,16 +81,12 @@ require('packer').startup(function(use)
 
   -- Layout
   use 'tamago324/lir.nvim'         -- file browser
-  use 'nvim-lualine/lualine.nvim'  -- fancier statusline
-  use 'arkav/lualine-lsp-progress' -- LSP Progress lualine component
   use 'goolord/alpha-nvim'         -- start screen
   use 'akinsho/toggleterm.nvim'    -- terminal
   use 'folke/trouble.nvim'         -- pretty diagnostics list
-  use 'nanozuki/tabby.nvim'        -- tabs
 
   -- Display
   use 'sunjon/shade.nvim'                   -- shade inactive windows
-  use 'NvChad/nvim-colorizer.lua'           -- color highlighter
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
   use 'luukvbaal/stabilize.nvim'            -- stabilize window open/close events.
   use 'xiyaowong/virtcolumn.nvim'           -- display a line as the colorcolumn
@@ -100,38 +96,29 @@ require('packer').startup(function(use)
   use 'ghillb/cybu.nvim'                    -- cycle through buffers
 
   -- Themes
-  use 'mjlbach/onedark.nvim'                        -- Theme inspired by Atom
-  use { "briones-gabriel/darcula-solid.nvim", requires = "rktjmp/lush.nvim" }
-  use { "mcchrish/zenbones.nvim", requires = "rktjmp/lush.nvim" }
-  use 'doums/darcula'
   use 'RRethy/nvim-base16'
+
+  -- Lualine
+  use 'nvim-lualine/lualine.nvim'      -- fancier statusline
+  use 'arkav/lualine-lsp-progress'     -- LSP Progress lualine component
   use 'https://gitlab.com/__tpb/monokai-pro.nvim'
-  use 'sainnhe/sonokai'
-  use 'tanvirtin/monokai.nvim'
-
   use {
-    'kkoomen/vim-doge',
-    run = ':call doge#install()'
-  }
-
-  use {
-    "SmiteshP/nvim-navic",
+    "SmiteshP/nvim-navic",             -- Simple winbar/statusline plugin that shows your current code context
     requires = "neovim/nvim-lspconfig"
   }
-
 
   -- TODO
   --
   --https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-bracketed.md
   --https://github.com/glepnir/lspsaga.nvim
   --https://github.com/roobert/node-type.nvim
-  --https://github.com/SmiteshP/nvim-navic
   --https://github.com/danymat/neogen
   --https://github.com/CKolkey/ts-node-action
   --https://github.com/barrett-ruth/import-cost.nvim
   -- RRethy/nvim-treesitter-textsubjects
   -- autocomplete when <Tab>
   -- https://github.com/gbprod/yanky.nvim
+  -- wellle/targets.vim
   -- https://github.com/notomo/cmdbuf.nvim
   -- https://github.com/gelguy/wilder.nvim
   -- https://github.com/chipsenkbeil/distant.nvim
@@ -204,6 +191,7 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 
 
 require 'user/vim'
+require 'user/optimizations'
 require 'user/core'
 require 'user/theme'
 require 'user/lsp'
@@ -212,6 +200,7 @@ require 'user/treesitter'
 require 'user/completion'
 require 'user/fzf'
 require 'user/git'
+require 'user/lualine'
 require 'user/layout'
 require 'user/display'
 require 'user/editing'

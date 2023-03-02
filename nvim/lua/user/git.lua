@@ -26,7 +26,8 @@ require'gitlinker'.setup{
       -- yank to unnamed register
       vim.api.nvim_command('let @" = \'' .. url .. '\'')
       -- copy to the system clipboard using OSC52
-      require('osc52').copy_register('"')
+      -- require('osc52').copy_register('"')
+      vim.cmd([[execute 'OSCYankReg "']])
     end,
   },
 }
