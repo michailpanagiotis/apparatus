@@ -59,26 +59,26 @@ return {
   },
   buffer_mappings = {
     normal_mode = {
-      ["K"] = { vim.lsp.buf.hover, "Show hover" },
-      ["gd"] = { vim.lsp.buf.definition, "Goto Definition" },
-      ["gD"] = { vim.lsp.buf.declaration, "Goto declaration" },
-      ["gr"] = { vim.lsp.buf.references, "Goto references" },
-      ["gI"] = { vim.lsp.buf.implementation, "Goto Implementation" },
-      ["gs"] = { vim.lsp.buf.signature_help, "show signature help" },
-      ["gp"] = {
-        function()
-          require("user.lsp.peek").Peek "definition"
-        end,
-        "Peek definition",
-      },
-      ["gl"] = {
-        function()
-          local config = lvim.lsp.diagnostics.float
-          config.scope = "line"
-          vim.diagnostic.open_float(0, config)
-        end,
-        "Show line diagnostics",
-      },
+      -- ["K"] = { vim.lsp.buf.hover, "Show hover" },
+      -- ["gd"] = { vim.lsp.buf.definition, "Goto Definition" },
+      -- ["gD"] = { vim.lsp.buf.declaration, "Goto declaration" },
+      -- ["gr"] = { vim.lsp.buf.references, "Goto references" },
+      -- ["gI"] = { vim.lsp.buf.implementation, "Goto Implementation" },
+      -- ["gs"] = { vim.lsp.buf.signature_help, "show signature help" },
+      -- ["gp"] = {
+      --   function()
+      --     require("user.lsp.peek").Peek "definition"
+      --   end,
+      --   "Peek definition",
+      -- },
+      -- ["gl"] = {
+      --   function()
+      --     local config = lvim.lsp.diagnostics.float
+      --     config.scope = "line"
+      --     vim.diagnostic.open_float(0, config)
+      --   end,
+      --   "Show line diagnostics",
+      -- },
     },
     insert_mode = {},
     visual_mode = {},

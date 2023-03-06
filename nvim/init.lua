@@ -11,27 +11,18 @@ end
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'   -- Package manager
 
-  -- Vim Core
-  use 'matze/vim-move'       -- Plugin to move lines and selections up and down
-  use 'tpope/vim-sleuth'     -- heuristically set buffer options
-  use 'godlygeek/tabular'    -- align columns :Tabularize /--
-  use 'ojroques/vim-oscyank' -- A Vim plugin to copy text through SSH with OSC52
-  use 'tomtom/tcomment_vim'  -- "gc" to comment visual regions/lines
-  use {                      -- documentation generator
-    'kkoomen/vim-doge', run = ':call doge#install()',
-  }
-  use 'mhinz/vim-startify'
-
-  -- Optimizations
-  use 'nathom/filetype.nvim'            -- faster filetype recognition
-  use 'lewis6991/impatient.nvim'        -- Improve startup time for Neovim
-
-  -- Searching & Browsing
-  use 'ibhagwan/fzf-lua'
+  require 'user/vim'.setup(use)
+  require 'user/optimizations'.setup(use)
+  require 'user/theme'.setup(use)
+  require 'user/fzf'.setup(use)
+  require 'user/git'.setup(use)
+  require 'user/editing'.setup(use)
+  require 'user/layout'.setup(use)
 
   -- LSP
   use "neovim/nvim-lspconfig"
   use 'nanotee/nvim-lsp-basics'
+  use 'simrat39/symbols-outline.nvim'
 
   -- Syntax & diagnostics
   use "williamboman/mason.nvim"
@@ -39,6 +30,7 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-nvim-lsp'                        -- nvim-cmp source for neovim builtin LSP client
   use 'jose-elias-alvarez/typescript.nvim'
   use 'jose-elias-alvarez/null-ls.nvim'
+
 
   -- Treesitter
   use 'nvim-treesitter/nvim-treesitter'             -- Highlight, edit, and navigate code
@@ -59,19 +51,8 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-path'
   use 'hrsh7th/cmp-buffer'
 
-  -- Editing
-  use 'AckslD/nvim-trevJ.lua' 		-- splitting lines according to treesitter
-  use 'windwp/nvim-autopairs'
-  use 'kylechui/nvim-surround'
-  use 'max397574/better-escape.nvim'    -- Escape using 'jk'
-  use 'gennaro-tedesco/nvim-jqx'        -- Json formatter
-
-  -- Layout
-  use 'tamago324/lir.nvim'         -- file browser
-  use 'folke/trouble.nvim'         -- pretty diagnostics list
 
   -- Display
-  use 'sunjon/shade.nvim'                   -- shade inactive windows
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
   use 'xiyaowong/virtcolumn.nvim'           -- display a line as the colorcolumn
 
@@ -82,9 +63,6 @@ require('packer').startup(function(use)
     requires = { "nvim-tree/nvim-web-devicons", "nvim-lua/plenary.nvim"}, -- optional for icon support
   }
 
-  -- Themes
-  use 'RRethy/nvim-base16'
-
   -- Lualine
   use 'nvim-lualine/lualine.nvim'      -- fancier statusline
   use 'arkav/lualine-lsp-progress'     -- LSP Progress lualine component
@@ -94,17 +72,12 @@ require('packer').startup(function(use)
     requires = "neovim/nvim-lspconfig"
   }
 
-  -- Git
-  use { -- Add git related info in the signs columns and popups
-    'lewis6991/gitsigns.nvim',
-    requires = { 'nvim-lua/plenary.nvim' },
-  }
-  use { 'akinsho/git-conflict.nvim', tag = "*" }
-  use { 'ruifm/gitlinker.nvim', requires = 'nvim-lua/plenary.nvim' }
 
   -- TODO
   --
   --https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-bracketed.md
+  --https://github.com/ojroques/nvim-lspfuzzy
+  --https://github.com/gfanto/fzf-lsp.nvim
   --https://github.com/glepnir/lspsaga.nvim
   --https://github.com/roobert/node-type.nvim
   --https://github.com/danymat/neogen
@@ -127,6 +100,7 @@ require('packer').startup(function(use)
   if is_bootstrap then
     require('packer').sync()
   end
+
 end)
 -- stylua: ignore end
 
@@ -146,60 +120,17 @@ end
 -- Automatically source and re-compile packer whenever you save this init.lua
 local packer_group = vim.api.nvim_create_augroup('Packer', { clear = true })
 
--- [[ Setting options ]]
--- See `:help vim.o`
-
--- Set highlight on search
-vim.o.hlsearch = true
-
--- Enable mouse mode
-vim.o.mouse = 'a'
-
--- Enable break indent
-vim.o.breakindent = true
-
--- Save undo history
-vim.o.undofile = true
-
--- Case insensitive searching UNLESS /C or capital in search
-vim.o.ignorecase = true
-vim.o.smartcase = true
-
--- Decrease update time
-vim.o.updatetime = 250
-
--- Set completeopt to have a better completion experience
-vim.o.completeopt = 'menuone,noselect'
-
--- [[ Basic Keymaps ]]
--- Set <space> as the leader key
--- See `:help mapleader`
---  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
-
-vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
-
--- Remap for dealing with word wrap
-vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-
 
 -- essential
-require 'user/vim'
-require 'user/optimizations'
-require 'user/fzf'
-require 'user/theme'
 require 'user/lsp'
 require 'user/diagnostics'
 require 'user/treesitter'
 require 'user/completion'
-require 'user/layout'
 require 'user/display'
-require 'user/editing'
 require 'user/moving'
 require 'user/lint'
 
 -- nice-to-have
-require 'user/git'
 require 'user/lualine'
+
+require("symbols-outline").setup()
