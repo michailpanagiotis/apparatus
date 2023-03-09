@@ -24,6 +24,7 @@ function M.setup(use)
       ['--info']        = 'inline',
       ['--height']      = '100%',
       ['--layout']      = 'reverse',
+      ['--border']      = 'left',
     },
     -- fzf '--color=' options (optional)
     previewers = {

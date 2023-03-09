@@ -26,7 +26,8 @@ function M.setup(use)
     vnoremap <C-R> "hy:%s/<C-r>h//gc<left><left><left>
 
     " Yank to clipboard
-    autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif
+    autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankRegister "' | endif
+    vnoremap y :OSCYankVisual<CR>
 
     " Trim white space
     autocmd BufWritePre * %s/\s\+$//e
