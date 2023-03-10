@@ -18,7 +18,7 @@ fi
 if [ "${INSTALL_BASE}" -eq "1" ]; then
   echo === Installing base...
   echo $PASSWORD | sudo -S apt-get update
-  echo $PASSWORD | sudo -S apt-get --assume-yes install curl fzf git ripgrep ncdu
+  echo $PASSWORD | sudo -S apt-get --assume-yes install curl fzf git ripgrep ncdu build-essential
   echo === Installing base...done!
 fi
 

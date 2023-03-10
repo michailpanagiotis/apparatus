@@ -2,6 +2,8 @@ local M = {}
 
 function M.setup(use)
   use 'RRethy/nvim-base16'
+  use 'sainnhe/everforest'
+  use 'sainnhe/gruvbox-material'
 
   -- Set colorscheme
   vim.o.termguicolors = true

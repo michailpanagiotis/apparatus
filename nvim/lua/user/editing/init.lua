@@ -12,7 +12,6 @@ function M.setup(use)
   use 'kylechui/nvim-surround'
   use 'max397574/better-escape.nvim'    -- Escape using 'jk'
   use 'gennaro-tedesco/nvim-jqx'        -- Json formatter
-  use 'RRethy/nvim-base16'
   require('user.editing.autopairs')
 
   vim.keymap.set('n', 'S', function()
