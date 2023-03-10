@@ -45,15 +45,19 @@ local autopairsConfig = {
   },
 }
 
-local autopairs = require "nvim-autopairs"
-autopairs.setup(autopairsConfig)
+local hasModule,autopairs = pcall(require,"lfs")
 
-local Rule = require "nvim-autopairs.rule"
-local ts_conds = require "nvim-autopairs.ts-conds"
+if hasModule then
+  local autopairs = require "nvim-autopairs"
+  autopairs.setup(autopairsConfig)
 
--- TODO: can these rules be safely added from "config.lua" ?
--- press % => %% is only inside comment or string
-autopairs.add_rules {
-  Rule("%", "%", "lua"):with_pair(ts_conds.is_ts_node { "string", "comment" }),
-  Rule("$", "$", "lua"):with_pair(ts_conds.is_not_ts_node { "function" }),
-}
+  local Rule = require "nvim-autopairs.rule"
+  local ts_conds = require "nvim-autopairs.ts-conds"
+
+  -- TODO: can these rules be safely added from "config.lua" ?
+  -- press % => %% is only inside comment or string
+  autopairs.add_rules {
+    Rule("%", "%", "lua"):with_pair(ts_conds.is_ts_node { "string", "comment" }),
+    Rule("$", "$", "lua"):with_pair(ts_conds.is_not_ts_node { "function" }),
+  }
+end
