@@ -4,7 +4,6 @@ function M.setup(use)
   use 'matze/vim-move'       -- Plugin to move lines and selections up and down
   use 'tpope/vim-sleuth'     -- heuristically set buffer options
   use 'godlygeek/tabular'    -- align columns :Tabularize /--
-  use 'ojroques/vim-oscyank' -- A Vim plugin to copy text through SSH with OSC52
   use 'tomtom/tcomment_vim'  -- "gc" to comment visual regions/lines
   use {                      -- documentation generator
     'kkoomen/vim-doge', run = ':call doge#install()',
@@ -24,10 +23,6 @@ function M.setup(use)
 
     " Search/replace
     vnoremap <C-R> "hy:%s/<C-r>h//gc<left><left><left>
-
-    " Yank to clipboard
-    autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankRegister "' | endif
-    vnoremap y :OSCYankVisual<CR>
 
     " Trim white space
     autocmd BufWritePre * %s/\s\+$//e
@@ -76,6 +71,17 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
+vim.api.nvim_create_autocmd('TextYankPost', {
+  callback = function()
+    vim.highlight.on_yank()
+    if vim.v.event.operator == 'y' and vim.v.event.regname == '' then
+      require('osc52').copy_register('"')
+    end
+  end,
+  group = highlight_group,
+  pattern = '*',
+})
 
 return M
 
