@@ -8,12 +8,12 @@ function M.setup(use)
       require"trevj".setup{}
     end
   })
-  use 'windwp/nvim-autopairs'
+  -- use 'windwp/nvim-autopairs'
   use 'kylechui/nvim-surround'
   use 'max397574/better-escape.nvim'    -- Escape using 'jk'
   use 'gennaro-tedesco/nvim-jqx'        -- Json formatter
   use 'ojroques/nvim-osc52'
-  require('user.editing.autopairs')
+  -- require('user.editing.autopairs')
 
   vim.keymap.set('n', 'S', function()
     require('trevj').format_at_cursor()
