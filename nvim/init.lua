@@ -93,6 +93,7 @@ require('packer').startup(function(use)
   -- https://github.com/andrewferrier/debugprint.nvim
   -- https://github.com/m-demare/attempt.nvim
   -- use yorickpeterse/nvim-dd
+  -- https://github.com/VonHeikemen/nvim-starter
   use {'kevinhwang91/nvim-bqf', ft = 'qf'}
 
   -- TODO

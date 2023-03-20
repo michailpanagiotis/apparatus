@@ -128,3 +128,7 @@ alias dlg=docker_logs
 alias drc=docker_remove_containers
 alias drv=docker_remove_volumes
 alias pr=pull_request
+
+alias rgf='rg --hidden --ignore-vcs --vimgrep --files ~/ | rg'
+export FZF_DEFAULT_COMMAND='rg --hidden --ignore-vcs --vimgrep --files ~/'
+export FZF_CTRL_T_COMMAND="rg --hidden --ignore-vcs --vimgrep --null --files ~/ | xargs -0 dirname | uniq"
