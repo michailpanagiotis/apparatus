@@ -16,7 +16,6 @@ require('packer').startup(function(use)
   require 'user/theme'.setup(use)
   require 'user/fzf'.setup(use)
   require 'user/git'.setup(use)
-  require 'user/editing'.setup(use)
   require 'user/layout'.setup(use)
 
   -- LSP
