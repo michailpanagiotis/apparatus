@@ -182,6 +182,10 @@ function Plugin.config(LazyPlugin, opts)
       "<cmd>lua require('fzf-lua').files()<CR>",
       { silent = true })
 
+      vim.keymap.set('n', '<c-F>',
+      "<cmd>lua require('fzf-lua').grep()<CR>",
+      { silent = true })
+
   vim.keymap.set('n', 'git',
       "<cmd>lua require('fzf-lua').git_status()<CR>",
       { silent = true })
