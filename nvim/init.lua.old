@@ -85,7 +85,6 @@ require('packer').startup(function(use)
   -- RRethy/nvim-treesitter-textsubjects
   -- autocomplete when <Tab>
   -- https://github.com/gbprod/yanky.nvim
-  -- wellle/targets.vim
   -- https://github.com/notomo/cmdbuf.nvim
   -- https://github.com/gelguy/wilder.nvim
   -- https://github.com/chipsenkbeil/distant.nvim

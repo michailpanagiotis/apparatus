@@ -3,7 +3,8 @@ return {
   'godlygeek/tabular',    -- align columns :Tabularize /--
   'tomtom/tcomment_vim',  -- "gc" to comment visual regions/lines
   'mhinz/vim-startify',
-  { 
+  'wellle/targets.vim',
+  {
     'matze/vim-move',       -- Plugin to move lines and selections up and down
     config = function ()
       vim.cmd([[
@@ -13,8 +14,8 @@ return {
       ]])
     end
   },
-  { 
-    'kkoomen/vim-doge', 
+  {
+    'kkoomen/vim-doge',
     build = ':call doge#install()',
   }
 }

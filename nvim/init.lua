@@ -6,6 +6,7 @@ end
 load('user.settings')
 load('user.commands')
 load('user.keymaps')
+load('user.diagnostics')
 
 local lazy = {}
 
@@ -44,7 +45,5 @@ lazy.setup({
   {import = 'plugins/optimizations'},
   {import = 'plugins/moving'},
 })
-
-load('user.diagnostics')
 
 pcall(vim.cmd.colorscheme, 'everforest')
