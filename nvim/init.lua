@@ -45,6 +45,6 @@ lazy.setup({
   {import = 'plugins/moving'},
 })
 
--- load('user.diagnostics')
+load('user.diagnostics')
 
 pcall(vim.cmd.colorscheme, 'everforest')

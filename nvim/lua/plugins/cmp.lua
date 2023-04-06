@@ -3,6 +3,9 @@ local LuasnipPlugin = {'L3MON4D3/LuaSnip'}
 LuasnipPlugin.dependencies = {
   'saadparwaiz1/cmp_luasnip',
   'rafamadriz/friendly-snippets',
+  'ray-x/cmp-treesitter',
+  'hrsh7th/cmp-nvim-lsp',
+  'hrsh7th/cmp-nvim-lsp-signature-help',
 }
 LuasnipPlugin.event = {'BufReadPre', 'BufNewFile'}
 
