@@ -20,4 +20,7 @@ vim.api.nvim_create_autocmd('FileType', {
 vim.cmd([[
   " Trim white space
   autocmd BufWritePre * %s/\s\+$//e
+  " Format
+  autocmd BufWritePre * lua vim.lsp.buf.format()
 ]])
+
