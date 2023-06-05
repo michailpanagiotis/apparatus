@@ -7,9 +7,6 @@ return {
       return
     end
     cybu.setup()
-    vim.keymap.set("n", "{", "<Plug>(CybuPrev)")
-    vim.keymap.set("n", "}", "<Plug>(CybuNext)")
-    vim.keymap.set({"n", "v"}, "<c-s-tab>", "<plug>(CybuLastusedPrev)")
-    vim.keymap.set({"n", "v"}, "<c-tab>", "<plug>(CybuLastusedNext)")
+    vim.keymap.set("n", "<Tab>", "<Plug>(CybuNext)")
   end,
 }

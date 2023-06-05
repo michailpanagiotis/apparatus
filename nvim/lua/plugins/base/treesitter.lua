@@ -73,7 +73,8 @@ TreeSitterPlugin.config = function ()
       enable = true,
       keymaps = {
         init_selection = "gnn",
-        node_incremental = ".",
+        node_incremental = "v",
+        node_decremental = "V",
         scope_incremental = "grc",
         node_decremental = ",",
       },

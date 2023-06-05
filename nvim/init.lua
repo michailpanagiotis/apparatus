@@ -47,3 +47,28 @@ lazy.setup({
 })
 
 pcall(vim.cmd.colorscheme, 'everforest')
+
+local map = vim.keymap.set
+-- Remap y to ygv<esc> in visual mode so the cursor does not jump back to where you started the selection.
+map("v", "y", "ygv<esc>")
+
+-- qq starts recording, q stops, Q runs it.
+map("n", "Q" , "@q")
+map("v", "Q" , ":norm @q<cr>")
+
+-- -- Center to focus
+-- map("n", "{", "{zz")
+-- map("n", "}", "}zz")
+-- map("n", "n", "nzz")
+-- map("n", "N", "Nzz")
+-- map("n", "G", "Gzz")
+-- map("n", "i", "zzi")
+-- map("n", "I", "zzI")
+-- map("n", "o", "zzo")
+-- map("n", "O", "zzO")
+-- map("n", "a", "zza")
+-- map("n", "A", "zzA")
+-- map("n", "s", "zzs")
+-- map("n", "S", "zzS")
+-- map("n", "c", "zzc")
+-- map("n", "C", "zzC")
