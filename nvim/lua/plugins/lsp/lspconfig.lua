@@ -211,9 +211,9 @@ Plugin.config = function ()
     -- This is the default in Nvim 0.7+
     debounce_text_changes = 150,
   }
-  require('lspconfig')['vtsls'].setup(resolve_config({
-    flags = lsp_flags,
-  }))
+  -- require('lspconfig')['vtsls'].setup(resolve_config({
+  --   flags = lsp_flags,
+  -- }))
 end
 
 return Plugin

@@ -22,6 +22,7 @@
   "lir.nvim": { "branch": "master", "commit": "1aa871f20637eccc4e1e26b0fbcf9aafc9b6caf7" },
   "lualine-lsp-progress": { "branch": "master", "commit": "56842d097245a08d77912edf5f2a69ba29f275d7" },
   "lualine.nvim": { "branch": "master", "commit": "c28a7427c3fb29322db136f0564ec58807b26747" },
+  "lush.nvim": { "branch": "main", "commit": "789a2fbd98f3572f315958a0e8a711eb88d360d8" },
   "monokai-pro.nvim": { "branch": "main", "commit": "826d028edbcc7a8aadc0f7a32b32747d97575615" },
   "null-ls.nvim": { "branch": "main", "commit": "13be3e34b7733bf2948e32c339694f657662ccfd" },
   "nvim-cmp": { "branch": "main", "commit": "777450fd0ae289463a14481673e26246b5e38bf2" },
@@ -48,5 +49,6 @@
   "vim-doge": { "branch": "master", "commit": "59c3e6c91259afa845ba9cb3eff0493406a498dd" },
   "vim-move": { "branch": "master", "commit": "a4bbedda7ef516b4a1b74d145cd642297e82e800" },
   "vim-sleuth": { "branch": "master", "commit": "1cc4557420f215d02c4d2645a748a816c220e99b" },
-  "vim-startify": { "branch": "master", "commit": "81e36c352a8deea54df5ec1e2f4348685569bed2" }
+  "vim-startify": { "branch": "master", "commit": "81e36c352a8deea54df5ec1e2f4348685569bed2" },
+  "zenbones.nvim": { "branch": "main", "commit": "e951fb866bd49497c55e9a943363c00b63cce4d1" }
 }
