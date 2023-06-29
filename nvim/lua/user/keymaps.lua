@@ -5,6 +5,8 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- disable some default keys
+vim.keymap.set({ 'n', 'v' }, '<C-o>', '<Nop>', { silent = true })
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 -- Remap for dealing with word wrap
