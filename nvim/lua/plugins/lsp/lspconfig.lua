@@ -214,6 +214,15 @@ Plugin.config = function ()
   -- require('lspconfig')['vtsls'].setup(resolve_config({
   --   flags = lsp_flags,
   -- }))
+  --
+  require'lspconfig'.ruff_lsp.setup{
+    init_options = {
+      settings = {
+        -- Any extra CLI arguments for `ruff` go here.
+        args = { "--config", "/root/.apparatus/.ruff.toml" }
+      }
+    }
+  }
 end
 
 return Plugin
