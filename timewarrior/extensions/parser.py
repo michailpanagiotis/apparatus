@@ -19,10 +19,13 @@ def parse_interval_lines(stdin_interval_lines):
             if not description_fn:
                 raise Exception('description_fn is required')
 
-            descriptions = {description_fn(i) for i in self.__all_intervals}
-            if len(descriptions) != 1:
-                raise Exception('expecting just one description')
-            self._description = descriptions.pop()
+            if len(self.__all_intervals) == 1:
+                self._description = '@%s' % self.__all_intervals[0].id
+            else:
+                descriptions = {description_fn(i) for i in self.__all_intervals}
+                if len(descriptions) != 1:
+                    raise Exception('expecting just one description')
+                self._description = descriptions.pop()
 
         def to_list(self):
             return list(self.__all_intervals)
@@ -36,7 +39,7 @@ def parse_interval_lines(stdin_interval_lines):
             if not callable(description_fn):
                 raise Exception("expecting a callable for description")
             group = [IntervalSet(intervals, description_fn) for _, intervals in groupby(self.__all_intervals, predicate)]
-            return group
+            return IntervalNode(children=group)
 
         def group(self, grouping_definitions):
             definition = grouping_definitions[0]
@@ -45,9 +48,14 @@ def parse_interval_lines(stdin_interval_lines):
             return self.__group_by(*definition)
 
     class IntervalNode:
-        def __init__(self, children=None):
-            self.__children=children
+        def __init__(self, interval=None, children=tuple()):
+            if interval:
+                self.interval=interval
+            else:
+                self.__children=children
 
+        def __getitem__(self, index):
+            return self.__children[index]
 
     class IntervalTreeOld:
         def from_stdin(intervals):
