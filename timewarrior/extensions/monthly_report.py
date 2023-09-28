@@ -6,8 +6,7 @@ from parser import parse_stdin
 config, intervals = parse_stdin(sys.stdin)
 
 grouped = intervals.group(
-    predicate=lambda i: i.format_start("%Y%m"),
-    description_fn=lambda i: i.format_start("%B %Y"),
+    predicate=lambda i: i.format_start("%B %Y"),
 )
 def get_category(interval):
     ticket = None
@@ -31,8 +30,9 @@ for per_month in grouped:
     print("  %s" % str(per_month))
     for per_ticket in per_month.group(
         predicate=get_category,
-        description_fn=get_category,
     ):
         print("    %s" % str(per_ticket))
         for interval in per_ticket.to_list():
-            print("        %s %s @%s for %s hours" % (interval.id, interval.annotation, interval.format_start("%H:%M"), interval.get_hours()))
+            duration = interval.get_duration()
+            hours = duration // 3600
+            print("        %s %s @%s for %s hours" % (interval.id, interval.annotation, interval.format_start("%H:%M"), hours))
