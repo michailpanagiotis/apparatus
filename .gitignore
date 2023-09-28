@@ -7,3 +7,5 @@ vim/undodir
 bw
 
 nvim/plugin/packer_compiled.lua
+
+__pycache__
