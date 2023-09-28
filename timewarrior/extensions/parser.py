@@ -53,6 +53,14 @@ class IntervalSet:
     def aggregate(self, interval_fn, initial_value):
         return reduce(lambda acc, curr: acc + interval_fn(curr), self.__all_intervals, initial_value)
 
+    def min(self, interval_fn):
+        min = None
+        for interval in self.__all_intervals:
+            value = interval_fn(interval)
+            if min is None or value < min:
+                min = value
+        return min
+
     def get_common_value(self, fn, key=None):
         if not callable(fn):
             raise Exception("expecting a callable for fn for %s" % key)
