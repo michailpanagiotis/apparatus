@@ -1,37 +1,38 @@
 #!/usr/bin/env python3
+import re
 import sys
-from itertools import groupby
-
-from parser import parse_stdin, GroupingDefinition
+from parser import parse_stdin
 
 config, intervals = parse_stdin(sys.stdin)
 
-grouped = intervals.group([
-    GroupingDefinition(
-        predicate=lambda i: i.get_month(),
-        description_fn=lambda i: i.get_formatted_month(),
-    )
-])
+grouped = intervals.group(
+    predicate=lambda i: i.format_start("%Y%m"),
+    description_fn=lambda i: i.format_start("%B %Y"),
+)
+def get_category(interval):
+    ticket = None
+    for tag in interval.tags:
+        match = re.match("(SDK(?:-\d+)?\.SDK-\d+)", tag)
+        if match:
+            ticket = match.group(1)
+            continue
+    if ticket:
+        return "Ticket: %s" %ticket
+    if 'Meeting' in interval.tags:
+        return 'Meetings'
+    if 'Candidate assessment' in interval.tags:
+        return 'Candidate assessment'
+    if 'Deployment' in interval.tags:
+        return 'Deployment'
+    raise Exception('unknown category for %s' % interval.id)
 
-for group in grouped:
-    print(group.get_description())
-    print(group.to_list())
-
-raise Exception('stop')
-
-for group in grouped:
-    print(group.get_description())
-    for interval in group.to_list():
-        print('   ', interval.id, interval.get_description(), interval.tags, interval.start, interval.end)
-
-
-
-for _, monthly_group in groupby(intervals.to_list(), key=lambda i: i.get_month()):
-    monthly_intervals = list(monthly_group)
-    month = monthly_intervals[0].get_formatted_month()
-    print('=====', month)
-
-    for description, group in groupby(monthly_intervals, key=lambda i: i.get_description()):
-        print('  -----', description)
-        # for interval in group:
-        #     print('   ', interval.id, interval.get_description(), interval.tags, interval.start, interval.end)
+print(intervals)
+for per_month in grouped:
+    print("  %s" % str(per_month))
+    for per_ticket in per_month.group(
+        predicate=get_category,
+        description_fn=get_category,
+    ):
+        print("    %s" % str(per_ticket))
+        for interval in per_ticket.to_list():
+            print("        %s %s @%s for %s hours" % (interval.id, interval.annotation, interval.format_start("%H:%M"), interval.get_hours()))

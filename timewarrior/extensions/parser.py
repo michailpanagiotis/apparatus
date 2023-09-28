@@ -4,156 +4,95 @@ import re
 import json
 import datetime
 from dateutil import parser
-from itertools import groupby
+from functools import reduce
 from typing import NamedTuple
+from collections import defaultdict
 
-class GroupingDefinition(NamedTuple):
-    predicate: callable
-    description_fn: callable
+class Interval(NamedTuple):
+    id: int
+    start: datetime
+    end: datetime
+    tags: list[str]
+    annotation: str = ""
 
-def parse_interval_lines(stdin_interval_lines):
-    class IntervalSet:
-        def __init__(self, intervals=None, description_fn = None):
-            self.__all_intervals = list(intervals)
+    def __get_period(self):
+        return (parser.isoparse(self.start), parser.isoparse(self.end))
 
-            if not description_fn:
-                raise Exception('description_fn is required')
+    def format_start(self, format):
+        (start, end) = self.__get_period()
+        return start.strftime(format)
 
-            if len(self.__all_intervals) == 1:
-                self._description = '@%s' % self.__all_intervals[0].id
-            else:
-                descriptions = {description_fn(i) for i in self.__all_intervals}
-                if len(descriptions) != 1:
-                    raise Exception('expecting just one description')
-                self._description = descriptions.pop()
+    def get_duration(self):
+        (start, end) = self.__get_period()
+        return (end - start).seconds
 
-        def to_list(self):
-            return list(self.__all_intervals)
-
-        def get_description(self):
-            return self._description
-
-        def __group_by(self, predicate, description_fn):
-            if not callable(predicate):
-                raise Exception("expecting a callable for predicate")
-            if not callable(description_fn):
-                raise Exception("expecting a callable for description")
-            group = [IntervalSet(intervals, description_fn) for _, intervals in groupby(self.__all_intervals, predicate)]
-            return IntervalNode(children=group)
-
-        def group(self, grouping_definitions):
-            definition = grouping_definitions[0]
-            if not isinstance(definition, GroupingDefinition):
-                raise Exception('expecting a GroupingDefinition')
-            return self.__group_by(*definition)
-
-    class IntervalNode:
-        def __init__(self, interval=None, children=tuple()):
-            if interval:
-                self.interval=interval
-            else:
-                self.__children=children
-
-        def __getitem__(self, index):
-            return self.__children[index]
-
-    class IntervalTreeOld:
-        def from_stdin(intervals):
-            return IntervalTreeOld(children=[IntervalTreeOld(interval=interval, description_fn=lambda i: 'stdin') for interval in intervals])
-
-        def from_intervals(intervals,description_fn = None):
-            return IntervalTreeOld(children=[IntervalTreeOld(interval=interval, description_fn=lambda i: 'stdin') for interval in intervals])
-
-        def __init__(self, interval=None, children=tuple(), description_fn = None):
-            if interval is not None and len(children) > 0:
-                raise Exception('you can either define a single interval or children sets')
-
-            self.__children = list(children)
-            self.__all_intervals = [x for child in children for x in child.get_intervals()]
-
-            if interval:
-                self.__all_intervals.append(interval)
-
-            if description_fn:
-                descriptions = {description_fn(i) for i in self.__all_intervals}
-                if len(descriptions) != 1:
-                    raise Exception('expecting just one description')
-                self._description = descriptions.pop()
-            else:
-                descriptions = {i.get_description() for i in children}
-                if len(descriptions) != 1:
-                    raise Exception('expecting just one description')
-                self._description = descriptions.pop()
-
-        def get_intervals(self):
-            return list(self.__all_intervals)
-
-        def to_list(self):
-            return self.__all_intervals
-
-        def get_description(self):
-            return self._description
-
-        def __group_by(self, predicate, description_fn):
-            if not callable(predicate):
-                raise Exception("expecting a callable for predicate")
-            if not callable(description_fn):
-                raise Exception("expecting a callable for description")
-            return [IntervalTreeOld.from_intervals(intervals, description_fn) for _, intervals in groupby(self.__all_intervals, predicate)]
-
-        def group(self, grouping_definitions):
-            if len(grouping_definitions) > 0:
-                definition = grouping_definitions[0]
-                if not isinstance(definition, GroupingDefinition):
-                    raise Exception('expecting a GroupingDefinition')
-                return self.__group_by(*definition)
-            return self
+    def get_hours(self):
+        duration = self.get_duration()
+        hours, remainder = divmod(duration, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        return hours
 
 
-    class Interval(NamedTuple):
-        id: int
-        start: datetime
-        end: datetime
-        tags: list[str]
-        annotation: str = ""
+class IntervalSet:
+    def __init__(self, intervals=None, description_fn = None):
+        self.__all_intervals = list(intervals)
 
-        def __get_period(self):
-            return (parser.parse(self.start), parser.parse(self.end))
+        if not description_fn:
+            raise Exception('description_fn is required')
 
-        def get_month(self):
-            (start, end) = self.__get_period()
-            return start.strftime('%Y%m')
+        descriptions = {description_fn(i) for i in self.__all_intervals}
+        if len(descriptions) != 1:
+            raise Exception('expecting just one description')
+        self._description = descriptions.pop()
 
-        def get_formatted_month(self):
-            (start, end) = self.__get_period()
-            return start.strftime('%B %Y')
+    def to_list(self):
+        return list(self.__all_intervals)
 
-        def get_ticket(self):
-            ticket = None
-            for tag in self.tags:
-                match = re.match("(SDK(?:-\d+)?\.SDK-\d+)", tag)
-                if match:
-                    ticket = match.group(1)
-                    continue
-            return ticket
+    def get_description(self):
+        return self._description
 
-        def get_description(self):
-            ticket = self.get_ticket()
-            if ticket:
-                return '%s: %s' % (self.get_ticket(), self.annotation)
-            else:
-                return '%s %s' % (self.annotation, self.start)
+    def get_duration(self):
+        return reduce(lambda acc, curr: acc + curr.get_duration(),self.__all_intervals, 0)
 
+    def get_num_intervals(self):
+        return len(self.__all_intervals)
+
+    def get_hours(self):
+        duration = self.get_duration()
+        hours, remainder = divmod(duration, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        return hours
+
+    def group(self, predicate, description_fn):
+        if not callable(predicate):
+            raise Exception("expecting a callable for predicate")
+        if not callable(description_fn):
+            raise Exception("expecting a callable for description")
+        def __groupby_unsorted(seq, key):
+            indexes = defaultdict(list)
+            for elem in seq:
+                indexes[key(elem)].append(elem)
+            return indexes.items()
+        group = [IntervalSet(intervals, description_fn) for _, intervals in __groupby_unsorted(self.__all_intervals, predicate)]
+        return group
+
+    def __str__(self):
+        return "%s for %s hours" % (
+            self.get_description(),
+            self.get_hours(),
+        )
+
+def __parse_interval_lines(stdin_interval_lines):
     json_intervals = json.loads(''.join(line for line in stdin_interval_lines))
-    return IntervalSet(intervals=(Interval(**i) for i in json_intervals), description_fn=lambda x: 'stdin')
+    return IntervalSet(intervals=(Interval(**i) for i in json_intervals), description_fn=lambda x: 'All')
 
-def get_config_line_regex():
+def __get_config_line_regex():
     return re.compile("^(.*): (.*)$")
 
-def parse_config(stdin_config_lines):
+def __parse_config(stdin_config_lines):
     config = {}
     for line in stdin_config_lines:
-        match = get_config_line_regex().match(line)
+        match = __get_config_line_regex().match(line)
         if match:
             path_components = match.group(1).split('.')
             rv = config
@@ -170,10 +109,10 @@ def parse_stdin(stdin):
             # configuration data are complete, proceed to reading the JSON body
             break
 
-        match = get_config_line_regex().match(line)
+        match = __get_config_line_regex().match(line)
         if match:
             config_lines.append(line)
 
-    config = parse_config(config_lines)
-    intervals = parse_interval_lines(sys.stdin)
+    config = __parse_config(config_lines)
+    intervals = __parse_interval_lines(sys.stdin)
     return config, intervals
