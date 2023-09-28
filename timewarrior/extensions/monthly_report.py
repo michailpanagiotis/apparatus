@@ -2,11 +2,28 @@
 import re
 import sys
 from parser import parse_stdin
+from zoneinfo import ZoneInfo
 
-config, intervals = parse_stdin(sys.stdin)
+def __get_interval_hours(interval):
+    return interval.seconds // 3600
 
-grouped = intervals.group(
+def __get_interval_set_hours(iset):
+    return iset.aggregate(__get_interval_hours, 0)
+
+def __get_interval_set_month(iset):
+    return iset.get_common_value(lambda i: i.format_start("%Y%m"))
+
+config, interval_set = parse_stdin(sys.stdin, common_metadata={
+    "hours": __get_interval_set_hours,
+})
+
+grouped = interval_set.group(
     predicate=lambda i: i.format_start("%B %Y"),
+    common_metadata={
+        "month": __get_interval_set_month,
+        "hours": __get_interval_set_hours,
+    },
+    group_sort=lambda s: s.metadata.month
 )
 def get_category(interval):
     ticket = None
@@ -25,14 +42,21 @@ def get_category(interval):
         return 'Deployment'
     raise Exception('unknown category for %s' % interval.id)
 
-print(intervals)
+print("All for %s hours" % (interval_set.metadata.hours))
 for per_month in grouped:
-    print("  %s" % str(per_month))
+    print("  %s for %s hours" % (per_month.description, per_month.metadata.hours))
     for per_ticket in per_month.group(
         predicate=get_category,
+        common_metadata={
+            "hours": __get_interval_set_hours,
+        },
     ):
-        print("    %s" % str(per_ticket))
-        for interval in per_ticket.to_list():
-            duration = interval.get_duration()
-            hours = duration // 3600
-            print("        %s %s @%s for %s hours" % (interval.id, interval.annotation, interval.format_start("%H:%M"), hours))
+        print("      %s for %s hours" % (per_ticket.description, per_ticket.metadata.hours))
+        for interval in per_ticket:
+            hours = __get_interval_hours(interval)
+            print("        %s @%s for %s hours (%s)" % (
+                interval.annotation,
+                interval.format_start("%Y-%m-%d %H:%M", ZoneInfo('Europe/Athens')),
+                hours,
+                interval.id,
+            ))

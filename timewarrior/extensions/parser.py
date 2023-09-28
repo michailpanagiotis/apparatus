@@ -15,68 +15,71 @@ class Interval(NamedTuple):
     tags: list[str]
     annotation: str = ""
 
-    def __get_period(self):
+    def format_start(self, format, timezone=None):
+        if not timezone:
+            return parser.isoparse(self.start).strftime(format)
+        return parser.isoparse(self.start).astimezone(timezone).strftime(format)
+
+    @property
+    def period(self):
         return (parser.isoparse(self.start), parser.isoparse(self.end))
 
-    def format_start(self, format):
-        (start, end) = self.__get_period()
-        return start.strftime(format)
-
-    def get_duration(self):
-        (start, end) = self.__get_period()
+    @property
+    def seconds(self):
+        (start, end) = self.period
         return (end - start).seconds
 
 
 class IntervalSet:
-    def __init__(self, intervals=None, description_fn = lambda x: 'All'):
-        self.__all_intervals = list(intervals)
-
-        if not description_fn:
-            raise Exception('description_fn is required')
-
+    def __init__(self, intervals, description_fn=lambda x: '', common_metadata=None):
+        self.__all_intervals = [
+            Interval(**x) if isinstance(x, dict) else x for x in intervals
+        ]
         self.__description_fn = description_fn
+        self.description = self.get_common_value(description_fn, 'description')
+        self.set_common_metadata(common_metadata)
 
-        descriptions = {self.__description_fn(i) for i in self.__all_intervals}
-        if len(descriptions) != 1:
-            raise Exception('expecting just one description')
-        self.__description = descriptions.pop()
+    def __getitem__(self, index):
+        return self.__all_intervals[index]
 
-    def to_list(self):
-        return list(self.__all_intervals)
+    def set_common_metadata(self, common_metadata=None):
+        if common_metadata is None:
+            self.metadata = tuple()
+        else:
+            Metadata = NamedTuple('Metadata', [(key, str) for key in common_metadata.keys()])
 
-    def get_description(self):
-        return self.__description
+            self.metadata = Metadata(**{key: fn(self) for key, fn in common_metadata.items()})
 
-    def get_duration(self):
-        return reduce(lambda acc, curr: acc + curr.get_duration(),self.__all_intervals, 0)
+    def aggregate(self, interval_fn, initial_value):
+        return reduce(lambda acc, curr: acc + interval_fn(curr), self.__all_intervals, initial_value)
 
-    def get_num_intervals(self):
-        return len(self.__all_intervals)
+    def get_common_value(self, fn, key=None):
+        if not callable(fn):
+            raise Exception("expecting a callable for fn for %s" % key)
+        values = {fn(i) for i in self.__all_intervals}
+        if len(values) != 1:
+            raise Exception('expecting just one common value for %s' % key)
+        return values.pop()
 
-    def get_hours(self):
-        duration = self.get_duration()
-        hours, remainder = divmod(duration, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        return hours
-
-    def group(self, predicate):
+    def group(
+        self,
+        predicate,
+        group_sort=lambda x: x.description,
+        common_metadata=None,
+    ):
         if not callable(predicate):
             raise Exception("expecting a callable for predicate")
         indexes = defaultdict(list)
         for elem in self.__all_intervals:
             indexes[predicate(elem)].append(elem)
-        return [
-            IntervalSet(intervals, predicate)
+        sets = [
+            IntervalSet(intervals, predicate, common_metadata)
             for intervals in indexes.values()
         ]
+        sets.sort(key=group_sort)
+        return sets
 
-    def __str__(self):
-        return "%s for %s hours" % (
-            self.get_description(),
-            self.get_hours(),
-        )
-
-def parse_stdin(stdin):
+def parse_stdin(stdin, common_metadata=None):
     config = {}
     config_regex = re.compile("^(.*): (.*)$")
     # read config lines
@@ -97,6 +100,7 @@ def parse_stdin(stdin):
 
     # read intervals json
     intervals = IntervalSet(
-        intervals=(Interval(**i) for i in json.loads(''.join(line for line in sys.stdin))),
+        intervals=json.loads(''.join(line for line in sys.stdin)),
+        common_metadata = common_metadata,
     )
     return config, intervals
