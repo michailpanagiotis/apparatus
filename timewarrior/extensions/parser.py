@@ -31,24 +31,29 @@ class Interval(NamedTuple):
 
 
 class IntervalSet:
-    def __init__(self, intervals, description_fn=lambda x: '', common_metadata=None):
+    def __init__(self, intervals, description_fn=lambda x: '', annotate=None):
         self.__all_intervals = [
             Interval(**x) if isinstance(x, dict) else x for x in intervals
         ]
         self.__description_fn = description_fn
         self.description = self.get_common_value(description_fn, 'description')
-        self.set_common_metadata(common_metadata)
+        self.annotate(annotate)
 
     def __getitem__(self, index):
         return self.__all_intervals[index]
 
-    def set_common_metadata(self, common_metadata=None):
-        if common_metadata is None:
-            self.metadata = tuple()
+    def __getattr__(self, name):
+        if name in self.__metadata:
+            return self.__metadata[name]
         else:
-            Metadata = NamedTuple('Metadata', [(key, str) for key in common_metadata.keys()])
+            # Default behaviour
+            raise AttributeError
 
-            self.metadata = Metadata(**{key: fn(self) for key, fn in common_metadata.items()})
+    def annotate(self, annotate=None):
+        if annotate is None:
+            self.__metadata = {}
+        else:
+            self.__metadata = {key: fn(self) for key, fn in annotate.items()}
 
     def aggregate(self, interval_fn, initial_value):
         return reduce(lambda acc, curr: acc + interval_fn(curr), self.__all_intervals, initial_value)
@@ -73,7 +78,7 @@ class IntervalSet:
         self,
         predicate,
         group_sort=lambda x: x.description,
-        common_metadata=None,
+        annotate=None,
     ):
         if not callable(predicate):
             raise Exception("expecting a callable for predicate")
@@ -81,13 +86,13 @@ class IntervalSet:
         for elem in self.__all_intervals:
             indexes[predicate(elem)].append(elem)
         sets = [
-            IntervalSet(intervals, predicate, common_metadata)
+            IntervalSet(intervals, predicate, annotate)
             for intervals in indexes.values()
         ]
         sets.sort(key=group_sort)
         return sets
 
-def parse_stdin(stdin, common_metadata=None):
+def parse_stdin(stdin, annotate=None):
     config = {}
     config_regex = re.compile("^(.*): (.*)$")
     # read config lines
@@ -109,6 +114,6 @@ def parse_stdin(stdin, common_metadata=None):
     # read intervals json
     intervals = IntervalSet(
         intervals=json.loads(''.join(line for line in sys.stdin)),
-        common_metadata = common_metadata,
+        annotate = annotate,
     )
     return config, intervals
