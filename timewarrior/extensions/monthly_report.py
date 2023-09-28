@@ -57,25 +57,26 @@ config, interval_set = parse_stdin(sys.stdin, annotate={
     "hours": __get_interval_set_hours,
 })
 
-print("All for %s hours" % (interval_set.hours))
-for monthly_set in interval_set.group(
+per_month = sorted(interval_set.group(
     predicate=lambda i: i.format_start("%B %Y"),
     annotate={
         "month": __get_interval_set_month,
         "hours": __get_interval_set_hours,
         "start": __get_minimum_start,
     },
-    group_sort=lambda s: s.month
-):
+), key=lambda s: s.month)
+
+print("All for %s hours" % (interval_set.hours))
+for monthly_set in per_month:
     print("    %s for %s hours" % (monthly_set.description, monthly_set.hours))
-    for ticket_set in monthly_set.group(
+    per_ticket = sorted(monthly_set.group(
         predicate=__get_interval_category,
         annotate={
             "hours": __get_interval_set_hours,
             "start": __get_minimum_start,
         },
-        group_sort=cmp_to_key(__compare_within_month),
-    ):
+    ), key=cmp_to_key(__compare_within_month))
+    for ticket_set in per_ticket:
         print("        %s @%s for %s hours" % (ticket_set.description, ticket_set.start, ticket_set.hours))
         for interval in ticket_set:
             hours = __get_interval_hours(interval)

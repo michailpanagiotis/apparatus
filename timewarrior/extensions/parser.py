@@ -35,9 +35,8 @@ class IntervalSet:
         self.__all_intervals = [
             Interval(**x) if isinstance(x, dict) else x for x in intervals
         ]
-        self.__description_fn = description_fn
-        self.description = self.get_common_value(description_fn, 'description')
-        self.annotate(annotate)
+        self.__metadata = {} if annotate is None else {key: fn(self) for key, fn in annotate.items()}
+        self.__metadata["description"] = self.get_common_value(description_fn)
 
     def __getitem__(self, index):
         return self.__all_intervals[index]
@@ -48,12 +47,6 @@ class IntervalSet:
         else:
             # Default behaviour
             raise AttributeError
-
-    def annotate(self, annotate=None):
-        if annotate is None:
-            self.__metadata = {}
-        else:
-            self.__metadata = {key: fn(self) for key, fn in annotate.items()}
 
     def aggregate(self, interval_fn, initial_value):
         return reduce(lambda acc, curr: acc + interval_fn(curr), self.__all_intervals, initial_value)
@@ -66,31 +59,25 @@ class IntervalSet:
                 min = value
         return min
 
-    def get_common_value(self, fn, key=None):
-        if not callable(fn):
-            raise Exception("expecting a callable for fn for %s" % key)
-        values = {fn(i) for i in self.__all_intervals}
+    def distinct(self, interval_fn):
+        if not callable(interval_fn):
+            raise Exception("expecting a callable for fn")
+        return {interval_fn(i) for i in self.__all_intervals}
+
+    def get_common_value(self, fn,):
+        values = self.distinct(fn)
         if len(values) != 1:
-            raise Exception('expecting just one common value for %s' % key)
+            raise Exception('expecting just one common value')
         return values.pop()
 
-    def group(
-        self,
-        predicate,
-        group_sort=lambda x: x.description,
-        annotate=None,
-    ):
-        if not callable(predicate):
-            raise Exception("expecting a callable for predicate")
+    def group( self, predicate=lambda x: x.id, annotate=None):
         indexes = defaultdict(list)
         for elem in self.__all_intervals:
             indexes[predicate(elem)].append(elem)
-        sets = [
+        return [
             IntervalSet(intervals, predicate, annotate)
             for intervals in indexes.values()
         ]
-        sets.sort(key=group_sort)
-        return sets
 
 def parse_stdin(stdin, annotate=None):
     config = {}
