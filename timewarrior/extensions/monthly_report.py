@@ -27,18 +27,22 @@ def __get_interval_category(interval):
         return 'Candidate assessment'
     raise Exception('unknown category for %s' % interval.id)
 
-def __compare_within_month(iset1, iset2):
-    if iset1.description == 'Meetings':
-        return 1
-    if iset1.description == 'Deployment':
-        return 1
-    if iset1.description == 'Candidate assessment':
-        return 1
-    if iset2.description == 'Meetings':
+def __compare_isets(iset1, iset2):
+    if iset1.month < iset2.month:
         return -1
-    if iset2.description == 'Deployment':
+    if iset1.month > iset2.month:
+        return 1
+    if iset1.category == 'Meetings':
+        return 1
+    if iset1.category == 'Deployment':
+        return 1
+    if iset1.category == 'Candidate assessment':
+        return 1
+    if iset2.category == 'Meetings':
         return -1
-    if iset2.description == 'Candidate assessment':
+    if iset2.category == 'Deployment':
+        return -1
+    if iset2.category == 'Candidate assessment':
         return -1
     if iset1.start < iset2.start:
         return -1
@@ -53,29 +57,38 @@ def __get_minimum_start(iset):
 def __get_interval_set_month(iset):
     return iset.get_common_value(lambda i: i.format_start("%Y%m"))
 
+def __get_interval_set_category(iset):
+    return iset.get_common_value(__get_interval_category)
+
+annotate={
+    "month": __get_interval_set_month,
+    "hours": __get_interval_set_hours,
+    "category": __get_interval_set_category,
+    "start": __get_minimum_start,
+}
+
 config, interval_set = parse_stdin(sys.stdin, annotate={
     "hours": __get_interval_set_hours,
 })
 
-per_month = sorted(interval_set.group(
+per_month = interval_set.group(
     predicate=lambda i: i.format_start("%B %Y"),
     annotate={
         "month": __get_interval_set_month,
         "hours": __get_interval_set_hours,
         "start": __get_minimum_start,
     },
-), key=lambda s: s.month)
+    sort=lambda s: s.month
+)
 
-print("All for %s hours" % (interval_set.hours))
+print("Tree summary, total hours: %s" % (interval_set.hours))
 for monthly_set in per_month:
     print("    %s for %s hours" % (monthly_set.description, monthly_set.hours))
-    per_ticket = sorted(monthly_set.group(
+    per_ticket = monthly_set.group(
         predicate=__get_interval_category,
-        annotate={
-            "hours": __get_interval_set_hours,
-            "start": __get_minimum_start,
-        },
-    ), key=cmp_to_key(__compare_within_month))
+        annotate=annotate,
+        sort=cmp_to_key(__compare_isets)
+    )
     for ticket_set in per_ticket:
         print("        %s @%s for %s hours" % (ticket_set.description, ticket_set.start, ticket_set.hours))
         for interval in ticket_set:
@@ -86,3 +99,30 @@ for monthly_set in per_month:
                 hours,
                 interval.id,
             ))
+
+
+print("\nSummary CSV")
+csv_group = interval_set.group(
+    predicate=lambda i: "%s %s" % (i.format_start("%B %Y"), __get_interval_category(i)),
+    annotate={
+        "year": lambda iset: iset.get_common_value(lambda i: i.format_start("%Y")),
+        "month": lambda iset: iset.get_common_value(lambda i: i.format_start("%B")),
+        "hours": __get_interval_set_hours,
+        "category": __get_interval_set_category,
+        "start": __get_minimum_start,
+    },
+    sort=cmp_to_key(__compare_isets)
+).csv(sys.stdout, ['year', 'month', 'hours', 'category'])
+
+
+print("\nDetailed CSV")
+csv_group = interval_set.group(
+    predicate=lambda i: i.id,
+    annotate={
+        "hours": __get_interval_set_hours,
+        "category": __get_interval_set_category,
+        "description": lambda iset: iset.get_common_value(lambda i: i.annotation),
+        "datetime": lambda iset: iset.get_common_value(lambda i: i.period[0].astimezone(zoneinfo).strftime('%Y%m%d %H:%M')),
+    },
+    sort=__get_minimum_start,
+).csv(sys.stdout, ['datetime', 'hours', 'category', 'description'])

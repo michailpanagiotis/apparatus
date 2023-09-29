@@ -3,6 +3,7 @@ import sys
 import re
 import json
 import datetime
+from csv import DictWriter
 from dateutil import parser
 from functools import reduce
 from typing import NamedTuple
@@ -31,12 +32,14 @@ class Interval(NamedTuple):
 
 
 class IntervalSet:
-    def __init__(self, intervals, description_fn=lambda x: '', annotate=None):
+    def __init__(self, intervals, predicate=lambda x: '', annotate=None):
         self.__all_intervals = [
             Interval(**x) if isinstance(x, dict) else x for x in intervals
         ]
+        self.__id = self.get_common_value(predicate)
         self.__metadata = {} if annotate is None else {key: fn(self) for key, fn in annotate.items()}
-        self.__metadata["description"] = self.get_common_value(description_fn)
+        if "description" not in self.__metadata:
+            self.__metadata["description"] = self.__id
 
     def __getitem__(self, index):
         return self.__all_intervals[index]
@@ -47,6 +50,9 @@ class IntervalSet:
         else:
             # Default behaviour
             raise AttributeError
+
+    def get_metadata_keys(self):
+        return set(self.__metadata.keys())
 
     def aggregate(self, interval_fn, initial_value):
         return reduce(lambda acc, curr: acc + interval_fn(curr), self.__all_intervals, initial_value)
@@ -70,14 +76,35 @@ class IntervalSet:
             raise Exception('expecting just one common value')
         return values.pop()
 
-    def group( self, predicate=lambda x: x.id, annotate=None):
+    def group(self, predicate=lambda x: x.id, annotate=None, sort=None):
         indexes = defaultdict(list)
         for elem in self.__all_intervals:
             indexes[predicate(elem)].append(elem)
-        return [
+        group = [
             IntervalSet(intervals, predicate, annotate)
             for intervals in indexes.values()
         ]
+        if sort:
+            return IntervalGrouping(sorted(group, key=sort))
+        return IntervalGrouping(group)
+
+    def csv(self, writer):
+        writer.writerow({k: getattr(self, k) for k in writer.fieldnames})
+
+class IntervalGrouping:
+    def __init__(self, children):
+        self.__children=children
+
+    def __getitem__(self, index):
+        return self.__children[index]
+
+    def csv(self, stream, fieldnames):
+        writer = DictWriter(sys.stdout, fieldnames)
+        writer.writeheader()
+
+        for s in self.__children:
+            s.csv(writer)
+
 
 def parse_stdin(stdin, annotate=None):
     config = {}
