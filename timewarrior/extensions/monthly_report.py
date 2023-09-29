@@ -60,12 +60,15 @@ def __get_interval_set_month(iset):
 def __get_interval_set_category(iset):
     return iset.get_common_value(__get_interval_category)
 
-annotate={
-    "month": __get_interval_set_month,
-    "hours": __get_interval_set_hours,
-    "category": __get_interval_set_category,
-    "start": __get_minimum_start,
-}
+def get_common_interval_value(fn):
+    return lambda iset: iset.get_common_value(fn)
+
+# annotate={
+#     "month": __get_interval_set_month,
+#     "hours": __get_interval_set_hours,
+#     "category": __get_interval_set_category,
+#     "start": __get_minimum_start,
+# }
 
 config, interval_set = parse_stdin(sys.stdin, annotate={
     "hours": __get_interval_set_hours,
@@ -86,7 +89,12 @@ for monthly_set in per_month:
     print("    %s for %s hours" % (monthly_set.description, monthly_set.hours))
     per_ticket = monthly_set.group(
         predicate=__get_interval_category,
-        annotate=annotate,
+        annotate={
+            "month": get_common_interval_value(lambda i: i.format_start("%Y%m")),
+            "category": get_common_interval_value(__get_interval_category),
+            "hours": __get_interval_set_hours,
+            "start": __get_minimum_start,
+        },
         sort=cmp_to_key(__compare_isets)
     )
     for ticket_set in per_ticket:
@@ -105,10 +113,10 @@ print("\nSummary CSV")
 csv_group = interval_set.group(
     predicate=lambda i: "%s %s" % (i.format_start("%B %Y"), __get_interval_category(i)),
     annotate={
-        "year": lambda iset: iset.get_common_value(lambda i: i.format_start("%Y")),
-        "month": lambda iset: iset.get_common_value(lambda i: i.format_start("%B")),
+        "year": get_common_interval_value(lambda i: i.format_start("%Y")),
+        "month": get_common_interval_value(lambda i: i.format_start("%B")),
+        "category": get_common_interval_value(__get_interval_category),
         "hours": __get_interval_set_hours,
-        "category": __get_interval_set_category,
         "start": __get_minimum_start,
     },
     sort=cmp_to_key(__compare_isets)
@@ -119,10 +127,11 @@ print("\nDetailed CSV")
 csv_group = interval_set.group(
     predicate=lambda i: i.id,
     annotate={
+        "category": get_common_interval_value(__get_interval_category),
+        "description": get_common_interval_value(lambda i: i.annotation),
+        "datetime": get_common_interval_value(lambda i: i.period[0].astimezone(zoneinfo).strftime('%Y%m%d %H:%M')),
         "hours": __get_interval_set_hours,
-        "category": __get_interval_set_category,
-        "description": lambda iset: iset.get_common_value(lambda i: i.annotation),
-        "datetime": lambda iset: iset.get_common_value(lambda i: i.period[0].astimezone(zoneinfo).strftime('%Y%m%d %H:%M')),
+        "start": __get_minimum_start,
     },
     sort=__get_minimum_start,
 ).csv(sys.stdout, ['datetime', 'hours', 'category', 'description'])
