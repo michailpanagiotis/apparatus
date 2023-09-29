@@ -7,8 +7,8 @@ from zoneinfo import ZoneInfo
 
 zoneinfo = ZoneInfo('Europe/Athens')
 
-def __get_interval_hours(interval):
-    return interval.seconds // 3600
+def date_fmt(date, format = '%Y%m%d %H:%M'):
+    return date.astimezone(zoneinfo).strftime(format)
 
 def __get_interval_category(interval):
     ticket = None
@@ -48,14 +48,11 @@ def __compare_isets(iset1, iset2):
         return -1
     return 1
 
-def __get_interval_set_hours(iset):
-    return iset.aggregate(__get_interval_hours, 0)
-
 def __get_minimum_start(iset):
     return iset.min(lambda i: i.period[0]).astimezone(zoneinfo)
 
 def __get_interval_set_month(iset):
-    return iset.get_common_value(lambda i: i.format_start("%Y%m"))
+    return iset.get_common_value(lambda i: date_fmt(i.period[0],"%Y%m"))
 
 def __get_interval_set_category(iset):
     return iset.get_common_value(__get_interval_category)
@@ -63,64 +60,48 @@ def __get_interval_set_category(iset):
 def get_common_interval_value(fn):
     return lambda iset: iset.get_common_value(fn)
 
-# annotate={
-#     "month": __get_interval_set_month,
-#     "hours": __get_interval_set_hours,
-#     "category": __get_interval_set_category,
-#     "start": __get_minimum_start,
-# }
-
-config, interval_set = parse_stdin(sys.stdin, annotate={
-    "hours": __get_interval_set_hours,
-})
+config, interval_set = parse_stdin(sys.stdin)
 
 per_month = interval_set.group(
-    predicate=lambda i: i.format_start("%B %Y"),
+    predicate=lambda i: date_fmt(i.period[0], "%B %Y"),
     annotate={
         "month": __get_interval_set_month,
-        "hours": __get_interval_set_hours,
-        "start": __get_minimum_start,
     },
     sort=lambda s: s.month
 )
 
-print("Tree summary, total hours: %s" % (interval_set.hours))
+print("Tree summary, total hours: %s" % (interval_set.total_hours))
 for monthly_set in per_month:
-    print("    %s for %s hours" % (monthly_set.description, monthly_set.hours))
+    print("    %s for %s hours" % (monthly_set.description, monthly_set.total_hours))
     per_ticket = monthly_set.group(
         predicate=__get_interval_category,
         annotate={
-            "month": get_common_interval_value(lambda i: i.format_start("%Y%m")),
+            "month": get_common_interval_value(lambda i: date_fmt(i.period[0], "%Y%m")),
             "category": get_common_interval_value(__get_interval_category),
-            "hours": __get_interval_set_hours,
-            "start": __get_minimum_start,
         },
         sort=cmp_to_key(__compare_isets)
     )
     for ticket_set in per_ticket:
-        print("        %s @%s for %s hours" % (ticket_set.description, ticket_set.start, ticket_set.hours))
+        print("        %s @%s for %s hours" % (ticket_set.description, ticket_set.start, ticket_set.total_hours))
         for interval in ticket_set:
-            hours = __get_interval_hours(interval)
             print("            %s @%s for %s hours (#%s)" % (
                 interval.annotation,
-                interval.format_start("%Y-%m-%d %H:%M", zoneinfo),
-                hours,
+                date_fmt(interval.period[0], "%Y-%m-%d %H:%M"),
+                interval.total_hours,
                 interval.id,
             ))
 
 
 print("\nSummary CSV")
 csv_group = interval_set.group(
-    predicate=lambda i: "%s %s" % (i.format_start("%B %Y"), __get_interval_category(i)),
+    predicate=lambda i: "%s %s" % (date_fmt(i.period[0], "%B %Y"), __get_interval_category(i)),
     annotate={
-        "year": get_common_interval_value(lambda i: i.format_start("%Y")),
-        "month": get_common_interval_value(lambda i: i.format_start("%B")),
+        "year": get_common_interval_value(lambda i: date_fmt(i.period[0], "%Y")),
+        "month": get_common_interval_value(lambda i: date_fmt(i.period[0], "%B")),
         "category": get_common_interval_value(__get_interval_category),
-        "hours": __get_interval_set_hours,
-        "start": __get_minimum_start,
     },
     sort=cmp_to_key(__compare_isets)
-).csv(sys.stdout, ['year', 'month', 'hours', 'category'])
+).csv(sys.stdout, ['year', 'month', 'total_hours', 'category'])
 
 
 print("\nDetailed CSV")
@@ -129,9 +110,7 @@ csv_group = interval_set.group(
     annotate={
         "category": get_common_interval_value(__get_interval_category),
         "description": get_common_interval_value(lambda i: i.annotation),
-        "datetime": get_common_interval_value(lambda i: i.period[0].astimezone(zoneinfo).strftime('%Y%m%d %H:%M')),
-        "hours": __get_interval_set_hours,
-        "start": __get_minimum_start,
+        "datetime": get_common_interval_value(lambda i: date_fmt(i.period[0])),
     },
     sort=__get_minimum_start,
-).csv(sys.stdout, ['datetime', 'hours', 'category', 'description'])
+).csv(sys.stdout, ['datetime', 'total_hours', 'category', 'description'])

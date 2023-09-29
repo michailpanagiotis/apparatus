@@ -16,19 +16,26 @@ class Interval(NamedTuple):
     tags: list[str]
     annotation: str = ""
 
-    def format_start(self, format, timezone=None):
-        if not timezone:
-            return parser.isoparse(self.start).strftime(format)
-        return parser.isoparse(self.start).astimezone(timezone).strftime(format)
-
     @property
     def period(self):
         return (parser.isoparse(self.start), parser.isoparse(self.end))
 
     @property
-    def seconds(self):
+    def total_seconds(self):
         (start, end) = self.period
         return (end - start).seconds
+
+    @property
+    def total_minutes(self):
+        (start, end) = self.period
+        return (end - start).seconds // 60
+
+    @property
+    def total_hours(self):
+        (start, end) = self.period
+        return (end - start).seconds // 3600
+
+
 
 
 class IntervalSet:
@@ -37,9 +44,18 @@ class IntervalSet:
             Interval(**x) if isinstance(x, dict) else x for x in intervals
         ]
         self.__id = self.get_common_value(predicate)
-        self.__metadata = {} if annotate is None else {key: fn(self) for key, fn in annotate.items()}
-        if "description" not in self.__metadata:
-            self.__metadata["description"] = self.__id
+
+        self.__metadata = {
+            "description": self.__id,
+            "start": self.min(lambda i: i.period[0]),
+            "total_seconds": self.aggregate(lambda i: i.total_seconds, 0),
+            "total_minutes": self.aggregate(lambda i: i.total_minutes, 0),
+            "total_hours": self.aggregate(lambda i: i.total_hours, 0),
+        }
+
+        if annotate:
+            self.__metadata.update({key: fn(self) for key, fn in annotate.items()})
+
 
     def __getitem__(self, index):
         return self.__all_intervals[index]
