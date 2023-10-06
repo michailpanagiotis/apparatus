@@ -23,6 +23,38 @@ pull_request () {
     hub pull-request -b staging2 -h "$current" -m "$message [staging2]"
 }
 
+reflog-json () {
+  git \
+    --no-pager reflog \
+    --abbrev=40 \
+    --no-abbrev-commit \
+    --author="$(git config user.name)" \
+    --pretty="format:%Cred%h%Creset %Cgreen@ %cI%Creset %C(bold blue)%gd%Creset %s" \
+    --since="2023-10-06 07:09:55+00:00" \
+    --exclude="HEAD" \
+    --branches="*" \
+    --format="%h${TAB}%an${TAB}%cI${TAB}%s${TAB}%gd" | tr "\"" "\`" \
+    | awk -F '\t' '{printf "{\"commit\":\"%s\",\"author\":\"%s\",\"date\":\"%s\",\"message\":\"%s\",\"revision\":\"%s\"}\n", $1, $2 ,$3, $4, $5}' \
+    | jq --slurp 'map(.)'
+}
+
+sync-staging() {
+  current=$(git branch --show-current)
+  git stash --include-untracked
+  git checkout master
+  git pull
+  git checkout next
+  git pull
+  git merge --no-edit master
+  git push
+  git checkout staging2
+  git pull
+  git merge --no-edit master
+  git push
+  git checkout ${current}
+  git stash pop
+}
+
 standup () {
     GIT_PRETTY_DATE="%cd"
     GIT_PRETTY_FORMAT="%Cred%h%Creset %Cgreen@ $GIT_PRETTY_DATE%Creset %s %C(bold blue)%d%Creset"
