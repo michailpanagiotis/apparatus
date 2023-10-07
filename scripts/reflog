@@ -41,5 +41,13 @@ git \
   --exclude="HEAD" \
   --branches="*" \
   --format="%h${TAB}%an${TAB}%cI${TAB}%s${TAB}%gd" | tr "\"" "\`" \
-  | awk -F '\t' '{printf "{\"commit\":\"%s\",\"author\":\"%s\",\"date\":\"%s\",\"message\":\"%s\",\"revision\":\"%s\"}\n", $1, $2 ,$3, $4, $5}' \
+  | awk -F '\t' '{branch=gensub(/@.*/, "", 'g', $5); printf \
+"{ \
+\"branch\":\"%s\", \
+\"commit\":\"%s\", \
+\"author\":\"%s\", \
+\"date\":\"%s\", \
+\"message\":\"%s\", \
+\"designator\":\"%s\" \
+}\n", branch, $1, $2 ,$3, $4, $5}' \
   | jq --slurp 'map(.)'

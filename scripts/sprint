@@ -1,0 +1,46 @@
+#! /bin/bash
+
+function usage() {
+  cat << EOS
+    Usage:
+      sprint [-p <project>]
+
+    Examples:
+      sprint -p SDK
+EOS
+  exit 1;
+}
+
+while getopts ":p:h" o; do
+    case "${o}" in
+        p)
+            PROJECT=${OPTARG}
+            ;;
+        h)
+            usage
+            ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+if [ -z "${PROJECT}" ]; then
+    usage
+fi
+
+
+SPRINT_BOARD="assignee in (currentUser(), EMPTY) AND sprint in openSprints ()"
+
+jira issue list -p $PROJECT -q"${SPRINT_BOARD}" -s~Done --plain --no-headers --order-by updated --no-truncate --columns type,key,status,priority,created,updated,summary,assignee \
+  | awk -F '[\t]+' '{printf \
+"{ \
+\"type\":\"%s\", \
+\"key\":\"%s\", \
+\"status\":\"%s\", \
+\"priority\":\"%s\", \
+\"created\":\"%s\", \
+\"updated\":\"%s\", \
+\"summary\":\"%s\", \
+\"assignee\":\"%s\" \
+} \n", $1, $2 ,$3, $4, $5, $6, $7, $8}' \
+  | jq --slurp 'map(.)'
