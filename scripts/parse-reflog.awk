@@ -1,49 +1,5 @@
-#! /bin/bash
+##!/usr/bin/awk -f
 
-function usage() {
-  cat << EOS
-    Usage:
-      reflog -d <days-ago>
-
-    Examples:
-      reflog -d 1
-EOS
-  exit 1;
-}
-
-while getopts ":d:h" o; do
-    case "${o}" in
-        d)
-            DAYS_AGO=${OPTARG}
-            ;;
-        h)
-            usage
-            ;;
-    esac
-done
-
-shift $((OPTIND-1))
-
-if [ -z "${DAYS_AGO}" ]; then
-    usage
-fi
-
-SINCE=$(date -d "-${DAYS_AGO} days" --rfc-3339=s)
-TAB="%x09"
-
-# echo Commits since ${SINCE}
-
-git \
-  --no-pager reflog \
-  --abbrev=40 \
-  --no-abbrev-commit \
-  --author="$(git config user.name)" \
-  --pretty="format:%Cred%h%Creset %Cgreen@ %cI%Creset %C(bold blue)%gd%Creset %s" \
-  --since="${SINCE}" \
-  --exclude="HEAD" \
-  --branches="*" \
-  --format="%h${TAB}%an${TAB}%cI${TAB}%s${TAB}%gd" | tr "\"" "\`" \
-  | awk -F '\t' '\
   function last_bound(t, s) {
     timestamp=mktime(t);
     last=timestamp - timestamp % s;
@@ -85,6 +41,4 @@ git \
 \"tw_start\":\"%s\", \
 \"tw_end\":\"%s\", \
 \"ticket\": \"%s\" \
-}\n", $1, $2 ,$3, $4, $5, meta[branch], day, tw_start, tw_end, ticket}' \
-  | jq --slurp 'map(.)' \
-  | jq ' group_by(.day) | map({ key: .[0].day, value: map(.) }) | from_entries'
+}\n", $1, $2 ,$3, $4, $5, meta[branch], day, tw_start, tw_end, ticket}
