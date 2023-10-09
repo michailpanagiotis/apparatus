@@ -45,5 +45,6 @@ git \
   --format="%h${TAB}%an${TAB}%cI${TAB}%s${TAB}%gd" | tr "\"" "\`" \
   | awk -F '\t' -f $HOME/.apparatus/scripts/parse-reflog.awk \
   | tr -s " " \
+  | ~/.apparatus/scripts/parse-intervals.py
   # | jq --slurp 'map(.)' \
   # | jq ' group_by(.meta.date) | map({ key: .[0].meta.date, value: map(.) }) | from_entries'
