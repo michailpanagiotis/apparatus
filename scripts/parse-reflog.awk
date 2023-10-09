@@ -1,44 +1,62 @@
 ##!/usr/bin/awk -f
 
-  function last_bound(t, s) {
-    timestamp=mktime(t);
-    last=timestamp - timestamp % s;
-    return strftime("%Y%m%dT%H%M%S", last);
-  }
+function _get_branch(designator) {
+  return gensub(/(.+)@.*/, "\\1", "g", designator);
+}
 
-  function next_bound(t, s){
-    timestamp=mktime(t);
-    expected_next = timestamp + s
-    end=expected_next - expected_next % s
-    return strftime("%Y%m%dT%H%M%S", end);
-  }
+function _get_ticket(designator) {
+  ticket_match=gensub(/[^A-Z]*([A-Z]+-[0-9]+)@.*/, "\\1", "g", designator);
+  return ticket_match != designator ? ticket_match : "";
+}
 
-  { \
-  meta[branch]=gensub(/(.+)@.*/, "\\1", "g", $5);
-  regex=/[^A-Z]*([A-Z]+-[0-9]+)@.*/;
-  ticket_match=gensub(/[^A-Z]*([A-Z]+-[0-9]+)@.*/, "\\1", "g", $5);
-  ticket = ticket_match != $5 ? ticket_match : "";
-  day=gensub(/T.*/, "", "g", $3);
-  at = $3;
+function capture_branch_meta(designator) {
+  meta["branch"] = _get_branch(designator);
+  meta["ticket"] = _get_ticket(designator);
+  meta["is_ticket"] = meta["ticket"] != "";
+  meta["is_deployment"] = match(meta["branch"], /master|main|release|development|staging.*|next/) != 0
+}
+
+function _get_timestamp(iso_at) {
   mktime(gsub(/[-T:]/," ", at));
-  timestamp=mktime(at);
-  if (branch == "master") {
-      tw_start=last_bound(at, 3600);
-      tw_end=next_bound(at, 3600);
-  } else {
-      tw_start=last_bound(at, 1800);
-      tw_end=next_bound(at, 1800);
-  }
-  printf \
-"{ \
-\"commit\":\"%s\", \
-\"author\":\"%s\", \
-\"at\":\"%s\", \
-\"message\":\"%s\", \
-\"designator\":\"%s\", \
-\"branch\":\"%s\", \
-\"day\":\"%s\", \
-\"tw_start\":\"%s\", \
-\"tw_end\":\"%s\", \
-\"ticket\": \"%s\" \
-}\n", $1, $2 ,$3, $4, $5, meta[branch], day, tw_start, tw_end, ticket}
+  return mktime(at);
+}
+
+function _get_date(iso_at) {
+  date=gensub(/T.*/, "", "g", iso_at);
+  return date
+}
+
+function capture_date_meta(iso_at) {
+  meta["timestamp"] = _get_timestamp(iso_at);
+  meta["date"] = _get_date(iso_at);
+}
+
+{
+  capture_branch_meta($5)
+  capture_date_meta($3)
+  at = $3;
+
+  # for (key in meta) { print key ": " meta[key] }
+  printf "{ \
+    \"commit\":\"%s\", \
+    \"author\":\"%s\", \
+    \"at\":\"%s\", \
+    \"message\":\"%s\", \
+    \"designator\":\"%s\", \
+    \"meta\": { \
+      \"branch\":\"%s\", \
+      \"date\":\"%s\", \
+      \"timestamp\":\"%s\", \
+      \"is_ticket\":%s, \
+      \"is_deployment\":%s, \
+      \"ticket\": \"%s\" \
+    } \
+  }\n",
+  $1, $2 ,$3, $4, $5,
+  meta["branch"],
+  meta["date"],
+  meta["timestamp"],
+  meta["is_ticket"] == 1 ? "true" : "false",
+  meta["is_deployment"] == 1 ? "true" : "false",
+  meta["ticket"];
+}
