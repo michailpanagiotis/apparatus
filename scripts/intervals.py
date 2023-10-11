@@ -7,27 +7,6 @@ from functools import reduce
 from typing import NamedTuple
 from collections import defaultdict
 
-def time_mod(time, delta, epoch=None):
-    if epoch is None:
-        epoch = datetime(1970, 1, 1, tzinfo=time.tzinfo)
-    return (time - epoch) % delta
-
-def time_round(time, delta, epoch=None):
-    mod = time_mod(time, delta, epoch)
-    if mod < delta / 2:
-       return time - mod
-    return time + (delta - mod)
-
-def time_floor(time, delta, epoch=None):
-    mod = time_mod(time, delta, epoch)
-    return time - mod
-
-def time_ceil(time, delta, epoch=None):
-    mod = time_mod(time, delta, epoch)
-    if mod:
-        return time + (delta - mod)
-    return time
-
 class PointInTime(NamedTuple):
     at: datetime
     tags: list[str] = []
@@ -35,24 +14,14 @@ class PointInTime(NamedTuple):
     meta: dict = {}
     id: int = None
 
-    def _quantize(self, step=60):
-        return PointInTime(
-            id=self.id,
-            at=at.self.at,
-            tags=self.tags,
-            annotation=self.annotation,
-        )
-
     def to_interval(
         self,
         minimum_span_before=timedelta(minutes=0),
         minimum_span_after=timedelta(minutes=0),
-        quantize_step_down=timedelta(minutes=15),
-        quantize_step_up=timedelta(minutes=15),
     ):
         at = datetime.fromisoformat(self.at)
-        start = time_floor(at - minimum_span_before, quantize_step_down).isoformat()
-        end = time_ceil(at + minimum_span_after, quantize_step_up).isoformat()
+        start = (at - minimum_span_before).isoformat()
+        end = (at + minimum_span_after).isoformat()
         return Interval(
             id=self.id,
             start=start,
@@ -69,22 +38,6 @@ class Interval(NamedTuple):
     annotation: str = ""
     meta: dict = {}
     id: int = None
-
-    def __str__(self):
-        day_format = "%Y%m%d"
-        time_format = "%H%M"
-        full_format = "%Y%m%d %H:%M"
-        start, end = self.period
-        start_day = start.strftime(day_format)
-        end_day = end.strftime(day_format)
-        if start_day == end_day:
-            start_fmt = start.strftime(time_format)
-            end_fmt = end.strftime(time_format)
-            return 'Interval %s %s->%s' % (start_day, start_fmt, end_fmt)
-
-        start_fmt = start.strftime(full_format)
-        end_fmt = end.strftime(full_format)
-        return 'Interval %s->%s' % (start_fmt, end_fmt)
 
     @property
     def period(self):
@@ -118,6 +71,42 @@ class Interval(NamedTuple):
             return IntervalGrouping(sorted(group, key=sort))
         return IntervalGrouping(group)
 
+    def __str__(self):
+        day_format = "%Y%m%d"
+        time_format = "%H%M"
+        full_format = "%Y%m%d %H:%M"
+        start, end = self.period
+        start_day = start.strftime(day_format)
+        end_day = end.strftime(day_format)
+        if start_day == end_day:
+            start_fmt = start.strftime(time_format)
+            end_fmt = end.strftime(time_format)
+            return 'Interval %s %s->%s' % (start_day, start_fmt, end_fmt)
+
+        start_fmt = start.strftime(full_format)
+        end_fmt = end.strftime(full_format)
+        return 'Interval %s->%s' % (start_fmt, end_fmt)
+
+    def get_quantized_period(self, step):
+        (start, end) = self.period
+        quantized_start = (start - timedelta(seconds=datetime.timestamp(start) % step.seconds)).isoformat()
+
+        seconds_modulo = datetime.timestamp(end) % step.seconds
+        if seconds_modulo:
+            return (quantized_start, (end + timedelta(seconds=step.seconds - seconds_modulo)).isoformat())
+        return (quantized_start, end.isoformat())
+
+    def quantize( self, step=timedelta(minutes=15)):
+        (quantized_start, quantized_end) = self.get_quantized_period(step)
+        return Interval(
+            id=self.id,
+            start=quantized_start,
+            end=quantized_end,
+            tags=self.tags,
+            annotation=self.annotation,
+            meta=self.meta,
+        )
+
     def overlaps(self, other):
         start, end = self.period
         other_start, other_end = other.period
@@ -143,7 +132,6 @@ class Interval(NamedTuple):
             annotation = self.annotation,
             meta = {k: v for (k, v) in self.meta.items() if k in other.meta and other.meta[k] == v},
         )
-
 
 
 class IntervalSet:

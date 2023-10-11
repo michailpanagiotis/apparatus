@@ -27,9 +27,7 @@ def parse_interval(line):
     ).to_interval(
         minimum_span_before=timedelta(minutes=30) if meta["is_ticket"] else timedelta(minutes=0),
         minimum_span_after=timedelta(minutes=30) if meta["is_deployment"] else timedelta(minutes=0),
-        quantize_step_down=timedelta(minutes=15) if is_deployment else timedelta(minutes=30),
-        quantize_step_up=timedelta(minutes=15) if is_deployment else timedelta(minutes=30),
-    )
+    ).quantize()
     return interval
 
 intervals = [parse_interval(line) for line in sys.stdin]
