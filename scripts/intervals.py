@@ -71,6 +71,18 @@ class Interval(NamedTuple):
             return IntervalGrouping(sorted(group, key=sort))
         return IntervalGrouping(group)
 
+    def clone(self, *args, **kwargs):
+        fields = ({
+            'id': self.id,
+            'start': self.start,
+            'end': self.end,
+            'tags': self.tags,
+            'annotation': self.annotation,
+            'meta':self.meta,
+        })
+        fields.update(kwargs)
+        return Interval(**fields)
+
     def __str__(self):
         day_format = "%Y%m%d"
         time_format = "%H%M"

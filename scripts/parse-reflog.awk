@@ -16,16 +16,12 @@ function _get_ticket(branch_name) {
 
   number_start_idx = match(ticket_start_match, /[0-9]+/);
   number_start_match = substr(ticket_start_match, number_start_idx);
+  number_end_idx = match(number_start_match, /[^0-9]/);
 
   ticket_project = substr(ticket_start_match, 0, number_start_idx - 2);
-  ticket_number = substr(number_start_match, 0, match(number_start_match, /[^0-9]/) - 1);
+  ticket_number = substr(number_start_match, 0, number_end_idx == 0 ? length(number_start_match) : - 1);
   ticket = sprintf("%s-%s", ticket_project, ticket_number);
   return ticket;
-
-
-  end_ticket_idx = match(ticket_start_match, /[^0-9]/);
-  ticket_match = substr(ticket_start_match, 0, end_ticket_idx);
-  return ticket_match;
 }
 
 function capture_branch_meta(designator) {
