@@ -19,7 +19,7 @@ function _get_ticket(branch_name) {
   number_end_idx = match(number_start_match, /[^0-9]/);
 
   ticket_project = substr(ticket_start_match, 0, number_start_idx - 2);
-  ticket_number = substr(number_start_match, 0, number_end_idx == 0 ? length(number_start_match) : - 1);
+  ticket_number = substr(number_start_match, 0, number_end_idx == 0 ? length(number_start_match) : number_end_idx - 1);
   ticket = sprintf("%s-%s", ticket_project, ticket_number);
   return ticket;
 }

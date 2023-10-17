@@ -19,26 +19,25 @@ def __get_tickets(records):
     for record in records:
         ticket = record["meta"]["ticket"]
         if ticket:
-            tickets.add(ticket)
+            match = re.search("^[A-Za-z]+-[0-9]+$", ticket)
+            if match:
+                tickets.add(ticket)
 
     return tickets
 
 
-def __read_jiras(records):
-    tickets = __get_tickets(records)
-    if len(tickets) == 0:
-        return {}
+def __list_jiras(query, columns="type,key,summary"):
     res = subprocess.run(
         [
             "jira",
             "issue",
             "list",
             "--plain",
-            "--columns",
-            "type,key,status,priority,created,updated,summary,assignee",
             "--no-truncate",
             "-q",
-            "key IN (%s)" % (",".join(tickets)),
+            query,
+            "--columns",
+            columns,
         ],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -48,7 +47,73 @@ def __read_jiras(records):
     reader = csv.DictReader(
         [re.sub("[\t]+", "\t", s) for s in res.stdout.splitlines()], delimiter="\t"
     )
-    jiras = {row["KEY"]: row for row in reader}
+    return {row["KEY"]: row for row in reader}
+
+
+def __build_jira_tree(project):
+    res = subprocess.run(
+        [
+            "jira",
+            "issue",
+            "list",
+            "--plain",
+            "--columns",
+            "type,key,summary",
+            "--no-truncate",
+            "-q",
+            "project=%s AND type=Epic" % project,
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+    reader = csv.DictReader(
+        [re.sub("[\t]+", "\t", s) for s in res.stdout.splitlines()], delimiter="\t"
+    )
+    epics = {row["KEY"]: row for row in reader if row["TYPE"] == "Epic"}
+    stories = {row["KEY"]: row for row in reader if row["TYPE"] == "Story"}
+    subtasks = {row["KEY"]: row for row in reader if row["TYPE"] == "Sub-task"}
+
+
+def __read_jiras(records):
+    tickets = __get_tickets(records)
+    if len(tickets) == 0:
+        return {}
+    projects = {}
+    for ticket in tickets:
+        match = re.search("^(?P<project>[A-Za-z]+)-.*$", ticket)
+        if match is not None:
+            project = match.groupdict()["project"]
+            if project in projects:
+                projects[project].append(ticket)
+            else:
+                projects[project] = [ticket]
+    jiras = {}
+    for project in projects:
+        res = subprocess.run(
+            [
+                "jira",
+                "issue",
+                "list",
+                "--plain",
+                "--project",
+                project,
+                "--columns",
+                "type,key,status,priority,created,updated,summary,assignee",
+                "--no-truncate",
+                "-q",
+                "key IN (%s)" % (",".join(tickets)),
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+
+        reader = csv.DictReader(
+            [re.sub("[\t]+", "\t", s) for s in res.stdout.splitlines()], delimiter="\t"
+        )
+        jiras.update({row["KEY"]: row for row in reader})
     return jiras
 
 
@@ -96,26 +161,13 @@ def parse_intervals(records):
     return intervals
 
 
+project = "PAYM"
+# __build_jira_tree(project)
+
+
 stdin_records = __read_records()
 
 intervals = parse_intervals(stdin_records)
-
-
-# # for ln in res.stdout:
-# #     print(str(ln))
-#
-
-# intervals = [
-#     x.clone(annotation=jira_tickets[x.meta["ticket"]]["SUMMARY"])
-#     if x.meta["ticket"] in jira_tickets
-#     else x
-#     for x in intervals
-# ]
-#
-# for interval in intervals:
-#     ticket_key = interval.meta["ticket"]
-#     if ticket_key in jira_tickets:
-#         interval.clone(annotation=jira_tickets[ticket_key]["SUMMARY"])
 
 
 date_groups = Interval.group(
