@@ -1,0 +1,65 @@
+#! /bin/bash
+
+USER=pmichail
+MASTER_BRANCH=master
+
+function usage() {
+  cat << EOS
+    Usage:
+      bug-branch -j <jira-ticket>
+
+    Examples:
+      bug-branch -j SDK-100
+EOS
+  exit 1;
+}
+
+while getopts ":j:h" o; do
+    case "${o}" in
+        j)
+            JIRA_TICKET=${OPTARG}
+            ;;
+        h)
+            usage
+            ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+if [ -z "${JIRA_TICKET}" ]; then
+    usage
+fi
+
+BRANCH=${USER}_${JIRA_TICKET}
+BRANCH_EXISTS=$(git branch -a | grep ${BRANCH})
+
+if [ ! -z "$(git status --porcelain)" ]; then
+  echo please commit your changes first
+  exit
+fi
+
+if [ ! -z "${BRANCH_EXISTS}" ]; then
+    echo branch $BRANCH exists
+    exit
+fi
+
+PROJECT=$(echo $JIRA_TICKET | awk -F '\t' '{
+  ticket = $1;
+  number_start_idx = match($1, /[0-9]+/);
+  ticket_project = substr($1, 0, number_start_idx - 2);
+  print ticket_project;
+}')
+
+SUMMARY=$(jira issue list --plain --no-headers --columns "key,summary" --project ${PROJECT} -q"key=${JIRA_TICKET}" | awk -F '\t' '{ print $2;}')
+
+if [ -z "${SUMMARY}" ]; then
+    echo Cannot find jira ticket $JIRA_TICKET
+    exit
+fi
+
+git checkout ${MASTER_BRANCH}
+git pull
+git checkout -b ${BRANCH}
+git commit --allow-empty -m "${SUMMARY}"
+git push -u origin ${BRANCH}
