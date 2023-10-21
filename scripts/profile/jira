@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+parse_tickets() {
+  args="$@"
+  # jira issue list --plain --no-truncate --columns type,key,status,priority,created,updated,summary,assignee \
+  #   --project BT -q"key IN (BT-1850)"
+  echo $args | awk -F '\t' -f $HOME/.apparatus/scripts/awk/parse-tickets.awk
+}
+
+get_tickets() {
+  parse_tickets $@ |
+  while IFS= read -r ROW; do
+    project=$(echo $ROW | awk '{print $1}')
+    tickets=$(echo $ROW | awk '{print $2}')
+
+    jira issue list --no-headers --plain --no-truncate --columns type,key,status,priority,created,updated,summary,assignee \
+      --project ${project} -q"key IN (${tickets})"
+  done
+}

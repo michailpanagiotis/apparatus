@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+__assert_clean() {
+  if [ ! -z "$(git status --porcelain)" ]; then
+    echo please commit your changes first
+    return 1
+  fi
+}
+
+get_branch_root() {
+  git log master..HEAD --oneline | tail -1 | awk '{print $1}'
+}
+
+__merge_master_on() {(
+  set -e
+  __assert_clean
+  current=$(git branch --show-current)
+  git checkout $1
+  greset
+  git pull
+  git merge --no-edit master
+  git push
+  git checkout $current
+)}
+
+greset() {
+  # resets git branch to origin
+  BRANCH=$(git branch --show-current)
+  git reset --hard origin/${BRANCH}
+}
+
+gsquash() {(
+  set -e
+  __assert_clean
+  # squashes all commits of current branch
+  ROOT=$(get_branch_root)
+  MESSAGE=$(git log --format=%B -n 1 $ROOT)
+  git reset ${ROOT}~1
+  git add .
+  git commit -m "${MESSAGE}"
+)}
+
+gsync() {(
+  set -e
+  __assert_clean
+  current=$(git branch --show-current)
+  git pull --all
+  if [ $current = master ];
+  then
+    git pull
+  else
+    git fetch origin master:master
+  fi
+  __merge_master_on next
+  __merge_master_on staging2
+)}
+
+gstatus() {
+  git status
+}
+
+gref-plain() {
+  if [ -z $1 ]; then
+    DAYS_AGO=1
+  else
+    DAYS_AGO=$1
+  fi
+
+  # echo Commits since ${SINCE}
+  SINCE=$(date -d "-${DAYS_AGO} days" --rfc-3339=s)
+  TAB="%x09"
+
+  git \
+    --no-pager reflog \
+    --abbrev=40 \
+    --no-abbrev-commit \
+    --author="$(git config user.name)" \
+    --pretty="format:%Cred%h%Creset %Cgreen@ %cI%Creset %C(bold blue)%gd%Creset %s" \
+    --since="${SINCE}" \
+    --exclude="HEAD" \
+    --branches="*" \
+    --format="%h${TAB}%an${TAB}%cI${TAB}%s${TAB}%gd" | tr "\"" "\`"
+}
+
+gref-json-list() {
+  gref-plain $1 \
+  | awk -F '\t' -f $HOME/.apparatus/scripts/parse-reflog.awk \
+  | tr -s " "
+}
+
+gref-pretty() {
+  gref-json-list $1 | jq
+}

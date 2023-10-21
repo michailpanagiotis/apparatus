@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+dex () {
+    docker exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES "$1" $2
+}
+
+dlg () {
+    docker logs "$1" --follow
+}
+
+drc () {
+    docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
+}
+
+drv () {
+    docker volume prune
+}

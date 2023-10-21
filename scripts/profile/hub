@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+pr () {
+  current=$(git branch --show-current)
+  message=$(git show-branch --no-name HEAD)
+  echo Creating PR for branch $current with message \'"${message}"\'
+  hub pull-request -b master -h "$current" -m "$message [master]"
+  hub pull-request -b next -h "$current" -m "$message [next]"
+  hub pull-request -b staging2 -h "$current" -m "$message [staging2]"
+}
