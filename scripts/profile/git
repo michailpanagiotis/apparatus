@@ -85,7 +85,7 @@ gref-plain() {
 gref-json-list() {
   gref-plain $1 \
   | awk -F '\t' -f $HOME/.apparatus/scripts/parse-reflog.awk \
-  | tr -s " "
+  | tr -s " " | jq -c
 }
 
 gref-pretty() {
