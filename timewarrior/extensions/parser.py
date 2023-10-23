@@ -3,39 +3,35 @@ import sys
 import re
 import json
 import datetime
+import dataclasses as dc
 from csv import DictWriter
 from dateutil import parser
 from functools import reduce
-from typing import NamedTuple
 from collections import defaultdict
 
-class Interval(NamedTuple):
+@dc.dataclass(unsafe_hash=True)
+class Interval():
     id: int
     start: datetime
     end: datetime
     tags: list[str]
     annotation: str = ""
 
-    @property
-    def period(self):
-        return (parser.isoparse(self.start), parser.isoparse(self.end))
+    def __post_init__(self):
+        self.start = parser.isoparse(self.start)
+        self.end = parser.isoparse(self.end)
 
     @property
     def total_seconds(self):
-        (start, end) = self.period
-        return (end - start).seconds
+        return (self.end - self.start).seconds
 
     @property
     def total_minutes(self):
-        (start, end) = self.period
-        return (end - start).seconds // 60
+        return self.total_seconds // 60
 
     @property
     def total_hours(self):
-        (start, end) = self.period
-        return (end - start).seconds // 3600
-
-
+        return self.total_seconds // 3600
 
 
 class IntervalSet:
@@ -47,7 +43,7 @@ class IntervalSet:
 
         self.__metadata = {
             "description": self.__id,
-            "start": self.min(lambda i: i.period[0]),
+            "start": self.min(lambda i: i.start),
             "total_seconds": self.aggregate(lambda i: i.total_seconds, 0),
             "total_minutes": self.aggregate(lambda i: i.total_minutes, 0),
             "total_hours": self.aggregate(lambda i: i.total_hours, 0),
