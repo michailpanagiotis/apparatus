@@ -7,18 +7,24 @@ __assert_clean() {
   fi
 }
 
+get_master_branch() {
+  git symbolic-ref refs/remotes/origin/HEAD | awk '{ref = substr($1, match($1, /[^/]+$/));  print ref}'
+}
+
 get_branch_root() {
-  git log master..HEAD --oneline | tail -1 | awk '{print $1}'
+  MASTER=$(get_master_branch)
+  git log ${MASTER}..HEAD --oneline | tail -1 | awk '{print $1}'
 }
 
 __merge_master_on() {(
   set -e
   __assert_clean
+  MASTER=$(get_master_branch)
   current=$(git branch --show-current)
   git checkout $1
   greset
   git pull
-  git merge --no-edit master
+  git merge --no-edit ${MASTER}
   git push
   git checkout $current
 )}
@@ -43,13 +49,14 @@ gsquash() {(
 gsync() {(
   set -e
   __assert_clean
+  MASTER=$(get_master_branch)
   current=$(git branch --show-current)
   git pull --all
-  if [ $current = master ];
+  if [ $current = $MASTER ];
   then
     git pull
   else
-    git fetch origin master:master
+    git fetch origin ${MASTER}:${MASTER}
   fi
   __merge_master_on next
   __merge_master_on staging2
