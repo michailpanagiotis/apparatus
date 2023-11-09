@@ -1,5 +1,76 @@
 #!/usr/bin/env bash
 
+__parse_ticket_key() {
+  echo $1 | awk -F '\t' '
+    function parse_ticket(branch_name) {
+      full_match_idx = match(branch_name, /([A-Z]+-[0-9]+)/);
+      if (full_match_idx == 0) {
+        return "";
+      }
+
+      ticket_start_match = substr(branch_name, full_match_idx);
+
+      number_start_idx = match(ticket_start_match, /[0-9]+/);
+      number_start_match = substr(ticket_start_match, number_start_idx);
+      number_end_idx = match(number_start_match, /[^0-9]/);
+
+      ticket_project = substr(ticket_start_match, 0, number_start_idx - 2);
+      ticket_number = substr(number_start_match, 0, number_end_idx == 0 ? length(number_start_match) : number_end_idx - 1);
+      ticket = sprintf("%s-%s", ticket_project, ticket_number);
+      return ticket;
+    }
+    {
+      parse_ticket($1);
+      printf("%s %s %s\n", ticket, ticket_project, ticket_number);
+    }
+  '
+}
+
+__parse_ticket_info() {
+  if [ -t 0 ]
+  then
+      data=$1
+  else
+      data=$(cat)
+  fi
+  echo $data | awk -F '\t' '{
+    printf "{ \
+      \"type\":\"%s\", \
+      \"key\":\"%s\", \
+      \"status\":\"%s\", \
+      \"priority\":\"%s\", \
+      \"created\":\"%s\", \
+      \"updated\":\"%s\", \
+      \"summary\":\"%s\", \
+      \"assignee\":\"%s\" \
+    }\n",
+    $1, $2 ,$3, $4, $5, $6, $7, $8
+  }' | tr -s " " | jq -c
+}
+
+ticket_key() {
+  __parse_ticket_key $1 | awk '{print $1}'
+}
+
+ticket_project() {
+  __parse_ticket_key $1 | awk '{print $2}'
+}
+
+ticket_number() {
+  __parse_ticket_key $1 | awk '{print $3}'
+}
+
+ticket_summary() {
+  JIRA_PROJECT=$(ticket_project $1)
+  JIRA_TICKET=$(ticket_key $1)
+  SUMMARY=$(jira issue list --plain --no-headers --columns "key,summary" --project ${JIRA_PROJECT} -q"key=${JIRA_TICKET}" | awk -F '\t' '{ print $2;}')
+  if [ -z "${SUMMARY}" ]; then
+      echo Cannot find jira ticket $JIRA_TICKET
+      return 1
+  fi
+  echo $SUMMARY
+}
+
 group_tickets() {
   args="$@"
   # jira issue list --plain --no-truncate --columns type,key,status,priority,created,updated,summary,assignee \
@@ -10,12 +81,20 @@ group_tickets() {
 jget() {
   group_tickets $@ |
   while IFS= read -r ROW; do
-    project=$(echo $ROW | awk '{print $1}')
-    tickets=$(echo $ROW | awk '{print $2}')
+    project=$(ticket_project $ROW)
+    tickets=$(ticket_key $ROW)
 
-    jira issue list --no-headers --plain --no-truncate --columns type,key,status,priority,created,updated,summary,assignee \
-      --project ${project} -q"key IN (${tickets})" \
-      | awk -F '\t' -f $HOME/.apparatus/scripts/awk/json-tickets.awk \
-      | tr -s " " | jq -c
+    jira issue list \
+      --no-headers \
+      --plain \
+      --no-truncate \
+      --columns type,key,status,priority,created,updated,summary,assignee \
+      --project ${project} \
+      -q"key IN (${tickets})" \
+      | __parse_ticket_info
   done
+}
+
+jcreate-subtask() {
+  jira issue create --no-input -p PAYM -t"Sub-task" -P"PAYM-493" -s"Create rest controller for incoming payments" -b"Create rest controller for incoming payments" -a"panos@talentdesk.io"
 }

@@ -1,23 +1,21 @@
 ##!/usr/bin/awk -f
 
+function join(array, start, end, sep,    result, i)
+{
+  if (sep == "")
+    sep = " "
+  else if (sep == SUBSEP) # magic value
+    sep = ""
+  result = array[start]
+  for (i = start + 1; i <= end; i++)
+    result = result sep array[i]
+  return result
+}
+
 function _get_ticket_project(ticket) {
   number_start_idx = match(ticket, /[0-9]+/);
   ticket_project = substr(ticket, 0, number_start_idx - 2);
   return ticket_project;
-}
-
-function print_last_project() {
-  if (last_project != "") {
-    printf("%s ", last_project);
-    for (t = 1; t < curr_ticket_idx; t++) {
-      if (t == 1) {
-        printf("%s", curr_tickets[t]);
-      } else {
-        printf(",%s", curr_tickets[t]);
-      }
-    }
-    printf("\n");
-  }
 }
 
 {
@@ -28,7 +26,9 @@ function print_last_project() {
     # printf("CHECKING %s --> %s\n", x, tickets[x]);
     project = _get_ticket_project(tickets[x]);
     if (last_project != project) {
-      print_last_project();
+      if (last_project) {
+        printf("%s %s\n", last_project, join(curr_tickets, 1, curr_ticket_idx - 1, ","));
+      }
       curr_ticket_idx = 1;
       last_project = project;
     }
@@ -37,5 +37,8 @@ function print_last_project() {
     curr_tickets[curr_ticket_idx] = tickets[x];
     curr_ticket_idx = curr_ticket_idx + 1;
   }
-  print_last_project();
+
+  if (last_project) {
+    printf("%s %s\n", last_project, join(curr_tickets, 1, curr_ticket_idx - 1, ","));
+  }
 }

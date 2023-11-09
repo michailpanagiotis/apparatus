@@ -17,7 +17,7 @@ EOS
 while getopts ":j:h" o; do
     case "${o}" in
         j)
-            JIRA_TICKET=${OPTARG}
+            JIRA_TICKET_DESCRIPTOR=${OPTARG}
             ;;
         h)
             usage
@@ -27,10 +27,14 @@ done
 
 shift $((OPTIND-1))
 
-if [ -z "${JIRA_TICKET}" ]; then
+if [ -z "${JIRA_TICKET_DESCRIPTOR}" ]; then
     usage
 fi
 
+source ~/.apparatus/scripts/profile/jira
+
+JIRA_TICKET=$(ticket_key $JIRA_TICKET_DESCRIPTOR)
+JIRA_PROJECT=$(ticket_project $JIRA_TICKET_DESCRIPTOR)
 BRANCH=${USER}_${JIRA_TICKET}
 BRANCH_EXISTS=$(git branch -a | grep ${BRANCH})
 
@@ -44,14 +48,7 @@ if [ ! -z "${BRANCH_EXISTS}" ]; then
     exit
 fi
 
-PROJECT=$(echo $JIRA_TICKET | awk -F '\t' '{
-  ticket = $1;
-  number_start_idx = match($1, /[0-9]+/);
-  ticket_project = substr($1, 0, number_start_idx - 2);
-  print ticket_project;
-}')
-
-SUMMARY=$(jira issue list --plain --no-headers --columns "key,summary" --project ${PROJECT} -q"key=${JIRA_TICKET}" | awk -F '\t' '{ print $2;}')
+SUMMARY=$(jira issue list --plain --no-headers --columns "key,summary" --project ${JIRA_PROJECT} -q"key=${JIRA_TICKET}" | awk -F '\t' '{ print $2;}')
 
 if [ -z "${SUMMARY}" ]; then
     echo Cannot find jira ticket $JIRA_TICKET
