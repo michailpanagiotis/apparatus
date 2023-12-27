@@ -127,10 +127,10 @@ end
 
 return {
   TreeSitterPlugin,
-  {
-    'nvim-treesitter/nvim-treesitter-textobjects',
-    dependencies = {'nvim-treesitter/nvim-treesitter'}
-  },
+  -- {
+  --   'nvim-treesitter/nvim-treesitter-textobjects',
+  --   dependencies = {'nvim-treesitter/nvim-treesitter'}
+  -- },
   {
     'RRethy/nvim-treesitter-textsubjects',
     dependencies = {'nvim-treesitter/nvim-treesitter'}
@@ -139,10 +139,13 @@ return {
     'nvim-treesitter/nvim-treesitter-refactor',
     dependencies = {'nvim-treesitter/nvim-treesitter'}
   },
-  {
-    'JoosepAlviste/nvim-ts-context-commentstring',
-    dependencies = {'nvim-treesitter/nvim-treesitter'}
-  },
+  -- {
+  --   'JoosepAlviste/nvim-ts-context-commentstring',
+  --   dependencies = {'nvim-treesitter/nvim-treesitter'},
+  --   config = function(LazyPlugin, opts)
+  --     require('ts_context_commentstring').setup {}
+  --   end
+  -- },
   {
     'windwp/nvim-ts-autotag',
     dependencies = {'nvim-treesitter/nvim-treesitter'}
