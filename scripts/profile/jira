@@ -98,3 +98,17 @@ jget() {
 jcreate-subtask() {
   jira issue create --no-input -p PAYM -t"Sub-task" -P"PAYM-493" -s"Create rest controller for incoming payments" -b"Create rest controller for incoming payments" -a"panos@talentdesk.io"
 }
+
+jbug() {
+  USER=$(jira me)
+  PROJECT=BT
+  DESCRIPTION=$1
+  jira -c ~/.config/.jira/.config.BT.yml issue create --no-input -p ${PROJECT} -t 'Bug' -s \"${DESCRIPTION}\" -b \"${DESCRIPTION}\" -a \"${USER}\" -r \"${USER}\" --custom Team='Payments development'
+}
+
+bugdev-request() {
+  USER=$(jira me)
+  PROJECT=BT
+  DESCRIPTION=$1
+  jira -c ~/.config/.jira/.config.BT.yml issue create --no-input -p ${PROJECT} -t 'BugDev Request' -s \"${DESCRIPTION}\" -b \"${DESCRIPTION}\" -a \"${USER}\" -r \"${USER}\" --custom Team='Payments development'
+}

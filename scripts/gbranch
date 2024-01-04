@@ -6,10 +6,10 @@ MASTER_BRANCH=master
 function usage() {
   cat << EOS
     Usage:
-      bug-branch -j <jira-ticket>
+      gbranch -j <jira-ticket>
 
     Examples:
-      bug-branch -j SDK-100
+      gbranch -j SDK-100
 EOS
   exit 1;
 }
