@@ -4,6 +4,35 @@
 
 def group_by_key(f): group_by(f) | map({ key: (.[0] | f), value: . }) | from_entries;
 
+def group_subsequent(f): [. as $rows | foreach range(0;length) as $i
+  (
+    []
+    ;
+      . as $acc
+      | $rows[$i] as $curr_row
+      | (
+          # is first row
+          ($i == 0)
+          # group has changed
+          or (($rows[($i + -1)] | f) != ($curr_row | f))
+        ) as $is_first_of_group
+      | (
+          # is last row
+          ($i + 1 == ($rows | length))
+          # group will change
+          or (($rows[($i + 1)] | f ) != ($curr_row | f))
+        ) as $is_last_of_group
+      | {
+        is_first_of_group: $is_first_of_group,
+        is_last_of_group: $is_last_of_group,
+        records: (if $is_first_of_group then [$curr_row] else $acc.records + [$curr_row] end)
+      }
+    ; . as $acc
+      | $rows[$i] as $curr_row
+      | $curr_row
+      | if $acc.is_last_of_group then { key: ($curr_row | f), value: $acc.records } else empty end
+  )];
+
 map({
     branch: .meta.branch,
     at: .at,
@@ -14,29 +43,4 @@ map({
 | sort_by(.at)
 # | group_by_key(.effective_day)
 # merge sequential commits to same branch
-| . as $rows | foreach range(0;length) as $i
-  (
-    {}
-    ;
-      . as $acc
-      | ($rows[$i].branch != .branch) as $changed_branch
-      | $rows[$i] as $curr_row
-      | (
-          # is first row
-          ($i == 0)
-          # branch has changed
-          or ($rows[($i + -1)].branch != $curr_row.branch)
-        ) as $is_first_for_branch
-      | .is_first_for_branch = $is_first_for_branch
-      | .is_last_for_branch = (
-          # is last row
-          ($i + 1 == ($rows | length))
-          # branch will change
-          or ($rows[($i + 1)].branch != $curr_row.branch)
-        )
-      | .records = if $is_first_for_branch then [$curr_row] else $acc.records + [$curr_row] end
-    ; . as $acc
-      | $rows[$i] as $curr_row
-      | $curr_row
-      | if $acc.is_last_for_branch then .acc = $acc else empty end
-  )
+| group_subsequent(.branch)
