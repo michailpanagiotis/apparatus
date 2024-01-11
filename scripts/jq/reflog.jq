@@ -33,7 +33,9 @@ map({
           # branch will change
           or ($rows[($i + 1)].branch != $curr_row.branch)
         )
-      | .grouped = if $is_first_for_branch then [$curr_row] else .grouped + [$curr_row] end
+      | .timings = if $is_first_for_branch then [$curr_row] else .timings + [$curr_row] end
     ; . as $curr
-      | if $curr.is_last_for_branch then { key: $rows[$i].branch, value: $curr.grouped } else empty end
+      | $rows[$i] as $curr_row
+      | $curr_row
+      | if $curr.is_last_for_branch then .curr = $curr else empty end
   )
