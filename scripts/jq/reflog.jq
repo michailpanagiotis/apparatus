@@ -18,7 +18,8 @@ map({
   (
     {}
     ;
-      ($rows[$i].branch != .branch) as $changed_branch
+      . as $acc
+      | ($rows[$i].branch != .branch) as $changed_branch
       | $rows[$i] as $curr_row
       | (
           # is first row
@@ -33,9 +34,9 @@ map({
           # branch will change
           or ($rows[($i + 1)].branch != $curr_row.branch)
         )
-      | .timings = if $is_first_for_branch then [$curr_row] else .timings + [$curr_row] end
-    ; . as $curr
+      | .records = if $is_first_for_branch then [$curr_row] else $acc.records + [$curr_row] end
+    ; . as $acc
       | $rows[$i] as $curr_row
       | $curr_row
-      | if $curr.is_last_for_branch then .curr = $curr else empty end
+      | if $acc.is_last_for_branch then .acc = $acc else empty end
   )
