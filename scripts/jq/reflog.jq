@@ -30,7 +30,7 @@ def sequential_group_by(f): [. as $rows | foreach range(0;length) as $i
       }
     ;
     . as $acc
-    | if .is_last_of_group then {(f): .records} else empty end
+    | if .is_last_of_group then .records else empty end
   )];
 
 map({
@@ -42,4 +42,6 @@ map({
 })
 | sort_by(.timestamp)
 | group_by_key(.effective_day)
-| map_values(sequential_group_by(.branch))
+| map_values(
+    sequential_group_by(.branch) | map({ branch: first.branch, timestamps: map(.timestamp) })
+  )
