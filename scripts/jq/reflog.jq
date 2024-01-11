@@ -7,7 +7,8 @@ def group_by_key(f): group_by(f) | map({ key: (.[0] | (f)), value: . }) | from_e
 
 def belong_to_different_groups($from; $to): $from.branch != $to.branch;
 
-def sequential_group_by(filter): [. as $rows | foreach range(0;length) as $i
+def sequential_group_by: [. as $rows
+  | foreach range(0;length) as $i
   (
     []
     ;
@@ -41,5 +42,5 @@ map({
 | sort_by(.timestamp)
 | group_by_key(.effective_day)
 | map_values(
-    sequential_group_by(.branch) | map({ branch: first.branch, timestamps: map(.timestamp) })
+    sequential_group_by | map({ branch: first.branch, timestamps: map(.timestamp) })
   )
