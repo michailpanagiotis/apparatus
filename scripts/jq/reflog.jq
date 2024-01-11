@@ -5,31 +5,25 @@
 
 def group_by_key(f): group_by(f) | map({ key: (.[0] | (f)), value: . }) | from_entries;
 
-def belong_to_different_groups(from; to): from.branch != to.branch;
+def belong_to_different_groups($from; $to): $from.branch != $to.branch;
 
 def sequential_group_by(filter): [. as $rows | foreach range(0;length) as $i
   (
     []
     ;
       . as $acc
+      | ($rows | length) as $total
       | $rows[$i] as $curr_row
       | $rows[($i - 1)] as $prev_row
       | $rows[($i + 1)] as $next_row
       | (
-          # is first row
-          ($i == 0)
-          # group has changed
-          or belong_to_different_groups($prev_row; $curr_row)
+          ($i == 0) or belong_to_different_groups($prev_row; $curr_row)
         ) as $is_first_of_group
       | (
-          # is last row
-          ($i + 1 == ($rows | length))
-          # group will change
-          or belong_to_different_groups($curr_row; $next_row)
+          ($i + 1 == $total) or belong_to_different_groups($curr_row; $next_row)
         ) as $is_last_of_group
       | {
         is_last_of_group: $is_last_of_group,
-        branch: $curr_row.branch,
         records: (if $is_first_of_group then [$curr_row] else $acc.records + [$curr_row] end)
       }
     ;
