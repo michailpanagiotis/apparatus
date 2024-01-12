@@ -19,8 +19,8 @@ def reference_siblings: [
 
 def dereference_siblings: map(del(.next) | del(.prev));
 
-def startOfHalfHour: . - . % 1800;
-def endOfHalfHour: (. | startOfHalfHour) + 1800;
+def quantize_down($step): . - . % $step;
+def quantize_up($step): (. | quantize_down($step)) + $step;
 
 def group_by_change(f): reference_siblings | [. as $rows
   | foreach range(0;length) as $i
@@ -41,41 +41,42 @@ def group_by_change(f): reference_siblings | [. as $rows
     if .is_last_of_group then .records else empty end
   )] | map(dereference_siblings);
 
-def get_period_of_timestamps: . | {
-  start: min | startOfHalfHour,
-  end: max | endOfHalfHour,
-  timestamps: .
-};
+def get_window_of_timestamps: . | {
+  timestamps: .,
+  start: min,
+  end: max,
+  quantized_start: min | quantize_down(1800),
+  quantized_end: max | quantize_up(1800)
+} | .day = (.quantized_start | strflocaltime("%Y-%m-%d"))
+  | .time_start = (.quantized_start | strflocaltime("%H:%M:%S"))
+  | .time_end = (.quantized_end | strflocaltime("%H:%M:%S"))
+  | .iso_start = (.quantized_start | todateiso8601)
+  | .iso_end = (.quantized_end | todateiso8601)
+;
 
-def get_iso_period_of_timestamps: . | get_period_of_timestamps | {
-  start: .start | todateiso8601,
-  end: .end | todateiso8601,
-  timestamps: .timestamps | map(todateiso8601)
-};
-
-map({
-  branch: .meta.branch,
-  timestamp: (.at | .[0:19] +"Z" | fromdateiso8601),
-})
+map(
+  .timestamp = (.at | .[0:19] +"Z" | fromdateiso8601)
+  | .branch = .meta.branch
+)
 | map(
-  .at = (.timestamp | todateiso8601)
-  | .effective_day = (.timestamp | strflocaltime("%Y-%m-%d"))
-  | .time = (.timestamp | strflocaltime("%H:%M:%S"))
+  .timings = {
+    at: (.timestamp | todateiso8601),
+    effective_day: (.timestamp | strflocaltime("%Y-%m-%d")),
+    time: (.timestamp | strflocaltime("%H:%M:%S"))
+  }
 )
 | sort_by(.timestamp)
 | group_by_change(.prev.timestamp == null or .timestamp - .prev.timestamp > 3600 or .branch != .prev.branch)
 | map(
-  {
-    branch: first.branch,
-    period: (map(.timestamp) | get_period_of_timestamps),
-    isoPeriod: (map(.timestamp) | get_iso_period_of_timestamps)
+  first + {
+    window: (map(.timestamp) | get_window_of_timestamps),
   })
-# | map(.tperiod = (.timestamps | get_period_of_timestamps))
-#   .period = (.timestamps | {
-#     start: .timestampPeriod.start,
-#     end: .timestampPeriod.end,
-#     startIso: (min as $start | (startOfHalfHour($start) | todateiso8601)),
-#     endIso: (max as $periodend | (endOfHalfHour($periodend) | todateiso8601))
+# | map(.twindow = (.timestamps | get_window_of_timestamps))
+#   .window = (.timestamps | {
+#     start: .timestampwindow.start,
+#     end: .timestampwindow.end,
+#     startIso: (min as $start | (quantize_down($start) | todateiso8601)),
+#     endIso: (max as $windowend | (endOfHalfHour($windowend) | todateiso8601))
 #   })
 # )
 # | map(map(.timestamp) | [min, max])
