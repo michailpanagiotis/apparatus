@@ -71,9 +71,10 @@ map(
 | map({
     key: (map(.timestamp) | get_window_of_timestamps) | .tw,
     value: {
-      # window: (map(.timestamp) | get_window_of_timestamps),
+      window: (map(.timestamp) | get_window_of_timestamps),
       branches: map(.branch) | unique,
-      jiras: map(.jira) | unique
+      jiras: map(.jira) | unique,
+      records: .
     }
   })
 | from_entries
