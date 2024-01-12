@@ -64,10 +64,16 @@ map(
   | .jira = (.meta.branch | get_jira_info)
 )
 | sort_by(.timestamp)
-| group_by_change(.prev.timestamp == null or .timestamp - .prev.timestamp > 3600)
-| map(
-  first + {
-    window: (map(.timestamp) | get_window_of_timestamps),
-    branches: map(.branch) | unique,
-    jiras: map(.jira) | unique
+# group by half-hour
+| group_by_change(.prev.timestamp == null or (.timestamp | quantize_down(3600)) != (.prev.timestamp | quantize_down(3600)) )
+# group by hour
+# | group_by_change(.prev.timestamp == null or .timestamp - .prev.timestamp > 3600)
+| map({
+    key: (map(.timestamp) | get_window_of_timestamps) | .tw,
+    value: {
+      # window: (map(.timestamp) | get_window_of_timestamps),
+      branches: map(.branch) | unique,
+      jiras: map(.jira) | unique
+    }
   })
+| from_entries
