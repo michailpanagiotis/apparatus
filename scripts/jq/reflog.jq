@@ -47,36 +47,21 @@ def get_window_of_timestamps: . | {
   end: max,
   quantized_start: min | quantize_down(1800),
   quantized_end: max | quantize_up(1800)
-} | .day = (.quantized_start | strflocaltime("%Y-%m-%d"))
-  | .time_start = (.quantized_start | strflocaltime("%H:%M:%S"))
-  | .time_end = (.quantized_end | strflocaltime("%H:%M:%S"))
-  | .iso_start = (.quantized_start | todateiso8601)
+} | .iso_start = (.quantized_start | todateiso8601)
   | .iso_end = (.quantized_end | todateiso8601)
+  | .day = (.quantized_start | strflocaltime("%Y-%m-%d"))
+  | .time = (.quantized_start | strflocaltime("%H:%M")) + "-" + (.quantized_end | strflocaltime("%H:%M"))
+  | .tw = "from " + (.quantized_start | strflocaltime("%Y%m%dT%H%M")) + " to " + (.quantized_end | strflocaltime("%Y%m%dT%H%M"))
 ;
 
 map(
   .timestamp = (.at | .[0:19] +"Z" | fromdateiso8601)
   | .branch = .meta.branch
 )
-| map(
-  .timings = {
-    at: (.timestamp | todateiso8601),
-    effective_day: (.timestamp | strflocaltime("%Y-%m-%d")),
-    time: (.timestamp | strflocaltime("%H:%M:%S"))
-  }
-)
 | sort_by(.timestamp)
-| group_by_change(.prev.timestamp == null or .timestamp - .prev.timestamp > 3600 or .branch != .prev.branch)
+| group_by_change(.prev.timestamp == null or .timestamp - .prev.timestamp > 3600)
 | map(
   first + {
     window: (map(.timestamp) | get_window_of_timestamps),
+    branches: map(.branch) | unique
   })
-# | map(.twindow = (.timestamps | get_window_of_timestamps))
-#   .window = (.timestamps | {
-#     start: .timestampwindow.start,
-#     end: .timestampwindow.end,
-#     startIso: (min as $start | (quantize_down($start) | todateiso8601)),
-#     endIso: (max as $windowend | (endOfHalfHour($windowend) | todateiso8601))
-#   })
-# )
-# | map(map(.timestamp) | [min, max])
