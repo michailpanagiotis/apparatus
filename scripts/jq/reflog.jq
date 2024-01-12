@@ -54,14 +54,20 @@ def get_window_of_timestamps: . | {
   | .tw = "from " + (.quantized_start | strflocaltime("%Y%m%dT%H%M")) + " to " + (.quantized_end | strflocaltime("%Y%m%dT%H%M"))
 ;
 
+def get_jira_info:
+  . | "(?<ticket>(?<project>[A-Z]+)-(?<number>[0-9]+)).*" as $regex
+    | if test($regex) then capture($regex) else null end;
+
 map(
   .timestamp = (.at | .[0:19] +"Z" | fromdateiso8601)
   | .branch = .meta.branch
+  | .jira = (.meta.branch | get_jira_info)
 )
 | sort_by(.timestamp)
 | group_by_change(.prev.timestamp == null or .timestamp - .prev.timestamp > 3600)
 | map(
   first + {
     window: (map(.timestamp) | get_window_of_timestamps),
-    branches: map(.branch) | unique
+    branches: map(.branch) | unique,
+    jiras: map(.jira) | unique
   })
