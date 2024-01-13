@@ -1,18 +1,17 @@
 split("\n")
   | map(if . == "" then empty else split("\t") end)
   | map(
-    . as [$commit, $author, $at, $message, $designator]
+    . as [$commit, $author, $timestamp, $message, $designator]
     | {
       commit: $commit,
       author: $author,
-      at: $at,
+      timestamp: ($timestamp | tonumber),
       message: $message,
       designator: $designator
     }
   )
   | map(
-    . as {commit: $commit, author: $author, at: $at, message: $message, designator: $designator}
-    | ($at | .[0:19] +"Z" | fromdateiso8601) as $timestamp
+    . as {commit: $commit, author: $author, timestamp: $timestamp, message: $message, designator: $designator}
     | ($designator | capture("(?<branch>[^@]+)") | .branch) as $branch
     | .meta = {
         timestamp: $timestamp,
