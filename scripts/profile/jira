@@ -26,28 +26,6 @@ __parse_ticket_key() {
   '
 }
 
-__parse_ticket_info() {
-  if [ -t 0 ]
-  then
-      data=$1
-  else
-      data=$(cat)
-  fi
-  echo $data | awk -F '\t' '{
-    printf "{ \
-      \"type\":\"%s\", \
-      \"key\":\"%s\", \
-      \"status\":\"%s\", \
-      \"priority\":\"%s\", \
-      \"created\":\"%s\", \
-      \"updated\":\"%s\", \
-      \"summary\":\"%s\", \
-      \"assignee\":\"%s\" \
-    }\n",
-    $1, $2 ,$3, $4, $5, $6, $7, $8
-  }' | tr -s " " | jq -c
-}
-
 ticket_key() {
   __parse_ticket_key $1 | awk '{print $1}'
 }
@@ -71,28 +49,20 @@ ticket_summary() {
   echo $SUMMARY
 }
 
-group_tickets() {
-  args="$@"
-  # jira issue list --plain --no-truncate --columns type,key,status,priority,created,updated,summary,assignee \
-  #   --project BT -q"key IN (BT-1850)"
-  echo $args | awk -F '\t' -f $HOME/.apparatus/scripts/awk/parse-tickets.awk
-}
-
 jget() {
-  group_tickets $@ |
-  while IFS= read -r ROW; do
-    project=$(ticket_project $ROW)
-    tickets=$(ticket_key $ROW)
-
+  args="$@"
+  echo $args | jq -ncR 'input | split(" ") | map(capture("(?<ticket>(?<project>[A-Z]+)-([0-9]+))")) | group_by(.project) | map({ project: first.project, tickets: map(.ticket) | join(",") }) | .[]' |
+  while IFS=$"\n" read -r c; do
+    project=$(echo "$c" | jq -r '.project')
+    tickets=$(echo "$c" | jq -r '.tickets')
     jira issue list \
       --no-headers \
       --plain \
       --no-truncate \
       --columns type,key,status,priority,created,updated,summary,assignee \
       --project ${project} \
-      -q"key IN (${tickets})" \
-      | __parse_ticket_info
-  done
+      -q"key IN (${tickets})" | jq -Rfs $HOME/.apparatus/scripts/jq/parse_jira.jq
+    done | jq -s 'map({ key: .key, value: .}) | from_entries'
 }
 
 jcreate-subtask() {

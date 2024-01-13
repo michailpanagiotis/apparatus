@@ -17,5 +17,4 @@ shift $((OPTIND-1))
 if [ -z "${DAYS_AGO}" ]; then usage; fi
 
 source ~/.apparatus/scripts/profile/git
-gref-json-list $DAYS_AGO \
-  | ~/.apparatus/scripts/parse-intervals.py
+greflog $DAYS_AGO | ~/.apparatus/scripts/parse-intervals.py

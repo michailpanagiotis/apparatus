@@ -66,15 +66,40 @@ gstatus() {
   git status
 }
 
-gref-plain() {
+day_reflog() {
   if [ -z $1 ]; then
-    DAYS_AGO=1
-  else
-    DAYS_AGO=$1
+    echo "Usage:\n\tgref [days_back]"
+    return 1
   fi
 
   # echo Commits since ${SINCE}
-  SINCE=$(date -d "-${DAYS_AGO} days" --rfc-3339=s)
+  SINCE=$(date -d "-$1 days" --rfc-3339=s)
+  TAB="%x09"
+
+  echo since = $SINCE
+
+  git \
+    --no-pager \
+    reflog \
+    --date=iso-local \
+    --abbrev=40 \
+    --no-abbrev-commit \
+    --author="$(git config user.name)" \
+    --pretty="format:%Cred%h%Creset %Cgreen@ %cI%Creset %C(bold blue)%gd%Creset %s" \
+    --since="${SINCE}" \
+    --exclude="HEAD" \
+    --branches="*" \
+    --format="%h${TAB}%an${TAB}%cd${TAB}%s${TAB}%gd" | tr "\"" "\`" \
+}
+
+gref() {
+  if [ -z $1 ]; then
+    echo "Usage:\n\tgref [days_back]"
+    return 1
+  fi
+
+  # echo Commits since ${SINCE}
+  SINCE=$(date -d "-$1 days" --rfc-3339=s)
   TAB="%x09"
 
   git \
@@ -86,15 +111,30 @@ gref-plain() {
     --since="${SINCE}" \
     --exclude="HEAD" \
     --branches="*" \
-    --format="%h${TAB}%an${TAB}%cI${TAB}%s${TAB}%gd" | tr "\"" "\`"
+    --format="%h${TAB}%an${TAB}%cI${TAB}%s${TAB}%gd" | tr "\"" "\`" \
+    | jq -Rfs $HOME/.apparatus/scripts/jq/parse_reflog.jq
 }
 
-gref-json-list() {
-  gref-plain $1 \
-  | awk -F '\t' -f $HOME/.apparatus/scripts/parse-reflog.awk \
-  | tr -s " " | jq -c
+gtickets() {
+  if [ -z $1 ]; then
+    echo "Usage:\n\tgtickets [days_back]"
+    return 1
+  fi
+  gref $1 \
+  | jq '. | map(select(.meta.ticket != null)) | map(.meta.ticket.id) | sort | unique | .[]' \
+  | xargs echo
 }
 
-gref-pretty() {
-  gref-json-list $1 | jq
+gj() {
+  if [ -z $1 ]; then
+    echo "Usage:\n\tgj [days_back]"
+    return 1
+  fi
+  tickets=$(gtickets $1)
+  json_tickets=$(jget $tickets | jq '{ tickets: .}')
+  json_reflog=$(gref $1 | jq '{ reflog: . }')
+
+  (echo $json_reflog; echo $json_tickets) | jq '. + input'
+
+  # (echo $json_tickets; echo $json_reflog) | jq '.'
 }
