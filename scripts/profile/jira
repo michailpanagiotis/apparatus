@@ -65,6 +65,37 @@ jget() {
     done | jq -s 'map({ key: .key, value: .}) | from_entries'
 }
 
+jsubtasks() {
+  if [ -z $1 ]; then
+    echo "Usage:\n\tjsubtasks [issue]"
+    return 1
+  fi
+    jira issue list \
+      --no-headers \
+      --plain \
+      --no-truncate \
+      --columns key \
+      -q"parent='$1'" \
+      | jq -Rs "split(\"\n\") | { \"$1\": map(select(. != \"\")) }"
+}
+
+jtree() {
+  if [ -z $1 ]; then
+    echo "Usage:\n\tjtree [project]"
+    return 1
+  fi
+    jira issue list \
+      --no-headers \
+      --plain \
+      --no-truncate \
+      --columns key \
+      --project ${1} \
+      -q"assignee in (currentUser()) and type not in ('Epic', 'Sub-task')" \
+  | while IFS=$"\n" read -r c; do
+    jsubtasks $c
+    done | jq -s 'add'
+}
+
 jcreate-subtask() {
   jira issue create --no-input -p PAYM -t"Sub-task" -P"PAYM-493" -s"Create rest controller for incoming payments" -b"Create rest controller for incoming payments" -a"panos@talentdesk.io"
 }
