@@ -125,5 +125,5 @@ gtw() {
   json_tickets=$(jget $tickets | jq '{ tickets: .}')
   json_reflog=$(gref $1 | jq '{ reflog: . }')
 
-  (echo $json_reflog; echo $json_tickets) | jq -f $HOME/.apparatus/scripts/jq/gj2tw.jq
+  (echo $json_reflog; echo $json_tickets) | jq -L$HOME/.apparatus/scripts/jq -f $HOME/.apparatus/scripts/jq/gj2tw.jq
 }

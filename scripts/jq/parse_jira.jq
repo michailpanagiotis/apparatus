@@ -1,3 +1,4 @@
+
 split("\n")
   # | map(if . == "" then empty else split("\t") end)
   | map(. | select(. != "") | [capture("(?<value>[^\t]+)(\t+|$)"; "g")] | map(.value))
