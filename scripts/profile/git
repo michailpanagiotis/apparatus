@@ -89,7 +89,7 @@ gref() {
     --branches="*" \
     --format="%h${TAB}%an${TAB}%cd${TAB}%s${TAB}%gd" | tr "\"" "\`" \
     | jq -Rfs $HOME/.apparatus/scripts/jq/parse_reflog.jq \
-    | jq "map(select(.meta.timestamp > ${SINCE_TIMESTAMP} ))"
+    | jq "map(select(.timestamp > ${SINCE_TIMESTAMP} ))"
 }
 
 
@@ -109,10 +109,21 @@ gj() {
     return 1
   fi
   tickets=$(gtickets $1)
+  echo $tickets
   json_tickets=$(jget $tickets | jq '{ tickets: .}')
   json_reflog=$(gref $1 | jq '{ reflog: . }')
 
   (echo $json_reflog; echo $json_tickets) | jq '. + input'
+}
 
-  # (echo $json_tickets; echo $json_reflog) | jq '.'
+gtw() {
+  if [ -z $1 ]; then
+    echo "Usage:\n\tgtw [days_back]"
+    return 1
+  fi
+  tickets=$(gtickets $1)
+  json_tickets=$(jget $tickets | jq '{ tickets: .}')
+  json_reflog=$(gref $1 | jq '{ reflog: . }')
+
+  (echo $json_reflog; echo $json_tickets) | jq -f $HOME/.apparatus/scripts/jq/gj2tw.jq
 }

@@ -58,23 +58,24 @@ def get_jira_info:
   . | "(?<ticket>(?<project>[A-Z]+)-(?<number>[0-9]+)).*" as $regex
     | if test($regex) then capture($regex) else null end;
 
-map(
-  .timestamp = (.at | .[0:19] +"Z" | fromdateiso8601)
+. + input
+| .tickets as $tickets
+| .reflog
+| map(
+  .timestamp = (.timestamp | tonumber)
   | .branch = .meta.branch
-  | .jira = (.meta.branch | get_jira_info)
 )
 | sort_by(.timestamp)
 # group by half-hour
 | group_by_change(.prev.timestamp == null or (.timestamp | quantize_down(3600)) != (.prev.timestamp | quantize_down(3600)) )
-# group by hour
-# | group_by_change(.prev.timestamp == null or .timestamp - .prev.timestamp > 3600)
 | map({
     key: (map(.timestamp) | get_window_of_timestamps) | .tw,
     value: {
+      # records: .,
       window: (map(.timestamp) | get_window_of_timestamps),
       branches: map(.branch) | unique,
-      jiras: map(.jira) | unique,
-      records: .
+      tickets: map(.meta.ticket.id | select(. != null)) | unique | map($tickets[.])
     }
   })
 | from_entries
+| map_values(.annotation = (.tickets | map(.summary)) )

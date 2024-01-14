@@ -14,12 +14,7 @@ split("\n")
     . as {commit: $commit, author: $author, timestamp: $timestamp, message: $message, designator: $designator}
     | ($designator | capture("(?<branch>[^@]+)") | .branch) as $branch
     | .meta = {
-        timestamp: $timestamp,
-        commit: $commit,
         at: ($timestamp | todateiso8601),
-        designator: $designator,
-        author: $author,
-        message: $message,
         branch: $branch,
         ticket: (
           $branch
