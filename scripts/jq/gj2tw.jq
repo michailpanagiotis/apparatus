@@ -25,15 +25,18 @@ def branch_to_tags: (
 | map(
   (map(.branch) | unique) as $curr_branches
   | ($curr_branches | map(branch_to_tags) | flatten) as $curr_tags
-  | ((map(.meta.ticket.id | select(. != null)) | unique) | map($tickets[.])) as $curr_tickets
+  | ((map(.meta.ticket.id | select(. != null)) | unique) | map($tickets[.] | select(. != null))) as $curr_tickets
+  | ((map(.timestamp) | get_window_of_timestamps) | .tw) as $duration
   | {
-      key: (map(.timestamp) | get_window_of_timestamps) | .tw,
+      key: $duration,
       value: {
         # records: .,
         # window: (map(.timestamp) | get_window_of_timestamps),
-        tags: $curr_tags,
-        annotation: $curr_tickets | map(.summary)
+        tags: ($curr_tags | map(. | "\"\(.)\"")) | join(", "),
+        annotation: $curr_tickets | map(.summary) | join(", "),
+        tw: ("timew track " + $duration + " " + (($curr_tags | map(. | "\"\(.)\"")) | join(", ")))
       }
     }
   )
-| from_entries
+| map(.value.tw)[]
+# | from_entries
