@@ -84,3 +84,7 @@
 	protocol = ssh
 [pull]
 	ff = only
+
+[gc]
+  reflogExpire = never
+  reflogExpireUnreachable = never
