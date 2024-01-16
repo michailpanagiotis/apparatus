@@ -121,11 +121,7 @@ gtw() {
     echo "Usage:\n\tgtw [days_back]"
     return 1
   fi
-  tickets=$(gtickets $1)
-  json_tickets=$(jget $tickets | jq '{ tickets: .}')
-  json_reflog=$(gref $1 | jq '{ reflog: . }')
-
-  (echo $json_reflog; echo $json_tickets) | jq -L$HOME/.apparatus/scripts/jq -f $HOME/.apparatus/scripts/jq/gj2tw.jq |
+  gref $1 | jq -L$HOME/.apparatus/scripts/jq -f $HOME/.apparatus/scripts/jq/gj2tw.jq |
   while IFS=$"\n" read -r c; do
     eval echo $c
   done
