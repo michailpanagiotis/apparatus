@@ -47,7 +47,7 @@ def quantize_down($step): . - . % $step;
 def quantize_up($step): (. | quantize_down($step)) + $step;
 
 def get_window_of_timestamps: . | {
-  timestamps: .,
+  timestamps: (. | sort | unique),
   start: min,
   end: max,
   quantized_start: min | quantize_down(1800),

@@ -14,11 +14,17 @@ def branch_to_tags: (
 
 def merge_windows: reduce .[] as $item (
   [];
-  (. | last).value.window.quantized_end as $prev_end
-  | ($item.value.window.quantized_start) as $curr_start
+  (. | last).window.quantized_end as $prev_end
+  | ($item.window.quantized_start) as $curr_start
   | ($curr_start == $prev_end) as $extend
-  | ($item | .extend = $extend) as $curr
-  | . + [$curr]
+  | (if $extend then ((. | last).windows + [$item.window]) else [$item.window] end) as $windows
+  | (if $extend then ((. | last).tags + $item.tags | unique) else $item.tags end) as $tags
+  | ($item | .windows = $windows | .tags = $tags) as $curr
+  | if $extend then (.[:-1] + [$curr]) else (. + [$curr]) end
+) | map(
+  (.windows | map(.timestamps) | flatten | sort | unique) as $timestamps
+  | .window = ($timestamps | get_window_of_timestamps)
+  | del(.windows)
 );
 
 .
@@ -34,13 +40,17 @@ def merge_windows: reduce .[] as $item (
   | ($curr_branches | map(branch_to_tags) | flatten | unique | sort_by(. | ascii_downcase)) as $curr_tags
   | ((map(.timestamp) | get_window_of_timestamps) | .tw) as $duration
   | {
-      key: $duration,
-      value: {
-        # records: .,
-        window: (map(.timestamp) | get_window_of_timestamps),
-        tags: ($curr_tags | map(. | "\"\(.)\"")) | join(", "),
-        tw: ($duration + " " + (($curr_tags | map(. | "\"\(.)\"")) | join(" ")))
-      }
+      window: (map(.timestamp) | get_window_of_timestamps),
+      tags: ($curr_tags | map(. | "\"\(.)\"")),
     }
+  # | {
+  #     key: $duration,
+  #     value: {
+  #       # records: .,
+  #       window: (map(.timestamp) | get_window_of_timestamps),
+  #       tags: ($curr_tags | map(. | "\"\(.)\"")) | join(", "),
+  #       tw: ($duration + " " + (($curr_tags | map(. | "\"\(.)\"")) | join(" ")))
+  #     }
+  #   }
 ) | merge_windows
 # | map(.value.tw)[]
