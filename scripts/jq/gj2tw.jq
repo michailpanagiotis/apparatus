@@ -45,5 +45,5 @@ def group_by_window(f): reduce .[] as $item (
     }
 ) | group_by_window(.tags)
 | map(
-  .window.tw + " " + ((.tags | map(. | "\"\(.)\"")) | join(" "))
+  "timew track " + .window.tw + " " + ((.tags | map(. | "\"\(.)\"")) | join(" "))
 )[]

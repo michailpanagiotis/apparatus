@@ -141,34 +141,20 @@ github_pushes() {
 
   {
     parse_headers
-    jq '"test"'  # After parse_headers is done, only the JSON should remain
+    jq -c '. | map(select(.type == "PushEvent")) | .[]'
   } < <(curl --include -H "Authorization: token $GH_TOKEN" https://api.github.com/repos/$1/events)
 
-  max_hops=2
-  hops=1
+  max_page=20
+  page=2
 
-  echo "--------"
-  echo $link | jq -rR 'split(", ") | map(capture("<(?<url>[^;]+)>; rel=\"(?<ref>.+)\"")| select(.ref=="next")) | first | .url '
-  echo "--------"
-
-  while [ -n $link ] && [ ${hops} -le ${max_hops} ]; do
-    hops=$((hops+1))
+  while [ -n $link ] && [ ${page} -le ${max_page} ]; do
+    sleep 1
     url=$(echo $link | jq -rR 'split(", ") | map(capture("<(?<url>[^;]+)>; rel=\"(?<ref>.+)\"")| select(.ref=="next")) | first | .url ')
-    echo $hops: $url
+    >&2 echo $link Page $page: $url
     {
       parse_headers
-      jq '"test"'  # After parse_headers is done, only the JSON should remain
+      jq -c '. | map(select(.type == "PushEvent")) | .[]'
     } < <(curl --include -H "Authorization: token $GH_TOKEN" $url)
+    page=$((page+1))
   done
-}
-
-ghloop() {
-  max_hops=2
-  hops=1
-
-  while [ ${hops} -le ${max_hops} ]; do
-    hops=$((hops+1))
-    echo $hops
-  done
-
 }

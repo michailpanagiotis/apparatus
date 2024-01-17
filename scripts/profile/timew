@@ -22,5 +22,13 @@ timew_from_git() {
     echo "Usage:\n\ttimew_from_git [days_back]"
     return 1
   fi
-  gref $1 | jq -L$HOME/.apparatus/scripts/jq -rf $HOME/.apparatus/scripts/jq/gj2tw.jq | timew_slurp
+  gref $1 | jq -L$HOME/.apparatus/scripts/jq -rf $HOME/.apparatus/scripts/jq/gj2tw.jq
+}
+
+timew_track_from_git() {
+  if [ -z $1 ]; then
+    echo "Usage:\n\ttimew_track_from_git [days_back]"
+    return 1
+  fi
+  timew_from_git $1 | timew_slurp
 }
