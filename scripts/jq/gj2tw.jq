@@ -12,6 +12,15 @@ def branch_to_tags: (
   end
 );
 
+def merge_windows: reduce .[] as $item (
+  [];
+  (. | last).value.window.quantized_end as $prev_end
+  | ($item.value.window.quantized_start) as $curr_start
+  | ($curr_start == $prev_end) as $extend
+  | ($item | .extend = $extend) as $curr
+  | . + [$curr]
+);
+
 .
 | map(
   .timestamp = (.timestamp | tonumber)
@@ -28,11 +37,10 @@ def branch_to_tags: (
       key: $duration,
       value: {
         # records: .,
-        # window: (map(.timestamp) | get_window_of_timestamps),
+        window: (map(.timestamp) | get_window_of_timestamps),
         tags: ($curr_tags | map(. | "\"\(.)\"")) | join(", "),
         tw: ($duration + " " + (($curr_tags | map(. | "\"\(.)\"")) | join(" ")))
       }
     }
-  )
-| map(.value.tw)[]
-# | from_entries
+) | merge_windows
+# | map(.value.tw)[]
