@@ -20,3 +20,4 @@ source $HOME/.apparatus/scripts/profile/jira
 source $HOME/.apparatus/scripts/profile/git
 source $HOME/.apparatus/scripts/profile/hub
 source $HOME/.apparatus/scripts/profile/docker
+source $HOME/.apparatus/scripts/profile/timew

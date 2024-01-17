@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+timew_slurp() {
+  while IFS=$"\n" read -r c; do
+    cmd=$(echo timew track $c)
+    echo $cmd
+    eval $cmd
+  done
+}
+
+timew_purge() {
+  timew ids :all | head -n 1 |
+  while IFS=$"\n" read -r c; do
+    cmd=$(echo timew delete $c)
+    echo $cmd
+    eval $cmd
+  done
+}

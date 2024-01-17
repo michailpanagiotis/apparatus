@@ -124,6 +124,6 @@ gtw() {
   gref $1 | jq -L$HOME/.apparatus/scripts/jq -f $HOME/.apparatus/scripts/jq/gj2tw.jq |
   while IFS=$"\n" read -r c; do
     args=$(sed -e 's/^"//' -e 's/"$//' -e 's/\\"/"/g' <<<"$c")
-    echo timew track $args
+    echo $args
   done
 }
