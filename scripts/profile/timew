@@ -22,9 +22,5 @@ timew_from_git() {
     echo "Usage:\n\ttimew_from_git [days_back]"
     return 1
   fi
-  gref $1 | jq -L$HOME/.apparatus/scripts/jq -f $HOME/.apparatus/scripts/jq/gj2tw.jq |
-  while IFS=$"\n" read -r c; do
-    args=$(sed -e 's/^"//' -e 's/"$//' -e 's/\\"/"/g' <<<"$c")
-    echo $args
-  done | timew_slurp
+  gref $1 | jq -L$HOME/.apparatus/scripts/jq -rf $HOME/.apparatus/scripts/jq/gj2tw.jq | timew_slurp
 }

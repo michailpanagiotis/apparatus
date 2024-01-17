@@ -58,3 +58,9 @@ def get_window_of_timestamps: . | {
   | .time = (.quantized_start | strflocaltime("%H:%M")) + "-" + (.quantized_end | strflocaltime("%H:%M"))
   | .tw = "from " + (.quantized_start | strflocaltime("%Y%m%dT%H%M")) + " to " + (.quantized_end | strflocaltime("%Y%m%dT%H%M"))
 ;
+
+def merge_windows:
+  (. | map(.timestamps) | flatten | sort | unique) as $timestamps
+  | ($timestamps | get_window_of_timestamps)
+;
+

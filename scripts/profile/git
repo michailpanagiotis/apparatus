@@ -116,10 +116,59 @@ gj() {
   (echo $json_reflog; echo $json_tickets) | jq '. + input'
 }
 
-gtw() {
+# Consume standard input up to, and including, an empty line.
+# Sets global variable 'etag'.
+parse_headers () {
+  local header etag_regex='link: (.*)'
+  link=""
+  while read -d $'\r\n' header; do
+    if [[ $header =~ $etag_regex ]]; then
+      link=$(echo $header | sed 's/^link: //')
+    elif [[ -z $header ]]; then
+      # End of headers
+      break
+    fi
+  done
+}
+
+function urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
+
+github_pushes() {
   if [ -z $1 ]; then
-    echo "Usage:\n\tgtw [days_back]"
+    echo "Usage:\n\tgithub_pushes [owner/repo]"
     return 1
   fi
-  gref $1 | jq -L$HOME/.apparatus/scripts/jq -f $HOME/.apparatus/scripts/jq/gj2tw.jq
+
+  {
+    parse_headers
+    jq '"test"'  # After parse_headers is done, only the JSON should remain
+  } < <(curl --include -H "Authorization: token $GH_TOKEN" https://api.github.com/repos/$1/events)
+
+  max_hops=2
+  hops=1
+
+  echo "--------"
+  echo $link | jq -rR 'split(", ") | map(capture("<(?<url>[^;]+)>; rel=\"(?<ref>.+)\"")| select(.ref=="next")) | first | .url '
+  echo "--------"
+
+  while [ -n $link ] && [ ${hops} -le ${max_hops} ]; do
+    hops=$((hops+1))
+    url=$(echo $link | jq -rR 'split(", ") | map(capture("<(?<url>[^;]+)>; rel=\"(?<ref>.+)\"")| select(.ref=="next")) | first | .url ')
+    echo $hops: $url
+    {
+      parse_headers
+      jq '"test"'  # After parse_headers is done, only the JSON should remain
+    } < <(curl --include -H "Authorization: token $GH_TOKEN" $url)
+  done
+}
+
+ghloop() {
+  max_hops=2
+  hops=1
+
+  while [ ${hops} -le ${max_hops} ]; do
+    hops=$((hops+1))
+    echo $hops
+  done
+
 }
