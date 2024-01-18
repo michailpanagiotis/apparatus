@@ -40,3 +40,8 @@ timew_all() {
 timew_summary() {
   timew json :all
 }
+
+timew_annotate_from_jira() {
+  tickets=$(timew tickets :all | xargs)
+  json_tickets $tickets
+}

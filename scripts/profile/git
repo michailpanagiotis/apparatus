@@ -103,19 +103,6 @@ gtickets() {
   | xargs echo
 }
 
-gj() {
-  if [ -z $1 ]; then
-    echo "Usage:\n\tgj [days_back]"
-    return 1
-  fi
-  tickets=$(gtickets $1)
-  echo $tickets
-  json_tickets=$(jget $tickets | jq '{ tickets: .}')
-  json_reflog=$(gref $1 | jq '{ reflog: . }')
-
-  (echo $json_reflog; echo $json_tickets) | jq '. + input'
-}
-
 # Consume standard input up to, and including, an empty line.
 # Sets global variable 'etag'.
 parse_headers () {

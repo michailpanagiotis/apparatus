@@ -50,13 +50,17 @@ ticket_summary() {
 }
 
 json_tickets() {
-  tickets="$@"
+  old="$IFS"
+  IFS=','
+  tickets="$*"
+  IFS=$old
+  query="key IN (${tickets})"
   jira issue list \
     --no-headers \
     --plain \
     --no-truncate \
     --columns type,key,status,priority,created,updated,summary,assignee \
-    -q"key IN (${tickets})" | jq -Rfs $HOME/.apparatus/scripts/jq/parse_jira.jq
+    -q"${query}" | jq -Rfs $HOME/.apparatus/scripts/jq/parse_jira.jq
 }
 
 jget() {
