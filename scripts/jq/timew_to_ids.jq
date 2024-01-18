@@ -1,0 +1,2 @@
+
+map("@" + (.id | tostring)) | join(" ")
