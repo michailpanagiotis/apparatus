@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+jq -L$HOME/.apparatus/scripts/jq -Rf $HOME/.apparatus/scripts/jq/parse_timew.jq | jq -r '(map("@" + (.id | tostring)) | join(" "))'

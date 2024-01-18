@@ -32,3 +32,11 @@ timew_track_from_git() {
   fi
   timew_from_git $1 | timew_slurp
 }
+
+timew_all() {
+  timew json :all
+}
+
+timew_summary() {
+  timew json :all
+}

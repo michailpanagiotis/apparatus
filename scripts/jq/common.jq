@@ -54,6 +54,7 @@ def get_window_of_timestamps: . | {
   quantized_end: max | quantize_up(1800)
 } | .iso_start = (.quantized_start | todateiso8601)
   | .iso_end = (.quantized_end | todateiso8601)
+  | .month = (.quantized_start | strflocaltime("%B %Y"))
   | .day = (.quantized_start | strflocaltime("%Y-%m-%d"))
   | .time = (.quantized_start | strflocaltime("%H:%M")) + "-" + (.quantized_end | strflocaltime("%H:%M"))
   | .tw = "from " + (.quantized_start | strflocaltime("%Y%m%dT%H%M")) + " to " + (.quantized_end | strflocaltime("%Y%m%dT%H%M"))

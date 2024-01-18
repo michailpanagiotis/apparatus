@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-jq -Rf $HOME/.apparatus/scripts/jq/parse_timew.jq | jq -r '(map("@" + (.id | tostring)) | join(" "))' |
-  while IFS=$"\n" read -r c; do
-    echo $c
-  done
