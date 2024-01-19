@@ -42,6 +42,13 @@ timew_summary() {
 }
 
 timew_annotate_from_jira() {
-  tickets=$(timew tickets :all | xargs)
-  json_tickets $tickets
+  ticket_keys=$(timew tickets :all)
+  >&2 echo Fetching $ticket_keys from JIRA...
+  tickets=$(json_tickets $ticket_keys)
+  intervals=$(timew json :all)
+  (echo "{ \"tickets\": $tickets, \"intervals\": $intervals }") \
+    | jq -L~/.apparatus/scripts/jq -rf ~/.apparatus/scripts/jq/timew_annotate.jq |
+  while IFS=$"\n" read -r c; do
+    eval $c
+  done
 }

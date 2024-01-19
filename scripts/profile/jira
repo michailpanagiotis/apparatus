@@ -50,17 +50,14 @@ ticket_summary() {
 }
 
 json_tickets() {
-  old="$IFS"
-  IFS=','
-  tickets="$*"
-  IFS=$old
+  tickets=$(echo $@ | jq -Rr 'split(" ") | join(",")')
   query="key IN (${tickets})"
   jira issue list \
     --no-headers \
     --plain \
     --no-truncate \
     --columns type,key,status,priority,created,updated,summary,assignee \
-    -q"${query}" | jq -Rfs $HOME/.apparatus/scripts/jq/parse_jira.jq
+    -q"${query}" | jq -Rfs $HOME/.apparatus/scripts/jq/parse_jira.jq | jq -s 'map({ key: .key, value: .}) | from_entries'
 }
 
 jget() {

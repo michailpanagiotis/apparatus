@@ -65,3 +65,20 @@ def merge_windows:
   | ($timestamps | get_window_of_timestamps)
 ;
 
+
+# TIMEW
+def get_ticket_regex:
+  "(?<id>(?<project>[A-Z]+)-(?<number>[0-9]+)).*";
+
+def is_ticket: test(get_ticket_regex);
+
+def get_ticket: capture(get_ticket_regex);
+
+def get_tickets_from_tags:
+  .
+  | map(select(. | is_ticket) | get_ticket | .id)
+  | unique
+  | sort_by(
+    (. | get_ticket | .number | tonumber) as $number
+    | $number
+  );

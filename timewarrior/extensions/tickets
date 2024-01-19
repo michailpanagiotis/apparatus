@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 jq -L$HOME/.apparatus/scripts/jq -Rf $HOME/.apparatus/scripts/jq/parse_timew.jq \
-  | jq -rf $HOME/.apparatus/scripts/jq/timew_to_tickets.jq
+  | jq -L$HOME/.apparatus/scripts/jq -rf $HOME/.apparatus/scripts/jq/timew_to_tickets.jq
