@@ -60,6 +60,10 @@ json_tickets() {
     -q"${query}" | jq -Rfs $HOME/.apparatus/scripts/jq/parse_jira.jq | jq -s 'map({ key: .key, value: .}) | from_entries'
 }
 
+jira_summary_per_ticket() {
+  json_tickets $@ | jq 'map_values(.summary)'
+}
+
 jget() {
   args="$@"
   echo $args | jq -ncR 'input | split(" ") | map(capture("(?<ticket>(?<project>[A-Z]+)-([0-9]+))")) | group_by(.project) | map({ project: first.project, tickets: map(.ticket) | join(",") }) | .[]' |

@@ -82,3 +82,7 @@ def get_tickets_from_tags:
     (. | get_ticket | .number | tonumber) as $number
     | $number
   );
+
+
+def get_annotation_from_tags($annotation_per_ticket):
+  get_tickets_from_tags | map($annotation_per_ticket[.]) | join(", ");
