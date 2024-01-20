@@ -1,5 +1,6 @@
 
-map(
+.intervals
+| map(
   . as {start: $from, end: $to, tags: $tags, annotation: $annotation}
   | "from \($from) to \($to)" as $duration
   | [

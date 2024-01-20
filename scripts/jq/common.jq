@@ -54,6 +54,7 @@ def get_window_of_timestamps: . | {
   quantized_end: max | quantize_up(1800)
 } | .iso_start = (.quantized_start | todateiso8601)
   | .iso_end = (.quantized_end | todateiso8601)
+  | .minute_duration = ((.quantized_end) - (.quantized_start)) / 60
   | .month = (.quantized_start | strflocaltime("%B %Y"))
   | .day = (.quantized_start | strflocaltime("%Y-%m-%d"))
   | .time = (.quantized_start | strflocaltime("%H:%M")) + "-" + (.quantized_end | strflocaltime("%H:%M"))
@@ -82,7 +83,6 @@ def get_tickets_from_tags:
     (. | get_ticket | .number | tonumber) as $number
     | $number
   );
-
 
 def get_annotation_from_tags($annotation_per_ticket):
   get_tickets_from_tags | map($annotation_per_ticket[.]) | join(", ");

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+timew_summary() {
+  timew summary :all :ids :annotation
+}
+
 timew_slurp() {
   while IFS=$"\n" read -r c; do
     cmd=$(echo timew track $c)
@@ -33,20 +37,12 @@ timew_track_from_git() {
   timew_from_git $1 | timew_slurp
 }
 
-timew_all() {
-  timew json :all
-}
-
-timew_summary() {
-  timew json :all
-}
-
 timew_annotate_from_jira() {
   ticket_keys=$(timew tickets :all)
   >&2 echo Fetching $ticket_keys from JIRA...
   summary_per_ticket=$(jira_summary_per_ticket $ticket_keys)
   >&2 echo "Fetched:\n$summary_per_ticket"
-  intervals=$(timew json :all)
+  intervals=$(timew json :all | jq '.intervals')
   (echo "{ \"summary_per_ticket\": $summary_per_ticket, \"intervals\": $intervals }") \
     | jq -L~/.apparatus/scripts/jq -rf ~/.apparatus/scripts/jq/timew_annotate.jq |
   while IFS=$"\n" read -r c; do
@@ -78,4 +74,13 @@ timew_import() {
     echo $c
     eval $c
   done
+}
+
+timew_health() {
+  ids_with_multiple_tickets=$(timew json :all | jq -r '.intervals | map(select((.meta.tickets | length) > 1) | "@\(.id)") | join(" ")')
+  if [ ! -z $ids_with_multiple_tickets ]; then
+    echo "Intervals ${ids_with_multiple_tickets} have multiple assigned tickets"
+    return 1
+  fi
+  echo Timewarrior healthy!
 }

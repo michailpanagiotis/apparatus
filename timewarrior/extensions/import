@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ -z $1 ]; then
+  echo "Usage: timew import [file]"
+  exit 1
+fi
+# cat $1 |
+# while IFS=$"\n" read -r c; do
+#   echo $c
+#   eval $c
+# done

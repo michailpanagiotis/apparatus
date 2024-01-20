@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+timew summary :all :ids :annotation | sed '/^$/d'

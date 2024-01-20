@@ -1,3 +1,31 @@
 #!/usr/bin/env bash
 
-jq -L$HOME/.apparatus/scripts/jq -Rf $HOME/.apparatus/scripts/jq/parse_timew.jq
+read -r -d '' jq_read_config_script <<- EOM
+  split("\n")
+  | map(
+    select(. != "")
+    | split(":")
+    | { key: .[0], value: (.[1] | gsub("^ ";"")) }
+  )
+  | { config: from_entries }
+EOM
+
+read -r -d '' jq_parse_intervals_script <<- EOM
+  {
+    intervals: map(
+      { id, start, end: .end, tags, annotation }
+    )
+  }
+EOM
+
+(
+  # read configuration (up to empty line)
+  while read l; do
+    [[ ! -z "$l" ]] || break && echo $l;
+  done < "${1:-/dev/stdin}" \
+    | jq -Rs "$jq_read_config_script";
+
+  # read intervals (rest of input)
+  jq "$jq_parse_intervals_script" < "${1:-/dev/stdin}"
+
+) | jq -s add # combine

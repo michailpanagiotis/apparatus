@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import json
 import re
 import sys
 from parser import parse_stdin
@@ -16,9 +17,9 @@ def format_start(format = '%Y%m%d %H:%M'):
 def __get_interval_category(interval):
     ticket = None
     for tag in interval.tags:
-        match = re.match("(SDK(?:-\d+)?\.SDK-\d+)", tag)
+        match = re.match("(([A-Z]+(-[0-9]+)?)\.)?(?P<ticket>[A-Z]+-[0-9]+)", tag)
         if match:
-            ticket = match.group(1)
+            ticket = match.group("ticket")
             continue
     if ticket:
         return "Ticket: %s" %ticket
@@ -26,9 +27,15 @@ def __get_interval_category(interval):
         return 'Meetings'
     if 'Deployment' in interval.tags:
         return 'Deployment'
+    if 'Release' in interval.tags:
+        return 'Release'
     if 'Candidate assessment' in interval.tags:
         return 'Candidate assessment'
-    raise Exception('unknown category for %s' % interval.id)
+    if 'Research' in interval.tags:
+        return 'Research'
+    if 'Incident' in interval.tags:
+        return 'Incident'
+    raise Exception('unknown category for @%s' % interval.id)
 
 def __compare_isets(iset1, iset2):
     if iset1.month < iset2.month:
