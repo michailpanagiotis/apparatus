@@ -1,4 +1,27 @@
 #!/usr/bin/env bash
 
-jq -L$HOME/.apparatus/scripts/jq -Rf $HOME/.apparatus/scripts/jq/parse_timew.jq \
-  | jq -L$HOME/.apparatus/scripts/jq -rf $HOME/.apparatus/scripts/jq/timew_to_tickets.jq
+read -r -d '' jq_tickets_script <<- EOM
+  def get_ticket_regex:
+    "(?<id>(?<project>[A-Z]+)-(?<number>[0-9]+)).*";
+
+  def is_ticket: test(get_ticket_regex);
+
+  def get_ticket: capture(get_ticket_regex);
+
+  def get_tickets_from_tags:
+    .
+    | map(select(. | is_ticket) | get_ticket | .id)
+    | unique
+    | sort_by(
+      (. | get_ticket | .number | tonumber) as \$number
+      | \$number
+    );
+
+  .intervals
+    | map(.tags)
+    | flatten
+    | get_tickets_from_tags
+    | join(" ")
+EOM
+
+$(dirname "$0")/json | jq -r "$jq_tickets_script"

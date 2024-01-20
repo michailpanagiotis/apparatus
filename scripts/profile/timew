@@ -50,14 +50,6 @@ timew_annotate_from_jira() {
   done
 }
 
-timew_export() {
-  if [ -z $1 ]; then
-    echo "Usage:\n\ttimew_export [file]"
-    return 1
-  fi
-  timew json :all | jq -rf $HOME/.apparatus/scripts/jq/timew_to_dump.jq > $1
-}
-
 timew_import() {
   if [ -z $1 ]; then
     echo "Usage:\n\ttimew_import [file]"

@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
 
-jq -L$HOME/.apparatus/scripts/jq -Rf $HOME/.apparatus/scripts/jq/parse_timew.jq \
-  | jq -rf $HOME/.apparatus/scripts/jq/timew_to_dump.jq
+read -r -d '' jq_dump_script <<- EOM
+  .intervals
+  | map(
+    "from \(.start) to \(.end)" as \$range
+    | [
+      "timew track \(\$range) \(.tags | map("\"\(.)\"") | join(" ") )",
+      if .annotation != null then "timew annotate_by_range \(\$range) \"\(.annotation)\"" else empty end
+    ]
+  ) | flatten []
+EOM
+
+$(dirname "$0")/json | jq -r "$jq_dump_script"
