@@ -50,12 +50,6 @@ timew_annotate_from_jira() {
   done
 }
 
-timew_annotate_by_duration() {
-  id=$(eval "timew ids $1")
-  echo $id
-  timew annotate $id "$2"
-}
-
 timew_export() {
   if [ -z $1 ]; then
     echo "Usage:\n\ttimew_export [file]"

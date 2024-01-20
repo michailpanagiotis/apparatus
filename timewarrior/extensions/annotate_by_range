@@ -1,3 +1,30 @@
 #!/usr/bin/env bash
 
-$(dirname "$0")/json
+config=$($(dirname "$0")/json | jq '.config')
+annotation=$(echo $config | jq -r '.["temp.report.tags"]')
+start_time=$(echo $config | jq -r '.["temp.report.start"]')
+end_time=$(echo $config | jq -r '.["temp.report.end"]')
+
+if [ -z "${start_time}" ]; then
+  echo A range is required
+  exit -1
+fi
+
+if [ -z "${end_time}" ]; then
+  echo A range is required
+  exit -1
+fi
+
+if [ -z "${annotation}" ]; then
+  echo An annotation is required
+  exit -1
+fi
+
+if [[ $annotation == *","* ]]; then
+  echo Can only add one annotation to range but got $annotation
+  exit -1
+fi
+
+ids=$(timew ids from $start_time to $end_time)
+
+timew annotate $ids "$annotation"
