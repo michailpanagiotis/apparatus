@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+intervals=$($(dirname "$0")/json)
+echo $intervals | jq -r '.intervals | map(select(.annotation != null) | "timew untag @\(.id) \"\(.annotation)\"") []' | tr '`' "'" |
+  while read -d $'\n' cmd; do
+    eval $cmd
+  done
