@@ -94,6 +94,14 @@ def get_window_of_timestamps: . | {
   quantized_end: max,
 } | get_window;
 
+def get_window_of_timewarrior_interval:
+  [
+    (.start | strptime("%Y%m%dT%H%M%SZ") | mktime),
+    (.end | strptime("%Y%m%dT%H%M%SZ") | mktime)
+  ]
+  | get_window_of_timestamps
+;
+
 def get_quantized_window_of_timestamps: . | {
   timestamps: (. | sort | unique),
   start: min,

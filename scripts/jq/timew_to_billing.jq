@@ -29,11 +29,14 @@ def sum_up(f): .
       start: (map(.window.quantized_start) | min),
       end: (map(.window.quantized_end) | max),
       hours: ((map(.window.minute_duration) | add) / 60),
+      key: (first | f),
       intervals: .
     }
   })
   | from_entries
 ;
+
+def sum_hours(f): sum_up(f) | map_values(.hours);
 
 def tocents($precision): . * ($precision | exp10) | round;
 
@@ -88,28 +91,16 @@ def invoice_from_items:
 
 .intervals
 | map(
-  .window = (
-    [
-      (.start | strptime("%Y%m%dT%H%M%SZ") | mktime),
-      (.end | strptime("%Y%m%dT%H%M%SZ") | mktime)
-    ]
-    | get_window_of_timestamps
-  )
+  .window = get_window_of_timewarrior_interval
   | .category = categorize_interval
   | .tickets = (.tags | get_tickets_from_tags | join(", "))
 )
 | sum_up(.window.month)
-| map_values(
-  .analysis = (
-    .intervals | sum_up(.category) | map_values(
-      .hours
-    )
-  )
-  | .description = (.analysis | to_entries | map(.key) | join(", "))
-  | .month = (.intervals | first).window.month
-  # | del(.intervals)
+| map(
+  .perCategory = (.intervals | sum_hours(.category))
+  | .description = (.perCategory | to_entries | map(.key) | join(", "))
+  | .month = .key
+  | del(.intervals)
 )
-| to_entries
-| map(.value)
 | sort_by(.start)
 | invoice_from_items
