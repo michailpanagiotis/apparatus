@@ -35,6 +35,57 @@ def sum_up(f): .
   | from_entries
 ;
 
+def tocents($precision): . * ($precision | exp10) | round;
+
+def aggregate_invoice_items_cents($precision;$vatPercent):
+  (. | map(.cents) | add) as $netCents
+  | ($netCents * (($vatPercent | tonumber) / 100) | round) as $vatCents
+  | {
+    net: $netCents,
+    vat: $vatCents,
+    due: ($netCents + $vatCents)
+  }
+;
+
+def aggregate_invoice_items($precision;$vatPercent;$currencySymbol):
+  .
+  | aggregate_invoice_items_cents($precision;$vatPercent)
+  | map_values(format_cents($precision))
+  | {
+    currencySymbol: $currencySymbol,
+    vatPercent: ($vatPercent | tostring + "%")
+  } + .
+  | { amounts: . }
+;
+
+def interval_to_invoice_item($precision;$rate):
+  ($precision | tonumber) as $precision
+  | ($rate | tonumber) as $rate
+  | {
+    period: .month,
+    description: .description,
+    rateUnit: "h",
+    perUnit: $rate,
+    quantity: .hours,
+    cents: (.hours * $rate | tocents($precision)),
+    amount: (.hours * $rate | tocents($precision)) | format_cents($precision)
+  }
+;
+
+def invoice_from_items:
+  (last | .end) as $last_end
+  | ($INVOICE_AMOUNTS_PRECISION | tonumber) as $precision
+  | ($INVOICE_RATE_AMOUNT | tonumber) as $rate
+  | ($INVOICE_VAT_PERCENT | tonumber) as $vatPercent
+  | ($INVOICE_CURRENCY_SYMBOL) as $currencySymbol
+  | ($vatPercent / 100) as $vatRatio
+  | {
+      date: ($last_end | strftime("%Y-%m-%d")),
+      items: map(interval_to_invoice_item($precision;$rate)),
+    }
+  | . += (.items | aggregate_invoice_items($precision;$vatPercent;$currencySymbol))
+;
+
 .intervals
 | map(
   .window = (
@@ -55,35 +106,10 @@ def sum_up(f): .
     )
   )
   | .description = (.analysis | to_entries | map(.key) | join(", "))
+  | .month = (.intervals | first).window.month
   # | del(.intervals)
 )
 | to_entries
-| sort_by(.value.start)
-
-# Invoice amounts calculations
-| (last | .value.end) as $last_end
-| ($INVOICE_AMOUNTS_PRECISION | tonumber) as $precision
-| (reduce range(0; $precision) as $item (1; . * 10)) as $cent_factor
-| ($INVOICE_VAT_PERCENT | tonumber) as $vatPercent
-| ($vatPercent / $cent_factor) as $vatRatio
-| {
-    date: ($last_end | strftime("%Y-%m-%d")),
-    items: map({
-      period: .key,
-      description: .value.description,
-      rateUnit: "h",
-      perUnit: ($INVOICE_RATE_AMOUNT | tonumber),
-      quantity: .value.hours,
-      cents: (.value.hours * ($INVOICE_RATE_AMOUNT | tonumber) * $cent_factor | round),
-      amount: ((.value.hours * ($INVOICE_RATE_AMOUNT | tonumber) * $cent_factor | round) / $cent_factor) | format_amount($precision)
-    }),
-    amounts: {
-      currencySymbol: $INVOICE_CURRENCY_SYMBOL,
-      vatPercent: (($vatPercent | tostring) + "%")
-    }
-  }
-| (.items | map(.cents) | add) as $netCents
-| ($netCents * $vatRatio | round) as $vatCents
-| .amounts.net = ($netCents | format_cents($precision))
-| .amounts.vat = ($vatCents | format_cents($precision))
-| .amounts.due = ($netCents + $vatCents | format_cents($precision))
+| map(.value)
+| sort_by(.start)
+| invoice_from_items
