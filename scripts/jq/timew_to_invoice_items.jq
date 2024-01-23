@@ -3,7 +3,7 @@ include "common";
 def categorize_non_tag:
   {
     "Meeting": "Meetings",
-    "Deployment": "Deployments",
+    "Deployment": "Releases",
     "Release": "Releases",
     "Candidate assessment": "Candidate assessments",
     "Research": "Research",
@@ -14,7 +14,7 @@ def categorize_non_tag:
 def categorize_tag:
   ([.] | get_tickets_from_tags) as $tickets
   | if ($tickets | length > 0)
-    then "Tickets"
+    then ($tickets | join(", "))
     else (. | categorize_non_tag)
     end
 ;
@@ -48,6 +48,19 @@ def sum_up(f): .
 )
 | sum_up(.window.month)
 | map_values(
-  .intervals = (.intervals | sum_up(.category)
+  .analysis = (
+    .intervals | sum_up(.category) | map_values(
+      .hours
+    )
   )
+  | .description = (.analysis | to_entries | map(.key) | join(", "))
+  # | del(.intervals)
 )
+| to_entries
+| sort_by(.value.start)
+| map({
+  period: .key,
+  description: .value.description,
+  quantity: .value.hours,
+  rateUnit: "h"
+})

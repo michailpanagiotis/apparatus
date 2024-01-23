@@ -38,9 +38,9 @@ def group_by_window(f): reduce .[] as $item (
 | map(
   (map(.branch) | unique) as $curr_branches
   | ($curr_branches | map(branch_to_tags) | flatten | unique | sort_by(. | ascii_downcase)) as $curr_tags
-  | ((map(.timestamp) | get_window_of_timestamps) | .tw) as $duration
+  | ((map(.timestamp) | get_quantized_window_of_timestamps) | .tw) as $duration
   | {
-      window: (map(.timestamp) | get_window_of_timestamps),
+      window: (map(.timestamp) | get_quantized_window_of_timestamps),
       tags: $curr_tags,
     }
 ) | group_by_window(.tags)
