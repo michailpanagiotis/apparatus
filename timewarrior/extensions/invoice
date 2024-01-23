@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+$(dirname "$0")/json | jq -L$HOME/.apparatus/scripts/jq -rf $HOME/.apparatus/scripts/jq/timew_to_invoice.jq

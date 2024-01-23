@@ -86,3 +86,5 @@ def get_tickets_from_tags:
 
 def get_annotation_from_tags($annotation_per_ticket):
   get_tickets_from_tags | map($annotation_per_ticket[.]) | join(", ");
+
+
