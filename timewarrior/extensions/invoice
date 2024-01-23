@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-items=$($(dirname "$0")/json | jq -L$HOME/.apparatus/scripts/jq -rf $HOME/.apparatus/scripts/jq/timew_to_invoice_items.jq)
-echo $items | jq -L$HOME/.apparatus/scripts/jq -rf $HOME/.apparatus/scripts/jq/invoice_items_to_invoice.jq

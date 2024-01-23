@@ -8,6 +8,7 @@
         "name": "{{ recipient.name }}",
         "address": "{{ recipient.address }}"
     },
+    "items": {{ items | json_encode() | safe }},
     "amounts": {
         "currencySymbol": "{{ currencySymbol | default(value="&euro;") }}",
 	"perUnit": {{ rate | default(value=50) }}

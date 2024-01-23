@@ -21,7 +21,8 @@ invoice() {
 }
 
 get_invoice_json() {
-  cat <<< $1 | tera -e --template $HOME/.apparatus/jinja/invoice_data.template.json --env-key env --stdin | jq '.'
+  items=$(timew billing | jq '{ items: . }')
+  (echo $1; echo $items) | jq -s 'add' | tera -e --template $HOME/.apparatus/jinja/invoice_data.template.json --env-key env --stdin | jq '.'
 }
 
 alias rgf='rg --hidden --ignore-vcs --vimgrep --files ~/ | rg'

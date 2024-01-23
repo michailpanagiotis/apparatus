@@ -40,6 +40,29 @@ def group_by_change(f): __reference_siblings | [. as $rows
     if .is_last_of_group then .records else empty end
   )] | map(__dereference_siblings);
 
+# AMOUNTS
+
+def format_amount($precision):
+  if $precision > 0 then (
+    .
+    | (reduce range(0; $precision) as $item (1; . * 10)) as $cent_factor
+    | (. | tonumber) * $cent_factor
+    | round
+    | tostring
+    | .[:-$precision] + "." + .[-$precision:]
+  ) else . end
+;
+
+def format_cents($precision):
+  if $precision > 0 then (
+    .
+    | (reduce range(0; $precision) as $item (1; . * 10)) as $cent_factor
+    | (. | tonumber)
+    | round
+    | tostring
+    | .[:-$precision] + "." + .[-$precision:]
+  ) else . end
+;
 
 # TIMESTAMP WINDOW FUNCTIONS
 
