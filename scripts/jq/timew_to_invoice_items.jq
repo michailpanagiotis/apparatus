@@ -58,9 +58,12 @@ def sum_up(f): .
 )
 | to_entries
 | sort_by(.value.start)
+| 50 as $rate
 | map({
   period: .key,
   description: .value.description,
   quantity: .value.hours,
-  rateUnit: "h"
+  rateUnit: "h",
+  perUnit: $rate,
+  amount: ($rate * .value.hours)
 })

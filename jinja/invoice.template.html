@@ -287,7 +287,7 @@
               </tr>
               <tr>
                 <th><span>Amount Due</span></th>
-                <td><span>{{ amountDue }}</span><span id="prefix">{{ currencySymbol }}</span></td>
+                <td><span>{{ amounts.due }}</span><span id="prefix">{{ amounts.currencySymbol }}</span></td>
               </tr>
             </table>
           </div>
@@ -329,9 +329,9 @@
                     <tr>
                       <td class="period"> <span>{{ item.period }}</span> </td>
                       <td class="description"><span>{{ item.description }}</span></td>
-                      <td class="rate"><span>{{ item.perUnit }}</span><span data-prefix>{{ currencySymbol }}</span><span>/{{ item.rateUnit }}</span></td>
+                      <td class="rate"><span>{{ item.perUnit }}</span><span data-prefix>{{ amounts.currencySymbol }}</span><span>/{{ item.rateUnit }}</span></td>
                       <td class="quantity"><span>{{ item.quantity }}{{ item.rateUnit }}</span></td>
-                      <td class="amount"><span>{{ item.amount }}</span><span data-prefix>{{ currencySymbol }}</span></td>
+                      <td class="amount"><span>{{ item.amount }}</span><span data-prefix>{{ amounts.currencySymbol }}</span></td>
                     </tr>
                     {% endfor %}
                   </tbody>

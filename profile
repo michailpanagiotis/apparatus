@@ -20,6 +20,10 @@ invoice() {
   tera --template $HOME/.apparatus/jinja/invoice.template.html $1
 }
 
+get_invoice_json() {
+  cat <<< $1 | tera -e --template $HOME/.apparatus/jinja/invoice_data.template.json --env-key env --stdin | jq '.'
+}
+
 alias rgf='rg --hidden --ignore-vcs --vimgrep --files ~/ | rg'
 alias ggrep='rg . | fzf | cut -d ":" -f 1'
 alias vgrep='vim $(rg . | fzf | cut -d ":" -f 1)'

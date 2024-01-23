@@ -58,7 +58,7 @@ def get_window:
   | .iso_end = (.quantized_end | todateiso8601)
   | .minute_duration = ((.quantized_end) - (.quantized_start)) / 60
   | .month = (.quantized_start | strflocaltime("%B %Y"))
-  | .day = (.quantized_start | strflocaltime("%Y-%m-%d"))
+  | .currencySymbolday = (.quantized_start | strflocaltime("%Y-%m-%d"))
   | .time = (.quantized_start | strflocaltime("%H:%M")) + "-" + (.quantized_end | strflocaltime("%H:%M"))
   | .tw = "from " + (.quantized_start | strflocaltime("%Y%m%dT%H%M")) + " to " + (.quantized_end | strflocaltime("%Y%m%dT%H%M"))
 ;

@@ -1,5 +1,5 @@
 50 as $rate
-24 as $vat
+| 24 as $vat
 | {
   items: map(
     .perUnit = $rate

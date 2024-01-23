@@ -1,0 +1,15 @@
+{
+    "documentType": "Invoice",
+    "number": "{{ number | default(value=1) }}",
+    "date": "{{ date | default(value="2024-01-01")}}",
+    "vat": {{ vat | default(value=24) }},
+    "sender": {{ env.INVOICE_SENDER }},
+    "recipient": {
+        "name": "{{ recipient.name }}",
+        "address": "{{ recipient.address }}"
+    },
+    "amounts": {
+        "currencySymbol": "{{ currencySymbol | default(value="&euro;") }}",
+	"perUnit": {{ rate | default(value=50) }}
+    }
+}
