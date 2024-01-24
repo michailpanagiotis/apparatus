@@ -4,13 +4,7 @@
     "date": "{{ date | default(value="2024-01-01")}}",
     "vat": {{ vat | default(value=24) }},
     "sender": {{ env.INVOICE_SENDER }},
-    "recipient": {
-        "name": "{{ recipient.name }}",
-        "address": "{{ recipient.address }}"
-    },
+    "recipient": {{ env.INVOICE_RECIPIENT }},
     "items": {{ items | json_encode() | safe }},
-    "amounts": {
-        "currencySymbol": "{{ currencySymbol | default(value="&euro;") }}",
-	"perUnit": {{ rate | default(value=50) }}
-    }
+    "amounts": {{ amounts | json_encode() | safe }}
 }
