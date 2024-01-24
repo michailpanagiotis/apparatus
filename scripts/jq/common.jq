@@ -206,3 +206,9 @@ def categorize_tag:
     else (. | categorize_non_ticket)
     end
 ;
+
+def categorize_interval:
+  .tags
+  | map(categorize_tag | select(. != ""))
+  | join(", ")
+;
