@@ -77,9 +77,11 @@ def format_cents($currency):
 ;
 
 def add_amounts($currency):
-  map(. | tocents($currency))
-  | add
-  | format_cents($currency)
+  if (. | length) == 0 then 0 else (
+    map(. | tocents($currency))
+    | add
+    | format_cents($currency)
+  ) end
 ;
 
 def net_to_costs($currency;$vatPercent):
@@ -117,6 +119,8 @@ def quantity_to_costs($currency;$vatPercent;$rate):
 ;
 
 # TIMESTAMP WINDOW FUNCTIONS
+
+def fromdatetw: . | strptime("%Y%m%dT%H%M%SZ") | mktime;
 
 def quantize_down($step): . - . % $step;
 def quantize_up($step): if . % $step == 0 then . else (. | quantize_down($step)) + $step end;
