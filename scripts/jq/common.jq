@@ -61,51 +61,50 @@ def tosymbol: tocurrency | .symbol;
 def toprecision: tocurrency | .precision | tonumber;
 
 # AMOUNTS
-def tocents($precision): (. | tonumber) * ($precision | exp10) | round;
+def tocents($currency):
+  ($currency | toprecision) as $precision
+  | (. | tonumber) * ($precision | exp10)
+  | round;
 
-def format_cents($precision):
-  if $precision > 0 then (
-    .
-    | (reduce range(0; $precision) as $item (1; . * 10)) as $cent_factor
-    | (. | tonumber)
+def format_cents($currency):
+  ($currency | toprecision) as $precision
+  | if $precision > 0 then (
+    tonumber
     | round
     | tostring
     | .[:-$precision] + "." + .[-$precision:]
   ) else . end
 ;
 
-def format_amount($precision):
-  (. | tocents($precision)) | format_cents($precision);
-
-def add_amounts($precision):
-  map(. | tocents($precision)) | add | format_cents($precision)
+def add_amounts($currency):
+  map(. | tocents($currency))
+  | add
+  | format_cents($currency)
 ;
 
 def net_to_costs($currency;$vatPercent):
-  ($currency | toprecision) as $precision
-  | (
-      if (. | type) == "array"
-        then add_amounts($precision)
-        else .
-      end
-      | tocents($precision)
-    ) as $netCents
+  (
+    if (. | type) == "array"
+      then add_amounts($currency)
+      else .
+    end
+    | tocents($currency)
+  ) as $netCents
   | ($vatPercent | tonumber) as $vatPercent
   | ($netCents * ($vatPercent / 100) | round) as $vatCents
   | {
     currencySymbol: $currency | tosymbol,
     vatPercent: ($vatPercent | tostring + "%"),
-    net: $netCents | format_cents($precision),
-    vat: $vatCents | format_cents($precision),
-    due: ($netCents + $vatCents) | format_cents($precision)
+    net: $netCents | format_cents($currency),
+    vat: $vatCents | format_cents($currency),
+    due: ($netCents + $vatCents) | format_cents($currency)
   }
 ;
 
 def quantity_to_costs($currency;$vatPercent;$rate):
-  ($currency | toprecision) as $precision
-  | ($rate | tonumber) as $rate
+  ($rate | tonumber) as $rate
   | ($vatPercent | tonumber) as $vatPercent
-  | (. * $rate | tocents($precision)) as $netCents
+  | (. * $rate | tocents($currency)) as $netCents
   | ($netCents * ($vatPercent / 100) | round) as $vatCents
   | {
     amounts: {
@@ -113,7 +112,7 @@ def quantity_to_costs($currency;$vatPercent;$rate):
       perUnit: $rate,
     }
   }
-  | .amounts += ($netCents | format_cents($precision) | net_to_costs($currency;$vatPercent))
+  | .amounts += ($netCents | format_cents($currency) | net_to_costs($currency;$vatPercent))
   | .amounts
 ;
 
