@@ -1,24 +1,5 @@
 include "common";
 
-def categorize_non_tag:
-  {
-    "Meeting": "Meetings",
-    "Deployment": "Releases",
-    "Release": "Releases",
-    "Candidate assessment": "Candidate assessments",
-    "Research": "Research",
-    "Incident": "Incidents"
-  } as $categories
-  | $categories[.] // "";
-
-def categorize_tag:
-  ([.] | get_tickets_from_tags) as $tickets
-  | if ($tickets | length > 0)
-    then ($tickets | join(", "))
-    else (. | categorize_non_tag)
-    end
-;
-
 def categorize_interval: .tags | map(categorize_tag | select(. != "")) | join(", ");
 
 def timewarrior_group_by(f): .
@@ -32,46 +13,32 @@ def timewarrior_group_by(f): .
   })
 ;
 
-
-def aggregate_invoice_items_cents($precision;$vatPercent):
-  (. | map(.net | tocents($precision)) | add) as $netCents
-  | ($netCents * (($vatPercent | tonumber) / 100) | round) as $vatCents
-  | {
-    net: $netCents,
-    vat: $vatCents,
-    due: ($netCents + $vatCents)
-  }
-;
-
 def aggregate_invoice_items($precision;$vatPercent;$currencySymbol):
-  .
-  | aggregate_invoice_items_cents($precision;$vatPercent)
-  | map_values(format_cents($precision))
-  | {
-    currencySymbol: $currencySymbol,
-    vatPercent: ($vatPercent | tostring + "%")
-  } + .
-  | { amounts: . }
+  {
+    amounts: (
+      map(.amounts.net) | add_amounts($precision) as $net
+      | $net | net_to_costs($precision;$vatPercent;$currencySymbol)
+    )
+  }
 ;
 
 def quantity_to_costs($precision; $rate; $vatPercent; $currencySymbol):
   ($precision | tonumber) as $precision
   | ($rate | tonumber) as $rate
-  | (. * rate | tocents($precision)) as $netCents
-  | ($netCents * (($vatPercent | tonumber) / 100) | round) as $vatCents
+  | ($vatPercent | tonumber) as $vatPercent
+  | (. * $rate | tocents($precision)) as $netCents
+  | ($netCents * ($vatPercent / 100) | round) as $vatCents
   | {
-    vatPercent: ($vatPercent | tostring + "%"),
-    currencySymbol: $currencySymbol,
-    quantity: .,
-    perUnit: $rate,
-    net: $netCents | format_cents($precision),
-    vat: $vatCents | format_cents($precision),
-    due: ($netCents + $vatCents) | format_cents($precision)
+    amounts: {
+      quantity: .,
+      perUnit: $rate,
+    }
   }
+  | .amounts += ($netCents | format_cents($precision) | net_to_costs($precision;$vatPercent;$currencySymbol))
 ;
 
 def interval_to_invoice_item($precision;$rate;$vatPercent;$currencySymbol):
-  . + (.quantity | quantity_to_costs($precision;$rate;$vatPercent;$currencySymbol)) | .amount = .net
+  . + (.quantity | quantity_to_costs($precision;$rate;$vatPercent;$currencySymbol))
 ;
 
 def invoice_from_items:

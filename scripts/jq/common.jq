@@ -57,6 +57,24 @@ def format_cents($precision):
 def format_amount($precision):
   (. | tocents($precision)) | format_cents($precision);
 
+def add_amounts($precision):
+  map(. | tocents($precision)) | add | format_cents($precision)
+;
+
+def net_to_costs($precision; $vatPercent; $currencySymbol):
+  ($precision | tonumber) as $precision
+  | (. | tocents($precision)) as $netCents
+  | ($vatPercent | tonumber) as $vatPercent
+  | ($netCents * ($vatPercent / 100) | round) as $vatCents
+  | {
+    currencySymbol: $currencySymbol,
+    vatPercent: ($vatPercent | tostring + "%"),
+    net: $netCents | format_cents($precision),
+    vat: $vatCents | format_cents($precision),
+    due: ($netCents + $vatCents) | format_cents($precision)
+  }
+;
+
 # TIMESTAMP WINDOW FUNCTIONS
 
 def quantize_down($step): . - . % $step;
@@ -109,7 +127,7 @@ def merge_windows:
 ;
 
 
-# TIMEW
+# TIMEWARRIOR
 def get_ticket_regex:
   "(?<id>(?<project>[A-Z]+)-(?<number>[0-9]+)).*";
 
@@ -129,4 +147,21 @@ def get_tickets_from_tags:
 def get_annotation_from_tags($annotation_per_ticket):
   get_tickets_from_tags | map($annotation_per_ticket[.]) | join(", ");
 
+def categorize_non_ticket:
+  {
+    "Meeting": "Meetings",
+    "Deployment": "Releases",
+    "Release": "Releases",
+    "Candidate assessment": "Candidate assessments",
+    "Research": "Research",
+    "Incident": "Incidents"
+  } as $categories
+  | $categories[.] // "";
 
+def categorize_tag:
+  ([.] | get_tickets_from_tags) as $tickets
+  | if ($tickets | length > 0)
+    then ($tickets | join(", "))
+    else (. | categorize_non_ticket)
+    end
+;
