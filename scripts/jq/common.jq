@@ -63,7 +63,13 @@ def add_amounts($precision):
 
 def net_to_costs($precision; $vatPercent; $currencySymbol):
   ($precision | tonumber) as $precision
-  | (. | tocents($precision)) as $netCents
+  | (
+      if (. | type) == "array"
+        then add_amounts($precision)
+        else .
+      end
+      | tocents($precision)
+    ) as $netCents
   | ($vatPercent | tonumber) as $vatPercent
   | ($netCents * ($vatPercent / 100) | round) as $vatCents
   | {
@@ -88,6 +94,7 @@ def quantity_to_costs($precision; $vatPercent; $currencySymbol; $rate):
     }
   }
   | .amounts += ($netCents | format_cents($precision) | net_to_costs($precision;$vatPercent;$currencySymbol))
+  | .amounts
 ;
 
 # TIMESTAMP WINDOW FUNCTIONS

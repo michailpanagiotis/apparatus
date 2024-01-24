@@ -13,40 +13,28 @@ def timewarrior_group_by(f): .
   })
 ;
 
-def aggregate_invoice_items($precision;$vatPercent;$currencySymbol):
-  ($precision | tonumber) as $precision
-  | {
-    amounts: (
-      map(.amounts.net) | add_amounts($precision) as $net
-      | $net | net_to_costs($precision;$vatPercent;$currencySymbol)
-    )
-  }
-;
-
-def interval_to_invoice_item($precision;$rate;$vatPercent;$currencySymbol):
-  . + (.quantity | quantity_to_costs($precision;$vatPercent;$currencySymbol;$rate))
-;
-
-def invoice_from_items($precision;$rate;$vatPercent;$currencySymbol):
-  (last | .end) as $last_end
+def invoice_from_items($precision;$vatPercent;$currencySymbol):
+  (map(.date) | max) as $last_date
   | (($vatPercent | tonumber) / 100) as $vatRatio
   | {
-      date: ($last_end | strftime("%Y-%m-%d")),
+      date: $last_date,
       items: .,
+      amounts: (map(.amounts.net) | net_to_costs($precision;$vatPercent;$currencySymbol))
     }
-  | . += (.items | aggregate_invoice_items($precision;$vatPercent;$currencySymbol))
 ;
 
 .intervals
+# group by month
 | timewarrior_group_by(get_window_of_timewarrior_interval | .month)
+# map to invoice items
 | map({
-  start,
-  end: .end,
+  date: .end | strftime("%Y-%m-%d"),
   description: (.intervals | map(categorize_interval) | unique | join(", ")),
   period: .key,
   rateUnit: "h",
-  quantity: .hours
+  quantity: .hours,
+  amounts: (.hours | quantity_to_costs($INVOICE_AMOUNTS_PRECISION;$INVOICE_VAT_PERCENT;$INVOICE_CURRENCY_SYMBOL;$INVOICE_RATE_AMOUNT))
 })
-| map(interval_to_invoice_item($INVOICE_AMOUNTS_PRECISION;$INVOICE_RATE_AMOUNT;$INVOICE_VAT_PERCENT;$INVOICE_CURRENCY_SYMBOL))
-| sort_by(.start)
-| invoice_from_items($INVOICE_AMOUNTS_PRECISION;$INVOICE_RATE_AMOUNT;$INVOICE_VAT_PERCENT;$INVOICE_CURRENCY_SYMBOL)
+| sort_by(.date)
+# group invoice items to invoice
+| invoice_from_items($INVOICE_AMOUNTS_PRECISION;$INVOICE_VAT_PERCENT;$INVOICE_CURRENCY_SYMBOL)
