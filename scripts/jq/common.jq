@@ -75,6 +75,21 @@ def net_to_costs($precision; $vatPercent; $currencySymbol):
   }
 ;
 
+def quantity_to_costs($precision; $vatPercent; $currencySymbol; $rate):
+  ($precision | tonumber) as $precision
+  | ($rate | tonumber) as $rate
+  | ($vatPercent | tonumber) as $vatPercent
+  | (. * $rate | tocents($precision)) as $netCents
+  | ($netCents * ($vatPercent / 100) | round) as $vatCents
+  | {
+    amounts: {
+      quantity: .,
+      perUnit: $rate,
+    }
+  }
+  | .amounts += ($netCents | format_cents($precision) | net_to_costs($precision;$vatPercent;$currencySymbol))
+;
+
 # TIMESTAMP WINDOW FUNCTIONS
 
 def quantize_down($step): . - . % $step;

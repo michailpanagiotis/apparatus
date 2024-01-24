@@ -14,7 +14,8 @@ def timewarrior_group_by(f): .
 ;
 
 def aggregate_invoice_items($precision;$vatPercent;$currencySymbol):
-  {
+  ($precision | tonumber) as $precision
+  | {
     amounts: (
       map(.amounts.net) | add_amounts($precision) as $net
       | $net | net_to_costs($precision;$vatPercent;$currencySymbol)
@@ -22,35 +23,16 @@ def aggregate_invoice_items($precision;$vatPercent;$currencySymbol):
   }
 ;
 
-def quantity_to_costs($precision; $rate; $vatPercent; $currencySymbol):
-  ($precision | tonumber) as $precision
-  | ($rate | tonumber) as $rate
-  | ($vatPercent | tonumber) as $vatPercent
-  | (. * $rate | tocents($precision)) as $netCents
-  | ($netCents * ($vatPercent / 100) | round) as $vatCents
-  | {
-    amounts: {
-      quantity: .,
-      perUnit: $rate,
-    }
-  }
-  | .amounts += ($netCents | format_cents($precision) | net_to_costs($precision;$vatPercent;$currencySymbol))
-;
-
 def interval_to_invoice_item($precision;$rate;$vatPercent;$currencySymbol):
-  . + (.quantity | quantity_to_costs($precision;$rate;$vatPercent;$currencySymbol))
+  . + (.quantity | quantity_to_costs($precision;$vatPercent;$currencySymbol;$rate))
 ;
 
-def invoice_from_items:
+def invoice_from_items($precision;$rate;$vatPercent;$currencySymbol):
   (last | .end) as $last_end
-  | ($INVOICE_AMOUNTS_PRECISION | tonumber) as $precision
-  | ($INVOICE_RATE_AMOUNT | tonumber) as $rate
-  | ($INVOICE_VAT_PERCENT | tonumber) as $vatPercent
-  | ($INVOICE_CURRENCY_SYMBOL) as $currencySymbol
-  | ($vatPercent / 100) as $vatRatio
+  | (($vatPercent | tonumber) / 100) as $vatRatio
   | {
       date: ($last_end | strftime("%Y-%m-%d")),
-      items: map(interval_to_invoice_item($precision;$rate;$vatPercent;$currencySymbol)),
+      items: .,
     }
   | . += (.items | aggregate_invoice_items($precision;$vatPercent;$currencySymbol))
 ;
@@ -65,5 +47,6 @@ def invoice_from_items:
   rateUnit: "h",
   quantity: .hours
 })
+| map(interval_to_invoice_item($INVOICE_AMOUNTS_PRECISION;$INVOICE_RATE_AMOUNT;$INVOICE_VAT_PERCENT;$INVOICE_CURRENCY_SYMBOL))
 | sort_by(.start)
-| invoice_from_items
+| invoice_from_items($INVOICE_AMOUNTS_PRECISION;$INVOICE_RATE_AMOUNT;$INVOICE_VAT_PERCENT;$INVOICE_CURRENCY_SYMBOL)
