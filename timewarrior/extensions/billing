@@ -5,8 +5,8 @@ if [ -z $INVOICE_RATE_AMOUNT ]; then
     exit 1
 fi
 
-if [ -z $INVOICE_CURRENCY_SYMBOL ]; then
-    echo "please set your INVOICE_CURRENCY_SYMBOL environment variable"
+if [ -z $INVOICE_AMOUNTS_CURRENCY ]; then
+    echo "please set your INVOICE_AMOUNTS_CURRENCY environment variable"
     exit 1
 fi
 
@@ -18,7 +18,6 @@ fi
 $(dirname "$0")/json \
  | jq -L$HOME/.apparatus/scripts/jq \
    --arg INVOICE_RATE_AMOUNT "$INVOICE_RATE_AMOUNT" \
-   --arg INVOICE_CURRENCY_SYMBOL "$INVOICE_CURRENCY_SYMBOL" \
+   --arg INVOICE_AMOUNTS_CURRENCY "$INVOICE_AMOUNTS_CURRENCY" \
    --arg INVOICE_VAT_PERCENT "$INVOICE_VAT_PERCENT" \
-   --arg INVOICE_AMOUNTS_PRECISION 2 \
    -rf $HOME/.apparatus/scripts/jq/timew_to_billing.jq

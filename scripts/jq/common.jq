@@ -40,6 +40,26 @@ def group_by_change(f): __reference_siblings | [. as $rows
     if .is_last_of_group then .records else empty end
   )] | map(__dereference_siblings);
 
+# CURRENCIES
+
+def currencies:
+  {
+    "EUR": {
+      "symbol": "€",
+      "precision": 2
+    }
+  }
+;
+
+def tocurrency:
+  . as $currency
+  | currencies[$currency]
+  | if . == null then error("unknown currency \($currency)") else . end;
+
+def tosymbol: tocurrency | .symbol;
+
+def toprecision: tocurrency | .precision | tonumber;
+
 # AMOUNTS
 def tocents($precision): (. | tonumber) * ($precision | exp10) | round;
 
@@ -61,8 +81,8 @@ def add_amounts($precision):
   map(. | tocents($precision)) | add | format_cents($precision)
 ;
 
-def net_to_costs($precision; $vatPercent; $currencySymbol):
-  ($precision | tonumber) as $precision
+def net_to_costs($currency;$vatPercent):
+  ($currency | toprecision) as $precision
   | (
       if (. | type) == "array"
         then add_amounts($precision)
@@ -73,7 +93,7 @@ def net_to_costs($precision; $vatPercent; $currencySymbol):
   | ($vatPercent | tonumber) as $vatPercent
   | ($netCents * ($vatPercent / 100) | round) as $vatCents
   | {
-    currencySymbol: $currencySymbol,
+    currencySymbol: $currency | tosymbol,
     vatPercent: ($vatPercent | tostring + "%"),
     net: $netCents | format_cents($precision),
     vat: $vatCents | format_cents($precision),
@@ -81,8 +101,8 @@ def net_to_costs($precision; $vatPercent; $currencySymbol):
   }
 ;
 
-def quantity_to_costs($precision; $vatPercent; $currencySymbol; $rate):
-  ($precision | tonumber) as $precision
+def quantity_to_costs($currency;$vatPercent;$rate):
+  ($currency | toprecision) as $precision
   | ($rate | tonumber) as $rate
   | ($vatPercent | tonumber) as $vatPercent
   | (. * $rate | tocents($precision)) as $netCents
@@ -93,7 +113,7 @@ def quantity_to_costs($precision; $vatPercent; $currencySymbol; $rate):
       perUnit: $rate,
     }
   }
-  | .amounts += ($netCents | format_cents($precision) | net_to_costs($precision;$vatPercent;$currencySymbol))
+  | .amounts += ($netCents | format_cents($precision) | net_to_costs($currency;$vatPercent))
   | .amounts
 ;
 
@@ -114,7 +134,7 @@ def get_window:
   | .iso_end = (.quantized_end | todateiso8601)
   | .minute_duration = ((.quantized_end) - (.quantized_start)) / 60
   | .month = (.quantized_start | strflocaltime("%B %Y"))
-  | .currencySymbolday = (.quantized_start | strflocaltime("%Y-%m-%d"))
+  | .day = (.quantized_start | strflocaltime("%Y-%m-%d"))
   | .time = (.quantized_start | strflocaltime("%H:%M")) + "-" + (.quantized_end | strflocaltime("%H:%M"))
   | .tw = "from " + (.quantized_start | strflocaltime("%Y%m%dT%H%M")) + " to " + (.quantized_end | strflocaltime("%Y%m%dT%H%M"))
 ;

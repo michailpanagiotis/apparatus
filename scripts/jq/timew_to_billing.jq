@@ -13,13 +13,13 @@ def timewarrior_group_by(f): .
   })
 ;
 
-def invoice_from_items($precision;$vatPercent;$currencySymbol):
+def invoice_from_items($currency;$vatPercent):
   (map(.date) | max) as $last_date
   | (($vatPercent | tonumber) / 100) as $vatRatio
   | {
       date: $last_date,
       items: .,
-      amounts: (map(.amounts.net) | net_to_costs($precision;$vatPercent;$currencySymbol))
+      amounts: (map(.amounts.net) | net_to_costs($currency;$vatPercent))
     }
 ;
 
@@ -33,8 +33,8 @@ def invoice_from_items($precision;$vatPercent;$currencySymbol):
   period: .key,
   rateUnit: "h",
   quantity: .hours,
-  amounts: (.hours | quantity_to_costs($INVOICE_AMOUNTS_PRECISION;$INVOICE_VAT_PERCENT;$INVOICE_CURRENCY_SYMBOL;$INVOICE_RATE_AMOUNT))
+  amounts: (.hours | quantity_to_costs($INVOICE_AMOUNTS_CURRENCY;$INVOICE_VAT_PERCENT;$INVOICE_RATE_AMOUNT))
 })
 | sort_by(.date)
 # group invoice items to invoice
-| invoice_from_items($INVOICE_AMOUNTS_PRECISION;$INVOICE_VAT_PERCENT;$INVOICE_CURRENCY_SYMBOL)
+| invoice_from_items($INVOICE_AMOUNTS_CURRENCY;$INVOICE_VAT_PERCENT)
