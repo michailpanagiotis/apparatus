@@ -61,9 +61,25 @@ def tosymbol: tocurrency | .symbol;
 def toprecision: tocurrency | .precision | tonumber;
 
 # AMOUNTS
+def dehumanize: . | tostring | gsub(",";"");
+
+def humanize:
+  (. | dehumanize) as $input
+  | ($input | split(".")) as $parts
+  | ($parts[0] | split("")) as $full_digits
+  | ($full_digits | reduce range($full_digits | length) as $item (
+      [];
+      if ($item != 0 and ($full_digits | length - $item) % 3 == 0)
+        then . + [","]
+        else .
+      end + [$full_digits[$item]]
+    ) | join("") ) as $full
+  | $full + if $parts[1] then ".\($parts[1])" else "" end
+;
+
 def tocents($currency):
   ($currency | toprecision) as $precision
-  | (. | tonumber) * ($precision | exp10)
+  | (. | dehumanize | tonumber) * ($precision | exp10)
   | round;
 
 def format_cents($currency):
@@ -74,6 +90,7 @@ def format_cents($currency):
     | tostring
     | .[:-$precision] + "." + .[-$precision:]
   ) else . end
+  | humanize
 ;
 
 def add_amounts($currency):
@@ -90,7 +107,7 @@ def net_to_costs($currency;$vatPercent):
       then add_amounts($currency)
       else .
     end
-    | tocents($currency)
+    | dehumanize | tocents($currency)
   ) as $netCents
   | ($vatPercent | tonumber) as $vatPercent
   | ($netCents * ($vatPercent / 100) | round) as $vatCents
@@ -99,7 +116,7 @@ def net_to_costs($currency;$vatPercent):
     vatPercent: ($vatPercent | tostring + "%"),
     net: $netCents | format_cents($currency),
     vat: $vatCents | format_cents($currency),
-    due: ($netCents + $vatCents) | format_cents($currency)
+    due: ($netCents + $vatCents) | format_cents($currency),
   }
 ;
 

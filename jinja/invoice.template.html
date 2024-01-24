@@ -319,7 +319,6 @@
                     <tr>
                       <th class="period"><span>Period</span></th>
                       <th class="description"><span>Description</span></th>
-                      <th class="rate"><span>Rate</span></th>
                       <th class="quantity"><span>Quantity</span></th>
                       <th class="amount"><span>Amount</span></th>
                     </tr>
@@ -329,7 +328,6 @@
                     <tr>
                       <td class="period"> <span>{{ item.period }}</span> </td>
                       <td class="description"><span>{{ item.description }}</span></td>
-                      <td class="rate"><span>{{ item.amounts.perUnit }}</span><span data-prefix>{{ item.amounts.currencySymbol }}</span><span>/{{ item.rateUnit }}</span></td>
                       <td class="quantity"><span>{{ item.amounts.quantity }}{{ item.rateUnit }}</span></td>
                       <td class="amount"><span>{{ item.amounts.due }}</span><span data-prefix>{{ item.amounts.currencySymbol }}</span></td>
                     </tr>
