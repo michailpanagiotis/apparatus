@@ -41,17 +41,7 @@ def group_by_change(f): __reference_siblings | [. as $rows
   )] | map(__dereference_siblings);
 
 # AMOUNTS
-
-def format_amount($precision):
-  if $precision > 0 then (
-    .
-    | (reduce range(0; $precision) as $item (1; . * 10)) as $cent_factor
-    | (. | tonumber) * $cent_factor
-    | round
-    | tostring
-    | .[:-$precision] + "." + .[-$precision:]
-  ) else . end
-;
+def tocents($precision): (. | tonumber) * ($precision | exp10) | round;
 
 def format_cents($precision):
   if $precision > 0 then (
@@ -63,6 +53,9 @@ def format_cents($precision):
     | .[:-$precision] + "." + .[-$precision:]
   ) else . end
 ;
+
+def format_amount($precision):
+  (. | tocents($precision)) | format_cents($precision);
 
 # TIMESTAMP WINDOW FUNCTIONS
 

@@ -21,27 +21,20 @@ def categorize_tag:
 
 def categorize_interval: .tags | map(categorize_tag | select(. != "")) | join(", ");
 
-def sum_up(f): .
+def timewarrior_group_by(f): .
   | group_by(f)
   | map({
+    start: (map(get_window_of_timewarrior_interval |.quantized_start) | min),
+    end: (map(get_window_of_timewarrior_interval| .quantized_end) | max),
+    hours: ((map(get_window_of_timewarrior_interval| .minute_duration) | add) / 60),
     key: (first | f),
-    value: {
-      start: (map(.window.quantized_start) | min),
-      end: (map(.window.quantized_end) | max),
-      hours: ((map(.window.minute_duration) | add) / 60),
-      key: (first | f),
-      intervals: .
-    }
+    intervals: .
   })
-  | from_entries
 ;
 
-def sum_hours(f): sum_up(f) | map_values(.hours);
-
-def tocents($precision): . * ($precision | exp10) | round;
 
 def aggregate_invoice_items_cents($precision;$vatPercent):
-  (. | map(.cents) | add) as $netCents
+  (. | map(.net | tocents($precision)) | add) as $netCents
   | ($netCents * (($vatPercent | tonumber) / 100) | round) as $vatCents
   | {
     net: $netCents,
@@ -61,18 +54,24 @@ def aggregate_invoice_items($precision;$vatPercent;$currencySymbol):
   | { amounts: . }
 ;
 
-def interval_to_invoice_item($precision;$rate):
+def quantity_to_costs($precision; $rate; $vatPercent; $currencySymbol):
   ($precision | tonumber) as $precision
   | ($rate | tonumber) as $rate
+  | (. * rate | tocents($precision)) as $netCents
+  | ($netCents * (($vatPercent | tonumber) / 100) | round) as $vatCents
   | {
-    period: .month,
-    description: .description,
-    rateUnit: "h",
+    vatPercent: ($vatPercent | tostring + "%"),
+    currencySymbol: $currencySymbol,
+    quantity: .,
     perUnit: $rate,
-    quantity: .hours,
-    cents: (.hours * $rate | tocents($precision)),
-    amount: (.hours * $rate | tocents($precision)) | format_cents($precision)
+    net: $netCents | format_cents($precision),
+    vat: $vatCents | format_cents($precision),
+    due: ($netCents + $vatCents) | format_cents($precision)
   }
+;
+
+def interval_to_invoice_item($precision;$rate;$vatPercent;$currencySymbol):
+  . + (.quantity | quantity_to_costs($precision;$rate;$vatPercent;$currencySymbol)) | .amount = .net
 ;
 
 def invoice_from_items:
@@ -84,23 +83,20 @@ def invoice_from_items:
   | ($vatPercent / 100) as $vatRatio
   | {
       date: ($last_end | strftime("%Y-%m-%d")),
-      items: map(interval_to_invoice_item($precision;$rate)),
+      items: map(interval_to_invoice_item($precision;$rate;$vatPercent;$currencySymbol)),
     }
   | . += (.items | aggregate_invoice_items($precision;$vatPercent;$currencySymbol))
 ;
 
 .intervals
-| map(
-  .window = get_window_of_timewarrior_interval
-  | .category = categorize_interval
-  | .tickets = (.tags | get_tickets_from_tags | join(", "))
-)
-| sum_up(.window.month)
-| map(
-  .perCategory = (.intervals | sum_hours(.category))
-  | .description = (.perCategory | to_entries | map(.key) | join(", "))
-  | .month = .key
-  | del(.intervals)
-)
+| timewarrior_group_by(get_window_of_timewarrior_interval | .month)
+| map({
+  start,
+  end: .end,
+  description: (.intervals | map(categorize_interval) | unique | join(", ")),
+  period: .key,
+  rateUnit: "h",
+  quantity: .hours
+})
 | sort_by(.start)
 | invoice_from_items
