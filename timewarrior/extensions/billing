@@ -1,23 +1,5 @@
 #!/usr/bin/env bash
 
-if [ -z $INVOICE_RATE_AMOUNT ]; then
-    echo "please set your INVOICE_RATE_AMOUNT environment variable"
-    exit 1
-fi
-
-if [ -z $INVOICE_AMOUNTS_CURRENCY ]; then
-    echo "please set your INVOICE_AMOUNTS_CURRENCY environment variable"
-    exit 1
-fi
-
-if [ -z $INVOICE_VAT_PERCENT ]; then
-    echo "please set your INVOICE_VAT_PERCENT environment variable"
-    exit 1
-fi
-
 $(dirname "$0")/json \
  | jq -L$HOME/.apparatus/scripts/jq \
-   --arg INVOICE_RATE_AMOUNT "$INVOICE_RATE_AMOUNT" \
-   --arg INVOICE_AMOUNTS_CURRENCY "$INVOICE_AMOUNTS_CURRENCY" \
-   --arg INVOICE_VAT_PERCENT "$INVOICE_VAT_PERCENT" \
-   -rf $HOME/.apparatus/scripts/jq/timew_to_billing.jq
+   -r 'include "lib/timewarrior"; .intervals | get_interval_list_billing(get_interval_month)'

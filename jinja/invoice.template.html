@@ -328,7 +328,7 @@
                     <tr>
                       <td class="period"> <span>{{ item.period }}</span> </td>
                       <td class="description"><span>{{ item.description }}</span></td>
-                      <td class="quantity"><span>{{ item.amounts.quantity }}{{ item.rateUnit }}</span></td>
+                      <td class="quantity"><span>{{ item.quantity }}{{ item.unit }}</span></td>
                       <td class="amount"><span>{{ item.amounts.due }}</span><span data-prefix>{{ item.amounts.currencySymbol }}</span></td>
                     </tr>
                     {% endfor %}
