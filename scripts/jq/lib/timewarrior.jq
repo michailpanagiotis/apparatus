@@ -73,14 +73,16 @@ def get_interval_list_categories:
 
 def get_interval_list_grouped_billing:
   get_interval_list_duration_in_hours as $hours
-  | (get_interval_list_timestamp_span | { start: (.start | todateiso8601), end: (.end | todateiso8601) }) as $span
+  | get_interval_list_timestamp_span as $span
   | {
     deliveredOn: get_interval_list_max_timestamp | strftime("%Y-%m-%d"),
     description: get_interval_list_categories | join(", "),
     unit: "h",
     quantity: $hours,
-    startedAt: $span.start,
-    endedAt: $span.end
+    timestamps: {
+      startedAt: $span.start,
+      endedAt: $span.end
+    }
   }
 ;
 
