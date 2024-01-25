@@ -1,10 +1,12 @@
 include "common";
+include "lib/money";
+include "lib/timewarrior";
 
 def to_invoice_item(filter):
-  (map(get_window_of_timewarrior_interval | .minute_duration / 60) | add) as $hours
+  (map(get_interval_duration / 3600) | add) as $hours
   | {
-    date: (map(.end | fromdatetw) | max | strftime("%Y-%m-%d")),
-    description: (map(categorize_interval) | unique | join(", ")),
+    date: (map(.end | parse_date) | max | strftime("%Y-%m-%d")),
+    description: (map(get_interval_category) | unique | join(", ")),
     period: (first | filter),
     rateUnit: "h",
     quantity: $hours,
@@ -20,7 +22,7 @@ def invoice_from_items($currency;$vatPercent):
   }
 ;
 
-def by_month: .start | fromdatetw | strflocaltime("%B %Y");
+def by_month: .start | parse_date | strflocaltime("%B %Y");
 
 .intervals
 # group by month
