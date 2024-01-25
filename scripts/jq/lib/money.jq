@@ -49,21 +49,18 @@ def format_cents($currency):
 ;
 
 def add_amounts($currency):
-  if (. | length) == 0 then 0 else (
+  if (. | length) == 0
+  then
+    0
+  else
     map(. | tocents($currency))
     | add
     | format_cents($currency)
-  ) end
+  end
 ;
 
 def net_to_costs($currency;$vatPercent):
-  (
-    if (. | type) == "array"
-      then add_amounts($currency)
-      else .
-    end
-    | dehumanize | tocents($currency)
-  ) as $netCents
+  (. | dehumanize | tocents($currency)) as $netCents
   | ($vatPercent | tonumber) as $vatPercent
   | ($netCents * ($vatPercent / 100) | round) as $vatCents
   | {
@@ -75,17 +72,6 @@ def net_to_costs($currency;$vatPercent):
   }
 ;
 
-def quantity_to_costs($currency;$vatPercent;$rate):
-  ($rate | tonumber) as $rate
-  | ($vatPercent | tonumber) as $vatPercent
-  | (. * $rate | tocents($currency)) as $netCents
-  | ($netCents * ($vatPercent / 100) | round) as $vatCents
-  | {
-    amounts: {
-      quantity: .,
-      perUnit: $rate,
-    }
-  }
-  | .amounts += ($netCents | format_cents($currency) | net_to_costs($currency;$vatPercent))
-  | .amounts
+def quantity_to_net_cost($currency;$rate):
+  . * ($rate | tonumber) | tocents($currency) | format_cents($currency)
 ;

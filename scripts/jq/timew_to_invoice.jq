@@ -5,12 +5,15 @@ include "lib/money";
 | ($ENV.INVOICE_RATE_AMOUNT // 0) as $rate
 | ($ENV.INVOICE_DATE) as $date
 # prepare invoice items
-| map(. + {
-  amounts: (.quantity | quantity_to_costs($currency;$vatPercent;$rate))
-})
+| map(
+  (.quantity | quantity_to_net_cost($currency;$rate)) as $netOfItems
+  | . + {
+    amounts: $netOfItems | net_to_costs($currency;$vatPercent)
+  }
+)
 # group to invoice
 | {
   date: ($date // (map(.deliveredOn) | max)),
   items: .,
-  amounts: (map(.amounts.net) | net_to_costs($currency;$vatPercent))
+  amounts: (map(.amounts.net) | add_amounts($currency) | net_to_costs($currency;$vatPercent))
 }
