@@ -31,12 +31,18 @@ def tocents($currency):
   | (. | dehumanize | tonumber) * ($precision | exp10)
   | round;
 
+def pad_left($len; $chr):
+    (tostring | length) as $l
+    | "\($chr * ([$len - $l, 0] | max) // "")\(.)"
+    ;
+
 def format_cents($currency):
   ($currency | toprecision) as $precision
   | if $precision > 0 then (
     tonumber
     | round
     | tostring
+    | pad_left($precision + 1;"0")
     | .[:-$precision] + "." + .[-$precision:]
   ) else . end
   | humanize
