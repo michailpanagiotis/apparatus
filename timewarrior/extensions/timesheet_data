@@ -5,5 +5,5 @@
    --arg INVOICE_RATE_AMOUNT "$INVOICE_RATE_AMOUNT" \
    --arg INVOICE_CURRENCY "$INVOICE_CURRENCY" \
    --arg INVOICE_VAT_PERCENT "$INVOICE_VAT_PERCENT" \
-   -rf $HOME/.apparatus/scripts/jq/timew_to_invoice.jq \
+   -rf $HOME/.apparatus/scripts/jq/timew_to_timesheet.jq \
  )

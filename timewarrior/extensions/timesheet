@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+tera --template $HOME/.apparatus/jinja/timesheet.template.html --stdin < <($(dirname "$0")/timesheet_data)

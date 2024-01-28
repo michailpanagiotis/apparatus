@@ -48,6 +48,10 @@ def format_cents($currency):
   | humanize
 ;
 
+def format_amount($currency):
+  . | tocents($currency) | format_cents($currency)
+;
+
 def add_amounts($currency):
   if (. | length) == 0
   then
@@ -60,7 +64,7 @@ def add_amounts($currency):
 ;
 
 def net_to_costs($currency;$vatPercent):
-  (. | dehumanize | tocents($currency)) as $netCents
+  (. | tocents($currency)) as $netCents
   | ($vatPercent | tonumber) as $vatPercent
   | ($netCents * ($vatPercent / 100) | round) as $vatCents
   | {

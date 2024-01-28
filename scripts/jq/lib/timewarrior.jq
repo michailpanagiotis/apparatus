@@ -28,6 +28,10 @@ def get_interval_list_max_timestamp:
   map(.end | parse_timestamp) | max
 ;
 
+def get_interval_list_min_timestamp:
+  map(.end | parse_timestamp) | min
+;
+
 def get_interval_list_timestamp_span:
   { start: (map(.start | parse_timestamp) | min), end: (map(.end | parse_timestamp) | max) }
 ;
@@ -40,6 +44,10 @@ def get_ticket:
 ;
 
 # TAGS
+
+def get_tickets_of_tags:
+  map(get_ticket) | unique | map(select(. != null))
+;
 
 def get_categories_of_tags:
   map(
@@ -68,6 +76,13 @@ def get_interval_category:
   | join(", ")
 ;
 
+def get_interval_month_and_category:
+  . as $interval
+  | ($interval | get_interval_month) as $month
+  | ($interval | get_interval_category) as $category
+  | $month + ":" + $category
+;
+
 def get_interval_list_categories:
   map(get_interval_category) | unique
 ;
@@ -79,8 +94,10 @@ def get_interval_list_grouped_billing(f):
   | get_interval_list_timestamp_span as $span
   | {
     group: first | f,
+    startedOn: get_interval_list_min_timestamp | strftime("%Y-%m-%d"),
     deliveredOn: get_interval_list_max_timestamp | strftime("%Y-%m-%d"),
     tags: map(.tags) | add | unique,
+    tickets: ((map(.tags) | add | unique) | get_tickets_of_tags),
     unit: "h",
     quantity: $hours,
     timestamps: {

@@ -12,18 +12,6 @@ standup () {
     git --no-pager log --since=\"${LAST_WEEK}\" --author="$(git config user.name)" --abbrev-commit --oneline --pretty="format:${GIT_PRETTY_FORMAT}" --all --date=short
 }
 
-invoice() {
-  if [ -z $1 ]; then
-    echo "Usage:\n\tinvoice [invoice data in json]"
-    return 1
-  fi
-  tera --template $HOME/.apparatus/jinja/invoice.template.html $1
-}
-
-invoice_from_timewarrior() {
-  tera --template $HOME/.apparatus/jinja/invoice.template.html --stdin < <(timew invoice)
-}
-
 alias rgf='rg --hidden --ignore-vcs --vimgrep --files ~/ | rg'
 alias ggrep='rg . | fzf | cut -d ":" -f 1'
 alias vgrep='vim $(rg . | fzf | cut -d ":" -f 1)'
