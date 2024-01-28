@@ -20,22 +20,8 @@ invoice() {
   tera --template $HOME/.apparatus/jinja/invoice.template.html $1
 }
 
-__get_invoice_json_from_timewarrior() {
-  timew billing | jq -L$HOME/.apparatus/scripts/jq \
-   --arg INVOICE_RATE_AMOUNT "$INVOICE_RATE_AMOUNT" \
-   --arg INVOICE_CURRENCY "$INVOICE_CURRENCY" \
-   --arg INVOICE_VAT_PERCENT "$INVOICE_VAT_PERCENT" \
-   -rf $HOME/.apparatus/scripts/jq/timew_to_invoice.jq
-}
-
-__get_full_invoice_data() {
-  tera -e --env-key env --template ~/.apparatus/jinja/invoice_data.template.json --stdin < <(
-    __get_invoice_json_from_timewarrior
-  )
-}
-
 invoice_from_timewarrior() {
-  tera --template $HOME/.apparatus/jinja/invoice.template.html --stdin < <(__get_full_invoice_data)
+  tera --template $HOME/.apparatus/jinja/invoice.template.html --stdin < <(timew invoice)
 }
 
 alias rgf='rg --hidden --ignore-vcs --vimgrep --files ~/ | rg'

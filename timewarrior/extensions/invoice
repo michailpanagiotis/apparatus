@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+tera --template $HOME/.apparatus/jinja/invoice.template.html --stdin < <($(dirname "$0")/invoice_data)

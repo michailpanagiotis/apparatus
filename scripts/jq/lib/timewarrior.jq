@@ -12,6 +12,10 @@ def get_interval_month:
   .start | parse_timestamp | strflocaltime("%B %Y")
 ;
 
+def get_interval_day:
+  .start | parse_timestamp | strflocaltime("%Y-%m-%d")
+;
+
 def get_interval_list_duration:
   map(get_interval_duration) | add
 ;
@@ -30,38 +34,37 @@ def get_interval_list_timestamp_span:
 
 # TICKETS
 
-def get_ticket_regex:
-  "(?<id>(?<project>[A-Z]+)-(?<number>[0-9]+)).*";
-
-def is_ticket: test(get_ticket_regex);
-
-def get_ticket: if is_ticket then (capture(get_ticket_regex) | .id) else null end;
+def get_ticket:
+  "(?<id>(?<project>[A-Z]+)-(?<number>[0-9]+)).*" as $ticketRegex
+  | if test($ticketRegex) then (capture($ticketRegex) | .id) else null end
+;
 
 # TAGS
 
-def get_tag_category:
-  get_ticket as $ticket
-  | if ($ticket != null)
-    then $ticket
-    else (
-      # non ticket
-      {
-        "Meeting": "Meetings",
-        "Deployment": "Releases",
-        "Release": "Releases",
-        "Candidate assessment": "Candidate assessments",
-        "Research": "Research",
-        "Incident": "Incidents"
-      }[.] // ""
-    )
-    end
+def get_categories_of_tags:
+  map(
+    . as $tag
+    | get_ticket as $ticket
+    | if ($ticket != null)
+      then $ticket
+      else (
+        # non ticket
+        {
+          "Meeting": "Meetings",
+          "Deployment": "Releases",
+          "Release": "Releases",
+          "Candidate assessment": "Candidate assessments",
+          "Research": "Research",
+          "Incident": "Incidents"
+        }[$tag] // ""
+      )
+      end
+  ) | unique | map(select(. != ""))
 ;
 
 def get_interval_category:
   .tags
-  | map(
-    get_tag_category | select(. != "")
-  )
+  | get_categories_of_tags
   | join(", ")
 ;
 
@@ -71,12 +74,13 @@ def get_interval_list_categories:
 
 # BILLING
 
-def get_interval_list_grouped_billing:
+def get_interval_list_grouped_billing(f):
   get_interval_list_duration_in_hours as $hours
   | get_interval_list_timestamp_span as $span
   | {
+    group: first | f,
     deliveredOn: get_interval_list_max_timestamp | strftime("%Y-%m-%d"),
-    description: get_interval_list_categories | join(", "),
+    tags: map(.tags) | add | unique,
     unit: "h",
     quantity: $hours,
     timestamps: {
@@ -89,7 +93,7 @@ def get_interval_list_grouped_billing:
 def get_interval_list_billing(f):
   group_by(f)
   # map to billing items
-  | map(get_interval_list_grouped_billing)
+  | map(get_interval_list_grouped_billing(f))
   | sort_by(.deliveredOn)
 ;
 

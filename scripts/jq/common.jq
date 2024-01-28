@@ -87,21 +87,7 @@ def merge_windows:
 
 
 # TIMEWARRIOR
-def get_ticket_regex:
-  "(?<id>(?<project>[A-Z]+)-(?<number>[0-9]+)).*";
 
-def is_ticket: test(get_ticket_regex);
-
-def get_ticket: capture(get_ticket_regex);
-
-def get_tickets_from_tags:
-  .
-  | map(select(. | is_ticket) | get_ticket | .id)
-  | unique
-  | sort_by(
-    (. | get_ticket | .number | tonumber) as $number
-    | $number
-  );
 
 def get_annotation_from_tags($annotation_per_ticket):
   get_tickets_from_tags | map($annotation_per_ticket[.]) | join(", ");

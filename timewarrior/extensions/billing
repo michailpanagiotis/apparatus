@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 $(dirname "$0")/json \
- | jq -L$HOME/.apparatus/scripts/jq \
-   -r 'include "lib/timewarrior"; .intervals | get_interval_list_billing(get_interval_month)'
+  | jq -L$HOME/.apparatus/scripts/jq \
+  -r "include \"lib/timewarrior\"; .intervals | get_interval_list_billing(${INTERVAL_GROUPING_FILTER:-get_interval_month})"
