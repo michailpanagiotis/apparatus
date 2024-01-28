@@ -80,6 +80,13 @@ jget() {
     done | jq -s 'map({ key: .key, value: .}) | from_entries'
 }
 
+jget_http() {
+  for ticket in "$@"
+  do
+    curl -s  ${JIRA_API_URL}/issue/${ticket} -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" | jq -f $HOME/.apparatus/scripts/jq/parse_jira_http.jq
+  done | jq -s 'map({ key: .key, value: .}) | from_entries'
+}
+
 jsubtasks() {
   if [ -z $1 ]; then
     echo "Usage:\n\tjsubtasks [issue]"
