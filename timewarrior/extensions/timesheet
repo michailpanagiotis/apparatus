@@ -1,3 +1,14 @@
 #!/usr/bin/env bash
 
-tera --template $HOME/.apparatus/jinja/timesheet.template.html --stdin < <($(dirname "$0")/timesheet_data)
+data=$(
+  INTERVAL_GROUPING_FILTER='get_interval_category' \
+  INTERVAL_SORTING_FILTER='(.tickets | first | .number), .timestamps.startedAt, .group' \
+  $(dirname "$0")/billing \
+    | jq -L$HOME/.apparatus/scripts/jq -f $HOME/.apparatus/scripts/jq/invoice_data_from_env.jq
+)
+
+if [ "$FORMAT" = "html" ]; then
+  tera --template $HOME/.apparatus/jinja/timesheet.template.html --stdin < <(echo $data)
+else
+  echo $data | jq '.'
+fi

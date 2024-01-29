@@ -1,3 +1,15 @@
 #!/usr/bin/env bash
 
-tera --template $HOME/.apparatus/jinja/invoice.template.html --stdin < <($(dirname "$0")/invoice_data)
+data=$(
+  INTERVAL_GROUPING_FILTER='get_interval_month' \
+  INTERVAL_SORTING_FILTER='.timestamps.startedAt' \
+  INTERVAL_PERIOD_FORMAT_FILTER='(.timestamps.startedAt | strftime("%B %Y"))' \
+  $(dirname "$0")/billing \
+    | jq -L$HOME/.apparatus/scripts/jq -f $HOME/.apparatus/scripts/jq/invoice_data_from_env.jq
+ )
+
+if [ "$FORMAT" = "html" ]; then
+  tera --template $HOME/.apparatus/jinja/invoice.template.html --stdin < <(echo $data)
+else
+  echo $data | jq '.'
+fi

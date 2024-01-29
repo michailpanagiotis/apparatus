@@ -1,5 +1,3 @@
-include "lib/money";
-
 # DATES
 
 def parse_timestamp:
@@ -133,37 +131,4 @@ def get_interval_list_billing(groupFilter;sortFilter;periodFormatFilter):
     | . += { group: $interval_list | first | groupFilter }
   )
   | sort_by(sortFilter)
-;
-
-
-def to_invoice_items:
-  ($ENV.INVOICE_CURRENCY // "EUR") as $currency
-  | ($ENV.INVOICE_VAT_PERCENT // 0 | tonumber) as $vatPercent
-  | ($ENV.INVOICE_RATE_AMOUNT // 0 | tonumber) as $rate
-  # prepare invoice items
-  | map(
-    (.quantity | quantity_to_net_cost($currency;$rate)) as $netOfItems
-    | (.timestamps.endedAt | strftime("%d %b '%y")) as $ticket
-    | . + {
-      amounts: $netOfItems | net_to_costs($currency;$vatPercent),
-    }
-  )
-  # group to invoice
-  | {
-    items: .,
-    amounts: (map(.amounts.net) | add_amounts($currency) | net_to_costs($currency;$vatPercent))
-  }
-;
-
-
-def invoice_data_from_env:
-  to_invoice_items + {
-    documentType: ($ENV.INVOICE_DOCUMENT_TYPE // "Timesheet")
-,
-    number: ($ENV.INVOICE_NUMBER // 1 | tonumber),
-    date: ($ENV.INVOICE_DATE | tostring),
-    vatPercent: ($ENV.INVOICE_VAT_PERCENT // 0 | tonumber),
-    sender: ($ENV.INVOICE_SENDER // "{}" | fromjson),
-    recipient: ($ENV.INVOICE_RECIPIENT // "{}" | fromjson),
-  }
 ;
