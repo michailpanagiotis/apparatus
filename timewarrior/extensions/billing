@@ -6,4 +6,4 @@ periodFormatFilter=${INTERVAL_PERIOD_FORMAT_FILTER:-get_billing_formatted_period
 
 $(dirname "$0")/json \
   | jq -L$HOME/.apparatus/scripts/jq \
-  -r "include \"lib/timewarrior\"; .intervals | get_interval_list_billing($groupingFilter;$sortingFilter;$periodFormatFilter)"
+  -rc "include \"lib/timewarrior\"; .intervals | get_interval_list_billing($groupingFilter;$sortingFilter;$periodFormatFilter)"

@@ -67,7 +67,7 @@
       }
       /* page */
       html {
-      font: 16px/1 'Open Sans', sans-serif;
+      font: 15px/1 'Open Sans', sans-serif;
       overflow: auto;
       padding: 0.5in;
       }
@@ -138,39 +138,21 @@
       font-weight: bold;
       text-align: center;
       }
-      table.inventory th.period {
+      table.inventory th.period, table.inventory td.period {
       width: 20%;
       }
-      table.inventory th.description {
-      width: 48%;
+      table.inventory th.description, table.inventory td.description {
+      width: 75%;
       }
-      table.inventory th.rate {
+      table.inventory th.rate, table.inventory td.rate {
       text-align: right;
       width: 12%;
       }
-      table.inventory th.quantity {
+      table.inventory th.quantity, table.inventory td.quantity {
       text-align: right;
-      width: 10%;
+      width: 5%;
       }
-      table.inventory th.amount {
-      text-align: right;
-      width: 10%;
-      }
-      table.inventory td.period {
-      width: 20%;
-      }
-      table.inventory td.description {
-      width: 48%;
-      }
-      table.inventory td.rate {
-      text-align: right;
-      width: 12%;
-      }
-      table.inventory td.quantity {
-      text-align: right;
-      width: 6%;
-      }
-      table.inventory td.amount {
+      table.inventory th.amount, table.inventory td.amount {
       text-align: right;
       width: 10%;
       }
@@ -315,7 +297,7 @@
                     <tr>
                       <th class="period"><span>Period</span></th>
                       <th class="description"><span>Description</span></th>
-                      <th class="quantity"><span>Quantity</span></th>
+                      <th class="quantity"><span>Qty</span></th>
                       <th class="amount"><span>Amount</span></th>
                     </tr>
                   </thead>

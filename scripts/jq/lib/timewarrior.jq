@@ -41,9 +41,13 @@ def get_interval_list_timestamp_span:
 ;
 
 def get_billing_formatted_period:
-  (.timestamps.startedAt | strftime("%d %b '%y")) as $startDate
-  | (.timestamps.endedAt | strftime("%d %b '%y")) as $endDate
-  | if $startDate != $endDate then $startDate + " - " + $endDate else $startDate end
+  (.timestamps.startedAt | strftime("%b %y")) as $startMonth
+  | (.timestamps.endedAt | strftime("%b %y")) as $endMonth
+  | (.timestamps.startedAt | strftime("%d")) as $startDay
+  | (.timestamps.endedAt | strftime("%d")) as $endDay
+  | (.timestamps.startedAt | strftime("%d %b %y")) as $startDate
+  | (.timestamps.endedAt | strftime("%d %b %y")) as $endDate
+  | if $startDate != $endDate then (if $startMonth != $endMonth then $startDate + " - " + $endDate else $startDay + "-" + $endDay + " " + $startMonth end) else $startDate end
 ;
 
 # TICKETS

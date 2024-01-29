@@ -1,10 +1,25 @@
 #!/usr/bin/env bash
 
-data=$(
+billing_data=$(
   INTERVAL_GROUPING_FILTER='get_interval_category' \
   INTERVAL_SORTING_FILTER='(.tickets | first | .number), .timestamps.startedAt, .group' \
-  $(dirname "$0")/billing \
-    | jq -L$HOME/.apparatus/scripts/jq -f $HOME/.apparatus/scripts/jq/invoice_data_from_env.jq
+  $(dirname "$0")/billing | jq -c '{ items: . }'
+)
+
+tickets=$(
+  curl -s \
+    --request POST ${JIRA_API_URL}/search \
+    -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" \
+    --header 'Accept: application/json' \
+    --header 'Content-Type: application/json' \
+    --data "$(echo $billing_data | jq -r '.items | map(.tickets) | flatten | map(.key) | unique | join(",") | { jql: "key IN (\(.))" } | tojson')" \
+  | jq '.issues' | jq -f $HOME/.apparatus/scripts/jq/parse_jira_http.jq | jq 'map({ key: .key, value: . }) | { tickets: from_entries }'
+)
+
+all_data=$((echo $billing_data; echo $tickets) | jq -s 'add')
+
+data=$(
+  echo $all_data | jq -L$HOME/.apparatus/scripts/jq -cf $HOME/.apparatus/scripts/jq/invoice_data_from_env.jq
 )
 
 if [ "$FORMAT" = "html" ]; then

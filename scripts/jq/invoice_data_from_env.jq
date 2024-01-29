@@ -5,9 +5,13 @@ include "lib/timewarrior";
 | ($ENV.INVOICE_VAT_PERCENT // 0 | tonumber) as $vatPercent
 | ($ENV.INVOICE_RATE_AMOUNT // 0 | tonumber) as $rate
 # prepare invoice items
+| .tickets as $tickets
+| .items
 | map(
-  . + {
+  ($tickets[.description].summary) as $summary
+  | . + {
     amounts: (.quantity | quantity_to_net_cost($currency;$rate)) | net_to_costs($currency;$vatPercent),
+    description: (if $summary then "\(.description) \($summary)" else .description end)
   }
 )
 # group to invoice
