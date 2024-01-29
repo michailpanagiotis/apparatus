@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-($(dirname "$0")/billing \
+(
+  INTERVAL_GROUPING_FILTER=get_interval_category INTERVAL_SORTING_FILTER="(.tickets | first | .number), .timestamps.startedAt, .group" \
+  $(dirname "$0")/billing \
   | jq -L$HOME/.apparatus/scripts/jq \
-   --arg INVOICE_RATE_AMOUNT "$INVOICE_RATE_AMOUNT" \
-   --arg INVOICE_CURRENCY "$INVOICE_CURRENCY" \
-   --arg INVOICE_VAT_PERCENT "$INVOICE_VAT_PERCENT" \
-   -rf $HOME/.apparatus/scripts/jq/timew_to_timesheet.jq \
+  'include "lib/timewarrior"; invoice_data_from_env'
  )

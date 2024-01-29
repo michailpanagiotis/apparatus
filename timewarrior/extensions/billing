@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+groupingFilter=${INTERVAL_GROUPING_FILTER:-get_interval_month}
+sortingFilter=${INTERVAL_SORTING_FILTER:-.timestamps.endedAt}
+periodFormatFilter=${INTERVAL_PERIOD_FORMAT_FILTER:-get_billing_formatted_period}
+
 $(dirname "$0")/json \
   | jq -L$HOME/.apparatus/scripts/jq \
-  -r "include \"lib/timewarrior\"; .intervals | get_interval_list_billing(${INTERVAL_GROUPING_FILTER:-get_interval_month})"
+  -r "include \"lib/timewarrior\"; .intervals | get_interval_list_billing($groupingFilter;$sortingFilter;$periodFormatFilter)"
