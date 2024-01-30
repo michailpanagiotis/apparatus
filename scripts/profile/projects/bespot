@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+cdb() {
+  PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost
+}
+
+seed_db() {
+  PGPASSWORD=opap_api_dev_password pg_restore -C -U opap_api_dev_user -d opap_api_dev_db -h localhost $1
+}
+
+run_tests() {
+  docker exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES opap-api-container-1 bash -cils 'cd opap_api && python manage.py test --keepdb --failfast'
+}

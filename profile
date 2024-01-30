@@ -37,3 +37,4 @@ source $HOME/.apparatus/scripts/profile/git
 source $HOME/.apparatus/scripts/profile/hub
 source $HOME/.apparatus/scripts/profile/docker
 source $HOME/.apparatus/scripts/profile/timew
+source $HOME/.apparatus/scripts/profile/projects/*
