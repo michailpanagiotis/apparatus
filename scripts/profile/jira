@@ -88,10 +88,14 @@ jget_http() {
 }
 
 jsearch() {
-  tickets=$(echo $@ | jq -Rr 'split(" ") | join(",")')
-  jql=$(echo $@ | jq -Rr 'split(" ") | join(",") | { jql: "key in (\(.))" } | tojson')
-  echo POSTING $jql
-  curl -s --request POST ${JIRA_API_URL}/search -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --header 'Accept: application/json' --header 'Content-Type: application/json'  --data "$jql" \
+  for var in "$@"
+  do
+    echo "$var"
+  done | jq -Rn '[inputs]'
+  # tickets=$(echo $@ | jq -Rr 'split(" ") | join(",")')
+  # jql=$(echo $@ | jq -Rr 'split(" ") | join(",") | { jql: "key in (\(.))" } | tojson')
+  # echo POSTING $jql
+  # curl -s --request POST ${JIRA_API_URL}/search -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --header 'Accept: application/json' --header 'Content-Type: application/json'  --data "$jql" \
     # | jq '.issues' | jq -f $HOME/.apparatus/scripts/jq/parse_jira_http.jq
 }
 

@@ -6,15 +6,26 @@ billing_data=$(
   $(dirname "$0")/billing | jq -c '{ items: . }'
 )
 
+ticket_keys=$(echo $billing_data | jq -r '.items | map(.tickets) | flatten | map(.key) | unique | join(" ")')
+
+
+source $HOME/.apparatus/scripts/profile/jira
+
+jsearch $ticket_keys
+
+
 # tickets=$(
 #   curl -s \
 #     --request POST ${JIRA_API_URL}/search \
 #     -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" \
 #     --header 'Accept: application/json' \
 #     --header 'Content-Type: application/json' \
-#     --data "$(echo $billing_data | jq -r '.items | map(.tickets) | flatten | map(.key) | unique | join(",") | { jql: "key IN (\(.))" } | tojson')" \
+#     --data "$(echo $ticket_keys | jq -Rr 'split(" ") | join(",") | { jql: "key IN (\(.))" } | tojson')" \
 #   | jq '.issues' | jq -f $HOME/.apparatus/scripts/jq/parse_jira_http.jq | jq 'map({ key: .key, value: . }) | { tickets: from_entries }'
 # )
+#
+# echo $tickets
+#
 #
 # all_data=$((echo $billing_data; echo $tickets) | jq -s 'add')
 #
