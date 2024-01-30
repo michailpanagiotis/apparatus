@@ -4,6 +4,46 @@ cdb() {
   PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost
 }
 
+psql_reset_passwords() {
+  # sets all passwords to '123456' for development
+  PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost -c " \
+    UPDATE users_user SET password='bcrypt_sha256$$2b$12$aCNWycoD3FtJuyhF9KRGoueQJulewJyVpneYMQb3CL0X1e3emmql2' \
+  "
+}
+
+psql_add_otp() {
+  # add 5 otp passwords for user 'koslib'
+  PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost -c " \
+    INSERT INTO otp_static_statictoken (token, device_id) VALUES ('123456', 3); \
+    INSERT INTO otp_static_statictoken (token, device_id) VALUES ('123456', 3); \
+    INSERT INTO otp_static_statictoken (token, device_id) VALUES ('123456', 3); \
+    INSERT INTO otp_static_statictoken (token, device_id) VALUES ('123456', 3); \
+    INSERT INTO otp_static_statictoken (token, device_id) VALUES ('123456', 3); \
+  "
+}
+
+psql_otp() {
+  PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost -c " \
+    SELECT tk.*, dev.name, dev.confirmed, dev.user_id, usr.username \
+    FROM otp_static_statictoken AS tk  \
+      INNER JOIN otp_static_staticdevice AS dev ON dev.id=tk.device_id \
+      INNER JOIN users_user AS usr ON usr.id=dev.user_id \
+    WHERE usr.is_superuser is true order by usr.id; \
+  "
+}
+
+psql_users() {
+  PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost -c " \
+    SELECT id, is_superuser, username, email, is_staff, is_active from users_user WHERE is_superuser IS FALSE ORDER BY id \
+  "
+}
+
+psql_superusers() {
+  PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost -c " \
+    SELECT id, is_superuser, username, email, is_staff, is_active from users_user WHERE is_superuser IS TRUE ORDER BY id \
+  "
+}
+
 seed_db() {
   PGPASSWORD=opap_api_dev_password pg_restore -C -U opap_api_dev_user -d opap_api_dev_db -h localhost $1
 }
