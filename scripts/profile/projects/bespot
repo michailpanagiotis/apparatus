@@ -4,22 +4,10 @@ cdb() {
   PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost
 }
 
-psql_reset_passwords() {
-  # sets all passwords to '123456' for development
-  PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost -c " \
-    UPDATE users_user SET password='bcrypt_sha256$$2b$12$aCNWycoD3FtJuyhF9KRGoueQJulewJyVpneYMQb3CL0X1e3emmql2' \
-  "
-}
-
-psql_add_otp() {
-  # add 5 otp passwords for user 'koslib'
-  PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost -c " \
-    INSERT INTO otp_static_statictoken (token, device_id) VALUES ('123456', 3); \
-    INSERT INTO otp_static_statictoken (token, device_id) VALUES ('123456', 3); \
-    INSERT INTO otp_static_statictoken (token, device_id) VALUES ('123456', 3); \
-    INSERT INTO otp_static_statictoken (token, device_id) VALUES ('123456', 3); \
-    INSERT INTO otp_static_statictoken (token, device_id) VALUES ('123456', 3); \
-  "
+psql_kontakt_ids() {
+  PGPASSWORD=opap_api_dev_password psql -At -U opap_api_dev_user -d opap_api_dev_db -h localhost -c " \
+    select store_id, string_agg(kontakt_unique_id, ',') from beacons_beacon where kontakt_unique_id != '' group by store_id;
+      " | jq -Rsr 'split("\n") | map(select(. != "") | split("|") | . as [$store_pk, $beacons] | { key: $store_pk, value: ($beacons | split(",")) }) | map(select((.value | length) > 8)) | from_entries'
 }
 
 psql_otp() {
@@ -44,10 +32,53 @@ psql_superusers() {
   "
 }
 
+read -r -d '' change_passwords_script <<- EOM
+from users.models import User
+for u in User.objects.all():
+    print("Changing password for %s to '123456'" % u)
+    u.set_password("123456");
+    u.save()
+EOM
+
+refresh_otp() {
+  # add 5 otp passwords for each device
+  for i in {1..5}
+  do
+    PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost -c " \
+      INSERT INTO otp_static_statictoken (device_id, token) SELECT id AS device_id, '123456' AS token FROM otp_static_staticdevice;
+    "
+  done
+}
+
+prepare_db() {
+  docker exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES opap-api-container-1 bash -cils "cd opap_api && python manage.py shell -c '$change_passwords_script'"
+}
+
 seed_db() {
-  PGPASSWORD=opap_api_dev_password pg_restore -C -U opap_api_dev_user -d opap_api_dev_db -h localhost $1
+  if [ -z $1 ]; then
+    echo "Usage:\n\tseed_db [pg_dump_file]"
+    return 1
+  fi
+  # cleanup
+  PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d postgres -h localhost -c "DROP DATABASE opap_api_dev_db"
+  PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d postgres -h localhost -c "CREATE DATABASE opap_api_dev_db TEMPLATE template0"
+  # load dump
+  PGPASSWORD=opap_api_dev_password pg_restore -v --no-privileges --no-owner -U opap_api_dev_user -d "opap_api_dev_db" -h localhost $1
 }
 
 run_tests() {
   docker exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES opap-api-container-1 bash -cils 'cd opap_api && python manage.py test --keepdb --failfast'
+}
+
+jwt() {
+  echo Getting jwt for $API_USERNAME:$API_PASSWORD
+  curl --request POST http://localhost:8000/api/auth/jwt/token/ --header 'Accept: application/json' --header 'Content-Type: application/json' --data "{ \"username\": \"$API_USERNAME\", \"password\": \"$API_PASSWORD\" }"
+}
+
+server() {
+  docker exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES opap-api-container-1 python opap_api/manage.py runserver 0.0.0.0:80
+}
+
+gunicorn() {
+  docker exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES -e WEB_CONCURRENCY=10 opap-api-container-1 ./bin/web.sh
 }
