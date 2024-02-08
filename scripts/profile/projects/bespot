@@ -80,5 +80,13 @@ server() {
 }
 
 gunicorn() {
-  docker exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES -e WEB_CONCURRENCY=10 opap-api-container-1 ./bin/web.sh
+  if [ -z $1 ]; then
+    echo "Usage:\n\tgunicorn [num_workers]"
+    return 1
+  fi
+  docker exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES -e WEB_CONCURRENCY=$1 opap-api-container-1 gunicorn opap_api.wsgi:application
+}
+
+install_nvim() {
+  apt-get update && apt-get install -y curl g++ git && git clone https://github.com/michailpanagiotis/apparatus.git ${HOME}/.apparatus && ln -s ${HOME}/.apparatus/nvim ${HOME}/.config && curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage && chmod +x nvim.appimage && ./nvim.appimage --appimage-extract && mv squashfs-root / && ln -s /squashfs-root/AppRun /usr/bin/nvim && mkdir -p ~/.vim/files/info && nvim
 }
