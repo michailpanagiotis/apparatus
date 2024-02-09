@@ -78,7 +78,8 @@ def get_categories_of_tags:
           "Meeting": "Meetings",
           "Deployment": "Releases",
           "Release": "Releases",
-          "Candidate assessment": "Candidate assessments",
+          "Candidate assessment": "Assessments",
+          "Assessment": "Assessments",
           "Research": "Research",
           "Incident": "Incidents"
         }[$tag] // ""

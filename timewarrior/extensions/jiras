@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+source $HOME/.apparatus/scripts/profile/jira
+
+input=$(tee)
+jql=$(echo "$input" | $(dirname "$0")/billing | jq -r 'map(.tickets | map(.key)) | add | unique | join(",") | "key IN (\(.))"')
+
+echo $jql | jsearch

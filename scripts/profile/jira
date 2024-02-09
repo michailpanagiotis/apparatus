@@ -88,15 +88,22 @@ jget_http() {
 }
 
 jsearch() {
-  for var in "$@"
-  do
-    echo "$var"
-  done | jq -Rn '[inputs]'
-  # tickets=$(echo $@ | jq -Rr 'split(" ") | join(",")')
-  # jql=$(echo $@ | jq -Rr 'split(" ") | join(",") | { jql: "key in (\(.))" } | tojson')
-  # echo POSTING $jql
-  # curl -s --request POST ${JIRA_API_URL}/search -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --header 'Accept: application/json' --header 'Content-Type: application/json'  --data "$jql" \
-    # | jq '.issues' | jq -f $HOME/.apparatus/scripts/jq/parse_jira_http.jq
+  value=${*:-`cat`}
+  if [[ -z $value ]]; then
+    echo "Usage:\n\tjsearch [jql]"
+    return 1
+  fi
+  >&2 echo "Getting jira tickets: $value"
+  tickets=$(
+    curl -s \
+      --request POST ${JIRA_API_URL}/search \
+      -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" \
+      --header 'Accept: application/json' \
+      --header 'Content-Type: application/json' \
+      --data "{ \"jql\": \"$value\" }"
+  )
+  >&2 echo "Parsing jira tickets: $value"
+  echo "$tickets" | jq '.issues' | jq -f $HOME/.apparatus/scripts/jq/parse_jira_http.jq | jq 'map({ key: .key, value: . }) | from_entries'
 }
 
 jql() {

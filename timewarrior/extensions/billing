@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 groupingFilter=${INTERVAL_GROUPING_FILTER:-get_interval_month}
 sortingFilter=${INTERVAL_SORTING_FILTER:-.timestamps.endedAt}
 periodFormatFilter=${INTERVAL_PERIOD_FORMAT_FILTER:-get_billing_formatted_period}
