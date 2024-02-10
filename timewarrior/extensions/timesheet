@@ -3,18 +3,13 @@
 set -e
 
 input=$(tee)
-items=$(
+data=$(
   echo "$input" | ( \
+    ANNOTATE_FROM_JIRA=true \
     INTERVAL_GROUPING_FILTER='get_interval_category' \
     INTERVAL_SORTING_FILTER='(.tickets | first | .number), .timestamps.startedAt, .group' \
-    $(dirname "$0")/billing  \
-  ) | jq '{ items: . }'
-)
-tickets=$(echo "$input" | ($(dirname "$0")/jiras) | jq '{ tickets: . }')
-all_data=$((echo "$items"; echo "$tickets") | jq -s add)
-
-data=$(
-  echo $all_data | jq -L$HOME/.apparatus/scripts/jq -cf $HOME/.apparatus/scripts/jq/invoice_data_from_env.jq
+    $(dirname "$0")/billing | jq -L$HOME/.apparatus/scripts/jq -cf $HOME/.apparatus/scripts/jq/invoice_data_from_env.jq
+  )
 )
 
 if [ "$FORMAT" = "html" ]; then

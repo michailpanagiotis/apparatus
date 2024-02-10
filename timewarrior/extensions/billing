@@ -2,10 +2,25 @@
 
 set -e
 
+source $HOME/.apparatus/scripts/profile/jira
+
+input=$(tee)
+
 groupingFilter=${INTERVAL_GROUPING_FILTER:-get_interval_month}
 sortingFilter=${INTERVAL_SORTING_FILTER:-.timestamps.endedAt}
 periodFormatFilter=${INTERVAL_PERIOD_FORMAT_FILTER:-get_billing_formatted_period}
 
-$(dirname "$0")/json \
-  | jq -L$HOME/.apparatus/scripts/jq \
-  -rc "include \"lib/timewarrior\"; .intervals | get_interval_list_billing($groupingFilter;$sortingFilter;$periodFormatFilter)"
+billing_items=$(
+  echo "$input" | $(dirname "$0")/json \
+    | jq -L$HOME/.apparatus/scripts/jq \
+    -r "include \"lib/timewarrior\"; .intervals | get_interval_list_billing($groupingFilter;$sortingFilter;$periodFormatFilter)"
+)
+
+if [[ ! -z "${ANNOTATE_FROM_JIRA}" ]]; then
+  jql=$(echo "$billing_items" | jq -r 'map(.tickets | map(.key)) | add | unique | join(",") | "key IN (\(.))"')
+  tickets=$(jsearch $jql | jq '{ tickets: . }')
+  all_data=$((echo "{ \"items\": $billing_items }"; echo "$tickets") | jq -s 'add | .tickets as $tickets | .items | map(($tickets[.description].summary) as $summary| . + { description: (if $summary then "\(.description) \($summary)" else .description end)})')
+  echo "$all_data"
+else
+  echo "$billing_items"
+fi
