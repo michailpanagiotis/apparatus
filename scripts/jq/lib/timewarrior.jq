@@ -40,13 +40,13 @@ def get_interval_list_timestamp_span:
   { start: (map(.start | parse_timestamp) | min), end: (map(.end | parse_timestamp) | max) }
 ;
 
-def get_billing_formatted_period:
-  (.timestamps.startedAt | strftime("%b %y")) as $startMonth
-  | (.timestamps.endedAt | strftime("%b %y")) as $endMonth
-  | (.timestamps.startedAt | strftime("%d")) as $startDay
-  | (.timestamps.endedAt | strftime("%d")) as $endDay
-  | (.timestamps.startedAt | strftime("%d %b %y")) as $startDate
-  | (.timestamps.endedAt | strftime("%d %b %y")) as $endDate
+def get_formatted_period:
+  (.startedAt | strftime("%b %Y")) as $startMonth
+  | (.endedAt | strftime("%b %Y")) as $endMonth
+  | (.startedAt | strftime("%d")) as $startDay
+  | (.endedAt | strftime("%d")) as $endDay
+  | (.startedAt | strftime("%d/%m/%Y")) as $startDate
+  | (.endedAt | strftime("%d/%m/%Y")) as $endDate
   | if $startDate != $endDate then (if $startMonth != $endMonth then $startDate + " - " + $endDate else $startDay + "-" + $endDay + " " + $startMonth end) else $startDate end
 ;
 
@@ -111,29 +111,31 @@ def get_interval_list_tags:
 
 # BILLING
 
-def interval_group_to_billing_item(periodFormatFilter):
+def interval_group_to_billing_item(groupFilter):
   {
+    startedAt: get_interval_list_min_timestamp,
+    endedAt: get_interval_list_max_timestamp,
+  } as $timestamps
+  | (first | groupFilter) as $groupKey
+  | {
     tags: get_interval_list_tags,
     tickets: get_interval_list_tags | get_tickets_of_tags,
     unit: "h",
     quantity: get_interval_list_duration_in_hours,
-    timestamps: {
-      startedAt: get_interval_list_min_timestamp,
-      endedAt: get_interval_list_max_timestamp,
-      # all: get_interval_list_timestamps,
-    },
+    timestamps: $timestamps,
     description: get_interval_list_categories | join(", "),
+    group: $groupKey,
+    period: ($timestamps | get_formatted_period),
   }
-  | . += { period: periodFormatFilter }
 ;
 
-def get_interval_list_billing(groupFilter;sortFilter;periodFormatFilter):
+def get_interval_list_billing(groupFilter;sortFilter):
   group_by(groupFilter)
   # map to billing items
   | map(
     . as $interval_list
-    | interval_group_to_billing_item(periodFormatFilter)
-    | . += { group: $interval_list | first | groupFilter }
+    | ($interval_list | first | groupFilter) as $groupKey
+    | interval_group_to_billing_item(groupFilter)
   )
   | sort_by(sortFilter)
 ;
