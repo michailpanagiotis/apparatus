@@ -17,6 +17,7 @@ include "lib/timewarrior";
 | {
   items: .,
   amounts: (map(.amounts.net) | add_amounts($currency) | net_to_costs($currency;$vatPercent)),
+  quantity: (map(.quantity) | add),
   startedAt: (map(.timestamps.startedAt) | min),
   endedAt: (map(.timestamps.endedAt) | max),
   period: $period,

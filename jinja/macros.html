@@ -1,0 +1,131 @@
+{% macro title() %}
+  <div>
+    <h1 style="
+      background: #eee;
+      border-radius: 0.25em;
+      color: #666;
+      margin: 0 0 1em;
+      padding: 0.5em 0;
+      font: bold 100% sans-serif;
+      letter-spacing: 0.4em;
+      text-align: center;
+      text-transform: uppercase;
+    ">
+      {{ documentType }}
+    </h1>
+  </div>
+{% endmacro title %}
+
+{% macro logo() %}
+  <div class="logo-wrapper">
+    <img alt="" height="70" style="
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    " src="{{ sender.logo }}" />
+  </div>
+{% endmacro logo %}
+
+{% macro table_meta() %}
+  <table class="meta">
+    <tr>
+      <th><span>#</span></th>
+      <td><span>{{ number }}</span></td>
+    </tr>
+    <tr>
+      <th><span>Date</span></th>
+      <td><span id="today">{{ date }}</span></td>
+    </tr>
+    <tr>
+      <th><span>Period</span></th>
+      <td><span id="today">{{ period }}</span></td>
+    </tr>
+    <tr>
+      <th><span>Amount</span></th>
+      <td><span>{{ amounts.net }}</span><span id="prefix">{{ amounts.currencySymbol }}</span></td>
+    </tr>
+  </table>
+{% endmacro table_meta %}
+
+{% macro recipient(label="Bill to") %}
+  <div style="color: #444; line-height: 1.5">
+    <p style="text-align: center; font-weight: bold; font-size: 0.8em; text-transform: uppercase">{{ label }}</p>
+    <hr style="height:1px;border:none;color:#ccc;background-color:#ccc;">
+    <p><strong>{{ recipient.name }}</strong></p>
+    <p style="color: #555">{{ recipient.address }}</p>
+  </div>
+{% endmacro recipient %}
+
+{% macro table_inventory() %}
+  <table class="inventory">
+    <thead>
+      <tr>
+        <th class="period"><span>Period</span></th>
+        <th class="description"><span>Description</span></th>
+        <th class="quantity"><span>Qty</span></th>
+        <th class="amount"><span>Amount</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items -%}
+      <tr>
+        <td class="period"><span>{{ item.period }}</span> </td>
+        <td class="description"><span>{{ item.description }}</span></td>
+        <td class="quantity"><span>{{ item.quantity }}{{ item.unit }}</span></td>
+        <td class="amount"><span>{{ item.amounts.net }}</span><span data-prefix>{{ item.amounts.currencySymbol }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endmacro table_inventory %}
+
+{% macro table_balance() %}
+  <table class="balance">
+    <tr>
+      <th><span>Period</span></th>
+      <td><span>{{ period }}</span></td>
+    </tr>
+    <tr>
+      <th><span>Total hours</span></th>
+      <td><span>{{ quantity }}h</span></td>
+    </tr>
+    <tr>
+      <th><span>Subtotal</span></th>
+      <td><span>{{ amounts.net }}</span><span data-prefix>{{ amounts.currencySymbol }}</span></td>
+    </tr>
+  </table>
+{% endmacro table_balance %}
+
+{% macro aside() %}
+  <aside>
+    <h1 style="
+      border: none;
+      border-width: 0 0 1px;
+      margin: 0 0 1em;
+      border-color: #999;
+      border-bottom-style: solid;
+      font: 80% sans-serif;
+      letter-spacing: 0.2em;
+      text-align: center;
+      text-transform: none;
+      color: #888;
+      margin-top: 1em;
+    ">
+      <img alt="" height="15" src="Email_icon.png" />
+      {{ sender.email }}
+      - <img alt="" height="15" src="LI-In-Bug.png" />
+      {{ sender.linkedin }}
+      - <img alt="" height="15" src="github-mark.png" />
+      {{ sender.github }}
+    </h1>
+    <div>
+      <p style="
+        text-align: center;
+        color: #aaa;
+        font-size: 0.7em;
+      ">
+        &copy; {{ sender.copy }}
+      </p>
+    </div>
+  </aside>
+{% endmacro aside %}

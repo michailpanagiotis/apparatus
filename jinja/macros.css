@@ -1,0 +1,128 @@
+{% macro reset() %}
+  p {
+    font-family: inherit;
+    font-size: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    vertical-align: top;
+  }
+{% endmacro reset %}
+
+{% macro page() %}
+  html {
+    font: 15px/1 'Open Sans', sans-serif;
+    overflow: auto;
+    padding: 0.5in;
+    background: #999;
+    cursor: default;
+  }
+  body {
+    background: #FFF;
+    border-radius: 1px;
+    box-sizing: border-box;
+    box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
+    height: 11in;
+    margin: 0 auto;
+    overflow: hidden;
+    padding: 0.5in;
+    width: 8.5in;
+  }
+{% endmacro page %}
+
+{% macro print() %}
+  @media print {
+    * {
+      -webkit-print-color-adjust: exact;
+    }
+    html {
+      background: none;
+      padding: 0;
+    }
+    body {
+      box-shadow: none;
+      margin: 0;
+    }
+    span:empty {
+      display: none;
+    }
+  }
+
+  @page {
+    margin: 0;
+  }
+{% endmacro print %}
+
+{% macro table_base() %}
+  table {
+    font-size: 75%;
+    table-layout: fixed;
+    width: 100%;
+  }
+  table {
+    border-collapse: separate;
+    border-spacing: 2px;
+  }
+  th, td {
+    border-width: 0px;
+    padding: 0.5em;
+    position: relative;
+    text-align: left;
+    font-weight: inherit;
+  }
+  th, td {
+    border-radius: 0.25em;
+    border-style: solid;
+  }
+  th {
+    background: #EEE;
+    border-color: #BBB;
+    color: #666;
+  }
+  td {
+    border-color: #DDD;
+  }
+{% endmacro table_base %}
+
+{% macro column_sizes() %}
+  table.meta th {
+    width: 40%; text-align: left;
+  }
+  table.meta td {
+    width: 60%; text-align: left;
+  }
+  table.balance th {
+    width: 50%; text-align: left;
+  }
+  table.balance td {
+    width: 50%; text-align: right;
+  }
+  table.inventory .period {
+    width: 61pt;
+  }
+  table.inventory .description {
+    width: 65%;
+  }
+  table.inventory .rate {
+    text-align: right;
+    width: 12%;
+  }
+  table.inventory .quantity {
+    text-align: right;
+    width: 5%;
+  }
+  table.inventory .amount {
+    text-align: right;
+    width: 10%;
+  }
+{% endmacro column_sizes %}
+
+{% macro flexboxgrid() %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css" integrity="sha512-YHuwZabI2zi0k7c9vtg8dK/63QB0hLvD4thw44dFo/TfBFVVQOqEG9WpviaEpbyvgOIYLXF1n7xDUfU3GDs0sw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+  </style>
+{% endmacro flexboxgrid %}

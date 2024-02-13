@@ -1,0 +1,102 @@
+{% import "macros.html" as macros %}
+{% import "macros.css" as css_macros %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    {% block title %}
+    <title>{{ documentType }} - {{ number }} - {{ date }}</title>
+    {% endblock title %}
+    {{ css_macros::flexboxgrid() }}
+    <style>
+      {{ css_macros::reset() }}
+      {{ css_macros::page() }}
+      {{ css_macros::print() }}
+      {{ css_macros::table_base() }}
+      {{ css_macros::column_sizes() }}
+      /* table items */
+      table.inventory th {
+        font-weight: bold;
+      }
+      .page-contents {
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+      }
+      .page-contents .invoice-title {
+      flex: 0 1 auto;
+      margin-bottom: 1em;
+      }
+      .page-contents .invoice-meta {
+      flex: 0 1 auto;
+      margin-bottom: 1em;
+      }
+      .page-contents .invoice-recipient {
+      flex: 0 1 auto;
+      margin-bottom: 1em;
+      }
+      .page-contents .invoice-table {
+      flex: 1 1 auto;
+      }
+      .page-contents .invoice-footer {
+      flex: 0 1 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-contents">
+      <div class="row invoice-title top-xs">
+        <div class="col-xs-12">
+          {{ macros::title() }}
+        </div>
+      </div>
+      <div class="row invoice-meta">
+        <div class="col-xs-5">
+          {{ macros::logo() }}
+        </div>
+        <div class="col-xs-2">
+        </div>
+        <div class="col-xs-5">
+          <div class="box">
+            {{ macros::table_meta() }}
+          </div>
+        </div>
+      </div>
+      <div class="row invoice-recipient">
+        <div class="col-xs-5">
+          {{ macros::recipient(label="Towards") }}
+        </div>
+      </div>
+      {% block table %}
+      <div class="row invoice-table">
+        <div class="col-xs-12">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="box">
+                {{ macros::table_inventory() }}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="box">
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="box">
+                {{ macros::table_balance() }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endblock table %}
+      <div class="row invoice-footer">
+        <div class="col-xs-12">
+          {{ macros::aside() }}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -3,17 +3,30 @@
 set -e
 
 input=$(tee)
-data=$(
+breakdown=$(
   echo "$input" | ( \
     ANNOTATE_FROM_JIRA=true \
     INTERVAL_GROUPING_FILTER='get_interval_category' \
-    INTERVAL_SORTING_FILTER='(.tickets | first | .number), .timestamps.startedAt, .group' \
+    INTERVAL_SORTING_FILTER='(.tickets | first | .number), .group, .timestamps.startedAt' \
+    $(dirname "$0")/billing | jq -L$HOME/.apparatus/scripts/jq -cf $HOME/.apparatus/scripts/jq/invoice_data_from_env.jq
+  )
+)
+invoice_items=$(
+  echo "$input" | ( \
     $(dirname "$0")/billing | jq -L$HOME/.apparatus/scripts/jq -cf $HOME/.apparatus/scripts/jq/invoice_data_from_env.jq
   )
 )
 
-if [ "$FORMAT" = "html" ]; then
-  tera --template $HOME/.apparatus/jinja/timesheet.template.html --stdin < <(echo $data)
+if [[ ! -z "${BREAKDOWN}" ]]; then
+  if [ "$FORMAT" = "html" ]; then
+    tera --template $HOME/.apparatus/jinja/timesheet_breakdown.template.html --stdin < <(echo $breakdown)
+  else
+    echo $breakdown | jq '.'
+  fi
 else
-  echo $data | jq '.'
+  if [ "$FORMAT" = "html" ]; then
+    tera -i --template $HOME/.apparatus/jinja/timesheet.template.html --stdin < <(echo $invoice_items)
+  else
+    echo $invoice_items | jq '.'
+  fi
 fi
