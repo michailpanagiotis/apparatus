@@ -102,22 +102,31 @@
     width: 50%; text-align: right;
   }
   table.inventory .period {
-    width: 61pt;
+    width: 7em;
+    white-space:nowrap;
   }
   table.inventory .description {
     width: 65%;
+    max-width:100%;
+    white-space:nowrap;
   }
   table.inventory .rate {
     text-align: right;
-    width: 12%;
+    max-width:100%;
+    white-space:nowrap;
+    width: auto;
   }
   table.inventory .quantity {
     text-align: right;
-    width: 5%;
+    max-width:100%;
+    white-space:nowrap;
+    width: auto;
   }
   table.inventory .amount {
     text-align: right;
-    width: 10%;
+    max-width:100%;
+    white-space:nowrap;
+    width: auto;
   }
 {% endmacro column_sizes %}
 
