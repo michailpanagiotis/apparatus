@@ -15,7 +15,6 @@
       {{ css_macros::print() }}
       {{ css_macros::table_base() }}
       {{ css_macros::column_sizes() }}
-      /* table items */
       table.inventory th {
         font-weight: bold;
       }
@@ -24,78 +23,59 @@
         flex-flow: column;
         height: 100%;
       }
-      .page-contents .invoice-title {
-      flex: 0 1 auto;
-      margin-bottom: 1em;
+      .page-contents .header {
+        flex: 0 1 auto;
+        margin-bottom: 1em;
       }
-      .page-contents .invoice-meta {
-      flex: 0 1 auto;
-      margin-bottom: 1em;
+      .page-contents .content {
+        flex: 1 1 auto;
+        margin-bottom: 1em;
       }
-      .page-contents .invoice-recipient {
-      flex: 0 1 auto;
-      margin-bottom: 1em;
-      }
-      .page-contents .invoice-table {
-      flex: 1 1 auto;
-      }
-      .page-contents .invoice-footer {
+      .page-contents .footer {
       flex: 0 1 40px;
       }
     </style>
   </head>
   <body>
     <div class="page-contents">
-      <div class="row invoice-title top-xs">
-        <div class="col-xs-12">
-          {{ macros::title() }}
-        </div>
+      <div class="header">
+        {{ macros::title() }}
       </div>
-      <div class="row invoice-meta">
-        <div class="col-xs-5">
-          {{ macros::logo() }}
-        </div>
-        <div class="col-xs-2">
-        </div>
-        <div class="col-xs-5">
-          <div class="box">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-5">
+            {{ macros::logo() }}
+          </div>
+          <div class="col-xs-2">
+          </div>
+          <div class="col-xs-5">
             {{ macros::table_meta() }}
           </div>
         </div>
-      </div>
-      <div class="row invoice-recipient">
-        <div class="col-xs-5">
-          {{ macros::recipient(label="Towards") }}
-        </div>
-      </div>
-      {% block table %}
-      <div class="row invoice-table">
-        <div class="col-xs-12">
-          <div class="row">
-            <div class="col-xs-12">
-              <div class="box">
-                {{ macros::table_inventory() }}
-              </div>
-            </div>
+        <div class="row">
+          <div class="col-xs-5">
+            {{ macros::recipient(label="Towards") }}
           </div>
-          <div class="row">
-            <div class="col-xs-6">
-              <div class="box">
-              </div>
-            </div>
-            <div class="col-xs-6">
-              <div class="box">
-                {{ macros::table_balance() }}
-              </div>
+        </div>
+        {% block table %}
+        <div class="row">
+          <div class="col-xs-12">
+            {{ macros::table_inventory() }}
+          </div>
+        </div>
+        {% endblock table %}
+        <div class="row">
+          <div class="col-xs-6">
+          </div>
+          <div class="col-xs-6">
+            <div>
+              {{ macros::table_balance() }}
             </div>
           </div>
         </div>
       </div>
-      {% endblock table %}
-      <div class="row invoice-footer">
-        <div class="col-xs-12">
-          {{ macros::aside() }}
-        </div>
+      <div class="footer">
+        {{ macros::footer() }}
       </div>
     </div>
   </body>
