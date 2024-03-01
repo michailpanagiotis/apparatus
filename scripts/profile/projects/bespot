@@ -45,9 +45,16 @@ refresh_otp() {
   for i in {1..5}
   do
     PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost -c " \
-      INSERT INTO otp_static_statictoken (device_id, token) SELECT id AS device_id, '123456' AS token FROM otp_static_staticdevice;
+      INSERT INTO otp_static_statictoken (device_id, token) SELECT id AS device_id, 'static-0' AS token FROM otp_static_staticdevice;
     "
   done
+}
+
+beacon_incidents() {
+  # add 1000 incidents for each beacon, takes about 15 minutes
+  PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost -c " \
+    INSERT INTO beacons_beaconincident (uuid, created, modified, created_at, reason, status, summary, beacon_id) SELECT gen_random_uuid(), NOW(), NOW(), NOW(), 'Out Of Range', 'Unresolved', 'My summary', t.* FROM generate_series(1,1000) i CROSS JOIN LATERAL (SELECT uuid FROM beacons_beacon) t;
+  "
 }
 
 prepare_db() {
@@ -66,7 +73,7 @@ seed_db() {
   PGPASSWORD=opap_api_dev_password pg_restore -v --no-privileges --no-owner -U opap_api_dev_user -d "opap_api_dev_db" -h localhost $1
 }
 
-run_tests() {
+run-tests() {
   docker exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES opap-api-container-1 bash -cils 'cd opap_api && python manage.py test --keepdb --failfast'
 }
 
@@ -75,7 +82,11 @@ jwt() {
   curl --request POST http://localhost:8000/api/auth/jwt/token/ --header 'Accept: application/json' --header 'Content-Type: application/json' --data "{ \"username\": \"$API_USERNAME\", \"password\": \"$API_PASSWORD\" }"
 }
 
-server() {
+run-container() {
+  docker exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES opap-api-container-1 bash
+}
+
+run-server() {
   docker exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES opap-api-container-1 python opap_api/manage.py runserver 0.0.0.0:80
 }
 
