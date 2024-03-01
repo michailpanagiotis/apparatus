@@ -1,3 +1,6 @@
+
+
+
 {% macro title() %}
   <div>
     <h1 style="
@@ -33,7 +36,7 @@
       <td><span>{{ number }}</span></td>
     </tr>
     <tr>
-      <th><span>Date</span></th>
+      <th><span>{{ date_label }}</span></th>
       <td><span id="today">{{ date }}</span></td>
     </tr>
     <tr>
@@ -47,11 +50,20 @@
   </table>
 {% endmacro table_meta %}
 
+{% macro sender() %}
+  <div style="color: #444; line-height: 1.5">
+    <p><strong>{{ sender.name }}</strong></p>
+    <p style="color: #555">{{ sender.vat }} - {{ sender.doy }}</p>
+    <p style="color: #555">{{ sender.address }}</p>
+  </div>
+{% endmacro recipient %}
+
 {% macro recipient(label="Bill to") %}
   <div style="color: #444; line-height: 1.5">
     <p style="text-align: center; font-weight: bold; font-size: 0.8em; text-transform: uppercase">{{ label }}</p>
     <hr style="height:1px;border:none;color:#ccc;background-color:#ccc;">
     <p><strong>{{ recipient.name }}</strong></p>
+    <p style="color: #555">{{ recipient.vat }} - {{ recipient.doy }}</p>
     <p style="color: #555">{{ recipient.address }}</p>
   </div>
 {% endmacro recipient %}

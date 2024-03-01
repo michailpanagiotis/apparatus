@@ -27,4 +27,5 @@ include "lib/timewarrior";
   vatPercent: ($ENV.INVOICE_VAT_PERCENT // 0 | tonumber),
   sender: ($ENV.INVOICE_SENDER // "{}" | fromjson),
   recipient: ($ENV.INVOICE_RECIPIENT // "{}" | fromjson),
+  language: ($ENV.INVOICE_LANGUAGE // "en" | tostring),
 }

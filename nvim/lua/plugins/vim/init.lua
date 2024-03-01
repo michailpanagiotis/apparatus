@@ -2,6 +2,14 @@ return {
   'tpope/vim-sleuth',     -- heuristically set buffer options
   'godlygeek/tabular',    -- align columns :Tabularize /--
   'tomtom/tcomment_vim',  -- "gc" to comment visual regions/lines
+  {
+    'dhruvasagar/vim-table-mode',
+    config = function ()
+      vim.cmd([[
+        let g:table_mode_corner='|'
+      ]])
+    end
+  },
   'mhinz/vim-startify',
   'vito-c/jq.vim',
   'wellle/targets.vim',
