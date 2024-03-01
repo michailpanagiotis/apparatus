@@ -1,4 +1,28 @@
 #!/usr/bin/env bash
+read -r -d '' BESPOT_COMPANY_INFO <<- EOM
+  {
+    "name": "BESPOT IKE",
+    "description": "ΑΝΑΠΤΥΞΗ ΣΥΣΤΗΜΑΤΩΝ ΠΛΗΡΟΦΟΡΙΚΗΣ",
+    "vat": "801070388",
+    "doy": "Α' ΑΘΗΝΩΝ",
+    "address": "ΒΟΥΤΑΔΩΝ 28, ΑΘΗΝΑ 11854"
+  }
+EOM
+
+read -r -d '' PMICHAIL_COMPANY_INFO <<- EOM
+  {
+    "logo": "/Users/pmichail/Projects/invoice/logo5.png",
+    "name": "Παναγιώτης Μιχαήλ",
+    "description": "ΑΝΑΠΤΥΞΗ ΣΥΣΤΗΜΑΤΩΝ ΠΛΗΡΟΦΟΡΙΚΗΣ",
+    "vat": "124393808",
+    "doy": "ΨΥΧΙΚΟΥ",
+    "address": "ΛΟΥΙΖΗΣ ΡΙΑΝΚΟΥΡ 4, ΑΘΗΝΑ 11523",
+    "linkedin": "panosmichail",
+    "email": "michailpanagiotis@gmail.com",
+    "github": "michailpanagiotis",
+    "copy": "Panagiotis Michail 2024"
+  }
+EOM
 
 cdb() {
   PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost
@@ -101,3 +125,8 @@ gunicorn() {
 install_nvim() {
   apt-get update && apt-get install -y curl g++ git && git clone https://github.com/michailpanagiotis/apparatus.git ${HOME}/.apparatus && ln -s ${HOME}/.apparatus/nvim ${HOME}/.config && curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage && chmod +x nvim.appimage && ./nvim.appimage --appimage-extract && mv squashfs-root / && ln -s /squashfs-root/AppRun /usr/bin/nvim && mkdir -p ~/.vim/files/info && nvim
 }
+
+bespot_invoice() {
+  INVOICE_LANGUAGE=el INVOICE_RECIPIENT="$BESPOT_COMPANY_INFO" INVOICE_SENDER="$PMICHAIL_COMPANY_INFO" timew invoice :all
+}
+
