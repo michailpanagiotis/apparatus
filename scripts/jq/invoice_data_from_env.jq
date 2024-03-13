@@ -56,7 +56,7 @@ include "lib/timewarrior";
 # group to invoice
 | (map(.timestamps.startedAt) | min) as $startedAt
 | (map(.timestamps.endedAt) | max) as $endedAt
-| "\($startedAt | strftime("%d %b %Y")) - \($endedAt | strftime("%d %b %Y"))" as $period
+| "\($startedAt | strftime("%d/%m/%Y")) - \($endedAt | strftime("%d/%m/%Y"))" as $period
 | {
   items: .,
   amounts: (map(.amounts.net) | add_amounts($currency) | net_to_costs($currency;$vatPercent;$taxWithholdingPercent)),
@@ -65,7 +65,7 @@ include "lib/timewarrior";
   endedAt: (map(.timestamps.endedAt) | max),
   period: $period,
   documentType: ($ENV.INVOICE_DOCUMENT_TYPE // "Timesheet"),
-  number: ($ENV.INVOICE_NUMBER // 1 | tonumber),
+  number: ($ENV.INVOICE_NUMBER // 1 | tostring),
   date: ($ENV.INVOICE_DATE | tostring),
   vatPercent: ($ENV.INVOICE_VAT_PERCENT // 0 | tonumber),
   sender: ($ENV.INVOICE_SENDER // "{}" | fromjson),

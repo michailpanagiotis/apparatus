@@ -68,7 +68,7 @@ def net_to_costs($currency;$vatPercent;$taxWithholdingPercent):
   | ($vatPercent | tonumber) as $vatPercent
   | ($taxWithholdingPercent | tonumber) as $taxWithholdingPercent
   | ($netCents * ($vatPercent / 100) | round) as $vatCents
-  | (($netCents + $vatCents) * ($taxWithholdingPercent / 100) | round) as $taxWithholdingCents
+  | ($netCents * ($taxWithholdingPercent / 100) | round) as $taxWithholdingCents
   | {
     currencySymbol: $currency | tosymbol,
     vatPercent: ($vatPercent | tostring + "%"),
