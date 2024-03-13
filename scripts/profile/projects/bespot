@@ -24,7 +24,7 @@ read -r -d '' PMICHAIL_COMPANY_INFO <<- EOM
     "paymentDetails": {
       "beneficiary": "Παναγιώτης Μιχαήλ",
       "iban": "GR9801711300006130010180298",
-      "bankCode": "PIRBGRAAXXX"
+      "bic": "PIRBGRAAXXX"
     }
   }
 EOM
