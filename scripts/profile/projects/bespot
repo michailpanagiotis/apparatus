@@ -20,7 +20,12 @@ read -r -d '' PMICHAIL_COMPANY_INFO <<- EOM
     "linkedin": "panosmichail",
     "email": "michailpanagiotis@gmail.com",
     "github": "michailpanagiotis",
-    "copy": "Panagiotis Michail 2024"
+    "copy": "Panagiotis Michail 2024",
+    "paymentDetails": {
+      "beneficiary": "Παναγιώτης Μιχαήλ",
+      "iban": "GR9801711300006130010180298",
+      "bankCode": "PIRBGRAAXXX"
+    }
   }
 EOM
 
@@ -127,6 +132,6 @@ install_nvim() {
 }
 
 bespot_invoice() {
-  INVOICE_LANGUAGE=el INVOICE_RECIPIENT="$BESPOT_COMPANY_INFO" INVOICE_SENDER="$PMICHAIL_COMPANY_INFO" timew invoice :all
+  INVOICE_LANGUAGE=el INVOICE_TAX_WITHHOLDING_PERCENT=20 INVOICE_RECIPIENT="$BESPOT_COMPANY_INFO" INVOICE_SENDER="$PMICHAIL_COMPANY_INFO" timew invoice :all
 }
 

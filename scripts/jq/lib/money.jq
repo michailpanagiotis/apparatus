@@ -63,16 +63,21 @@ def add_amounts($currency):
   end
 ;
 
-def net_to_costs($currency;$vatPercent):
+def net_to_costs($currency;$vatPercent;$taxWithholdingPercent):
   (. | tocents($currency)) as $netCents
   | ($vatPercent | tonumber) as $vatPercent
+  | ($taxWithholdingPercent | tonumber) as $taxWithholdingPercent
   | ($netCents * ($vatPercent / 100) | round) as $vatCents
+  | (($netCents + $vatCents) * ($taxWithholdingPercent / 100) | round) as $taxWithholdingCents
   | {
     currencySymbol: $currency | tosymbol,
     vatPercent: ($vatPercent | tostring + "%"),
+    taxWithholdingPercent: ($taxWithholdingPercent | tostring + "%"),
     net: $netCents | format_cents($currency),
     vat: $vatCents | format_cents($currency),
-    due: ($netCents + $vatCents) | format_cents($currency),
+    total: ($netCents + $vatCents) | format_cents($currency),
+    taxWithholding: $taxWithholdingCents | format_cents($currency),
+    due: ($netCents + $vatCents - $taxWithholdingCents) | format_cents($currency),
   }
 ;
 

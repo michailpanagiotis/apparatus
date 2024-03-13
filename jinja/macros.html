@@ -1,6 +1,3 @@
-
-
-
 {% macro title() %}
   <div>
     <h1 style="
@@ -32,19 +29,19 @@
 {% macro table_meta() %}
   <table class="meta">
     <tr>
-      <th><span>#</span></th>
+      <th><span>{{ labels.NUMBER }}</span></th>
       <td><span>{{ number }}</span></td>
     </tr>
     <tr>
-      <th><span>{{ date_label }}</span></th>
+      <th><span>{{ labels.DATE }}</span></th>
       <td><span id="today">{{ date }}</span></td>
     </tr>
     <tr>
-      <th><span>Period</span></th>
+      <th><span>{{ labels.PERIOD }}</span></th>
       <td><span id="today">{{ period }}</span></td>
     </tr>
     <tr>
-      <th><span>Amount</span></th>
+      <th><span>{{ labels.AMOUNT }}</span></th>
       <td><span>{{ amounts.net }}</span><span id="prefix">{{ amounts.currencySymbol }}</span></td>
     </tr>
   </table>
@@ -56,11 +53,11 @@
     <p style="color: #555">{{ sender.vat }} - {{ sender.doy }}</p>
     <p style="color: #555">{{ sender.address }}</p>
   </div>
-{% endmacro recipient %}
+{% endmacro sender %}
 
-{% macro recipient(label="Bill to") %}
+{% macro recipient() %}
   <div style="color: #444; line-height: 1.5">
-    <p style="text-align: center; font-weight: bold; font-size: 0.8em; text-transform: uppercase">{{ label }}</p>
+    <p style="text-align: center; font-weight: bold; font-size: 0.8em; text-transform: uppercase">{{ labels.TOWARDS }}</p>
     <hr style="height:1px;border:none;color:#ccc;background-color:#ccc;">
     <p><strong>{{ recipient.name }}</strong></p>
     <p style="color: #555">{{ recipient.vat }} - {{ recipient.doy }}</p>
@@ -72,10 +69,10 @@
   <table class="inventory">
     <thead>
       <tr>
-        <th class="period"><span>Period</span></th>
-        <th class="description"><span>Description</span></th>
-        <th class="quantity"><span>Qty</span></th>
-        <th class="amount"><span>Amount</span></th>
+        <th class="period"><span>{{ labels.PERIOD }}</span></th>
+        <th class="description"><span>{{ labels.DESCRIPTION }}</span></th>
+        <th class="quantity"><span>{{ labels.QUANTITY }}</span></th>
+        <th class="amount"><span>{{ labels.AMOUNT }}</span></th>
       </tr>
     </thead>
     <tbody>
@@ -94,16 +91,32 @@
 {% macro table_balance() %}
   <table class="balance">
     <tr>
-      <th><span>Period</span></th>
+      <th><span>{{ labels.PERIOD }}</span></th>
       <td><span>{{ period }}</span></td>
     </tr>
     <tr>
-      <th><span>Total hours</span></th>
-      <td><span>{{ quantity }}h</span></td>
+      <th><span>{{ labels.TOTAL_HOURS }}</span></th>
+      <td><span>{{ quantity }}</span></td>
     </tr>
     <tr>
-      <th><span>Subtotal</span></th>
+      <th><span>{{ labels.SUBTOTAL }}</span></th>
       <td><span>{{ amounts.net }}</span><span data-prefix>{{ amounts.currencySymbol }}</span></td>
+    </tr>
+    <tr>
+      <th><span>{{ labels.VAT_AMOUNT }} {{ amounts.vatPercent }}</span></th>
+      <td><span>{{ amounts.vat }}</span><span data-prefix>{{ amounts.currencySymbol }}</span></td>
+    </tr>
+    <tr>
+      <th><strong><span>{{ labels.TOTAL_AMOUNT }}</span></strong></th>
+      <td><strong><span>{{ amounts.total }}</span><span data-prefix>{{ amounts.currencySymbol }}</span></strong></td>
+    </tr>
+    <tr>
+      <th><span>{{ labels.TAX_WITHHOLDING }} {{ amounts.taxWithholdingPercent }}</span></th>
+      <td><span>{{ amounts.taxWithholding }}</span><span data-prefix>{{ amounts.currencySymbol }}</span></td>
+    </tr>
+    <tr>
+      <th><strong><span>{{ labels.AMOUNT_DUE }}</span></strong></th>
+      <td><strong><span>{{ amounts.due }}</span><span data-prefix>{{ amounts.currencySymbol }}</span></strong></td>
     </tr>
   </table>
 {% endmacro table_balance %}
