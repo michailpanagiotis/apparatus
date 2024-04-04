@@ -16,7 +16,7 @@ drv () {
     docker volume prune
 }
 
-removecontainers() {
+dstop() {
     docker stop $(docker ps -aq)
     docker rm $(docker ps -aq)
 }

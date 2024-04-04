@@ -49,6 +49,12 @@ psql_otp() {
   "
 }
 
+psql_beacon_incidents() {
+  PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost -c " \
+    WITH names_per_blueprint AS (SELECT blueprint_id, array_to_json(array_agg(CONCAT('Beacon ', beacon_blueprint->'index') ORDER BY beacon_blueprint->'index')) AS beacon_names FROM (SELECT uuid AS blueprint_id, jsonb_array_elements(attributes->'beacons') AS beacon_blueprint FROM stores_storeblueprint) t GROUP BY blueprint_id), beacons_per_blueprint AS (SELECT bb.uuid AS beacon_id, bb.kontakt_unique_id, bb.name AS beacon_name, bl.uuid AS blueprint_id, names.beacon_names FROM beacons_beacon AS bb INNER JOIN stores_storeblueprint AS bl ON bl.store_id=bb.store_id INNER JOIN names_per_blueprint AS names ON names.blueprint_id=bl.uuid WHERE bb.kontakt_unique_id='' AND ((bb.name <> '') IS NOT TRUE OR NOT (beacon_names)::jsonb ? bb.name)) SELECT * FROM beacons_per_blueprint;
+  "
+}
+
 psql_users() {
   PGPASSWORD=opap_api_dev_password psql -U opap_api_dev_user -d opap_api_dev_db -h localhost -c " \
     SELECT id, is_superuser, username, email, is_staff, is_active from users_user WHERE is_superuser IS FALSE ORDER BY id \
@@ -135,3 +141,10 @@ bespot_invoice() {
   INVOICE_LANGUAGE=el INVOICE_TAX_WITHHOLDING_PERCENT=20 INVOICE_RECIPIENT="$BESPOT_COMPANY_INFO" INVOICE_SENDER="$PMICHAIL_COMPANY_INFO" timew invoice :all
 }
 
+rds_tunnel() {
+  ssh -i ~/.ssh/id_rsa -L 3306:opap-api-rds-cluster-staging.cluster-c5yw1bdpivl4.eu-central-1.rds.amazonaws.com:3306 ec2-user@18.159.112.135
+}
+
+rds_staging() {
+  PGPASSWORD=$PGPASSWORD_STAGING psql -p 3306 -U opap_api_root -d opap_api -h localhost
+}
