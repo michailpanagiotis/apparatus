@@ -1,12 +1,16 @@
-return {
-  'lukas-reineke/indent-blankline.nvim',
-  event = {'BufReadPre', 'BufNewFile'},
-  main = 'ibl',
-  opts = {
+local Plugin = {'lukas-reineke/indent-blankline.nvim'}
+
+Plugin.main = 'ibl'
+Plugin.event = {'BufReadPre', 'BufNewFile'}
+
+Plugin.config = function ()
+  require'lir'.setup {
     indent = { char = '┊' },
     scope = { enabled = false },
     whitespace = {
         remove_blankline_trail = false,
     },
   }
-}
+end
+
+return Plugin

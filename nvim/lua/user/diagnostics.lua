@@ -48,7 +48,7 @@ local function echo_diagnostic()
       local diags = vim
         .lsp
         .diagnostic
-        .get_line_diagnostics(bufnf, line, { severity_limit = 'Warning' })
+        .get_line_diagnostics(bufnf, line, { min=vim.diagnostic.severity.WARN })
 
       if #diags == 0 then
         -- If we previously echo'd a message, clear it out by echoing an empty

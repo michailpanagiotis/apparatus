@@ -27,10 +27,10 @@ install_wireguard() {
   if ! test -f /etc/wireguard/public.key; then
     cat /etc/wireguard/private.key | wg pubkey | tee /etc/wireguard/public.key
     show_success "Created wireguard public key"
-    WIREGUARD_PK=$(cat /etc/wireguard/public.key)
+    PUBLIC_KEY=$(cat /etc/wireguard/public.key)
     echo "Add the following to your Wireguard server configuration:"
     echo "  [Peer]"
-    echo "  PublicKey=${WIREGUARD_PK}"
+    echo "  PublicKey=${PUBLIC_KEY}"
     echo "  AllowedIPs = fda7:bcf9:b71c::${PEER_NUMBER}/128"
   else
     show_success "Wireguard public key exists"
@@ -39,12 +39,12 @@ install_wireguard() {
 
   if ! test -f /etc/wireguard/wg0.conf; then
     WIREGUARD_ENDPOINT=$(with_validate 'input "Please enter your Wireguard server endpoint"' validate_present)
-    WIREGUARD_PK=$(cat /etc/wireguard/private.key)
+    PRIVATE_KEY=$(cat /etc/wireguard/private.key)
     cat > /etc/wireguard/wg0.conf <<- EOM
 [Interface]
 Address = fda7:bcf9:b71c::${PEER_NUMBER}/64
 ListenPort = 51820
-PrivateKey = ${WIREGUARD_PK}
+PrivateKey = ${PRIVATE_KEY}
 
 [Peer]
 PublicKey = EMoxRoV0nQldMzAFjcFa7Rkuk2fMO+83YX3R7ppOMXQ=

@@ -10,7 +10,13 @@ return {
       ]])
     end
   },
-  'mhinz/vim-startify',
+  {
+    'goolord/alpha-nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function ()
+        require'alpha'.setup(require'alpha.themes.startify'.config)
+    end
+  },
   'vito-c/jq.vim',
   'wellle/targets.vim',
   {

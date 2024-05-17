@@ -145,3 +145,11 @@ github_pushes() {
     page=$((page+1))
   done
 }
+
+create_keys() {
+  if [ -z $EMAIL ] || [ -z $VMID ]; then
+    echo "Usage:\n\tEMAIL=[EMAIL] VMID=[VMID] create_keys"
+    return 1
+  fi
+  ssh-keygen -t ed25519 -C "${EMAIL}" -N '' -f ~/.ssh/id_${VMID}
+}

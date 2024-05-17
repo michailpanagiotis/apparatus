@@ -1,41 +1,35 @@
 local TreeSitterPlugin = {'nvim-treesitter/nvim-treesitter'}
 
-TreeSitterPlugin.version = '0.8.5'
 TreeSitterPlugin.lazy = false
 TreeSitterPlugin.module = false
 TreeSitterPlugin.build = ":TSUpdate"
 
 TreeSitterPlugin.config = function ()
-  local config = {
-    on_config_done = nil,
-    -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'help', 'lua', 'typescript', 'javascript', 'rust', 'go', 'python', 'vim' },
-    ignore_install = {},
-    matchup = {
-      enable = true, -- mandatory, false will disable the whole extension
-      -- disable = { "c", "ruby" },  -- optional, list of language that will be disabled
-    },
+  local configs = require "nvim-treesitter.configs"
+  configs.setup({
+    ensure_installed = { 'lua', 'typescript', 'javascript', 'rust', 'go', 'python', 'vim' },
+    sync_install = false,
     highlight = {
       enable = true, -- false will disable the whole extension
       additional_vim_regex_highlighting = true,
       disable = { "latex" },
     },
-    context_commentstring = {
-      enable = true,
-      enable_autocmd = false,
-      config = {
-        -- Languages that have a single comment style
-        typescript = "// %s",
-        css = "/* %s */",
-        scss = "/* %s */",
-        html = "<!-- %s -->",
-        svelte = "<!-- %s -->",
-        vue = "<!-- %s -->",
-        json = "",
+    indent = { enable = true },
+    autotag = { enable = true },
+    refactor = {
+      smart_rename = {
+        enable = true,
+        keymaps = {
+          smart_rename = "grr",
+        },
+      },
+      highlight_current_scope = { enable = false },
+      highlight_definitions = {
+        enable = true,
+        -- Set to false if you have an `updatetime` of ~100.
+        clear_on_cursor_move = true,
       },
     },
-    indent = { enable = false, disable = { "yaml", "python" } },
-    autotag = { enable = true },
     textobjects = {
       swap = {
         enable = false,
@@ -69,6 +63,31 @@ TreeSitterPlugin.config = function ()
         include_surrounding_whitespace = true,
       },
     },
+  })
+  local config = {
+    on_config_done = nil,
+    -- Add languages to be installed here that you want installed for treesitter
+    ignore_install = {},
+    matchup = {
+      enable = true, -- mandatory, false will disable the whole extension
+      -- disable = { "c", "ruby" },  -- optional, list of language that will be disabled
+    },
+    context_commentstring = {
+      enable = true,
+      enable_autocmd = false,
+      config = {
+        -- Languages that have a single comment style
+        typescript = "// %s",
+        css = "/* %s */",
+        scss = "/* %s */",
+        html = "<!-- %s -->",
+        svelte = "<!-- %s -->",
+        vue = "<!-- %s -->",
+        json = "",
+      },
+    },
+    indent = { enable = false, disable = { "yaml", "python" } },
+    autotag = { enable = true },
     incremental_selection = {
       enable = true,
       keymaps = {
@@ -102,35 +121,18 @@ TreeSitterPlugin.config = function ()
       extended_mode = true, -- Highlight also non-parentheses delimiters, boolean or table: lang -> boolean
       max_file_lines = 1000, -- Do not enable for files with more than 1000 lines, int
     },
-    refactor = {
-      smart_rename = {
-        enable = true,
-        keymaps = {
-          smart_rename = "grr",
-        },
-      },
-      highlight_current_scope = { enable = false },
-      highlight_definitions = {
-        enable = true,
-        -- Set to false if you have an `updatetime` of ~100.
-        clear_on_cursor_move = true,
-      },
-    },
     autopairs = {
       enable = true,
     }
   }
-
-  local treesitter_configs = require "nvim-treesitter.configs"
-  treesitter_configs.setup(config)
 end
 
 return {
   TreeSitterPlugin,
-  -- {
-  --   'nvim-treesitter/nvim-treesitter-textobjects',
-  --   dependencies = {'nvim-treesitter/nvim-treesitter'}
-  -- },
+  {
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    dependencies = {'nvim-treesitter/nvim-treesitter'}
+  },
   {
     'RRethy/nvim-treesitter-textsubjects',
     dependencies = {'nvim-treesitter/nvim-treesitter'}
