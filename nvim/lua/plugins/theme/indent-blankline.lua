@@ -4,7 +4,7 @@ Plugin.main = 'ibl'
 Plugin.event = {'BufReadPre', 'BufNewFile'}
 
 Plugin.config = function ()
-  require'lir'.setup {
+  require'ibl'.setup {
     indent = { char = '┊' },
     scope = { enabled = false },
     whitespace = {
