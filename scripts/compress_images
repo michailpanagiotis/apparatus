@@ -1,12 +1,7 @@
 #!/bin/bash
 set -e
 
-if ! test -d "$1"; then
-  echo "Expecting a directory as input"
-  exit
-fi
-
-function relpath() {
+function relative_path() {
   python -c "import os,sys;print(os.path.relpath(*(sys.argv[1:])))" "$@";
 }
 
@@ -14,16 +9,61 @@ function absolute() {
   echo "$(cd "$(dirname "$1")"; pwd)/$(basename "$1")"
 }
 
-function compress_file_destructive() {
+function compress_comic_destructive() {
   local FULLPATH=$(realpath "$1")
+  local DIR=$(dirname -- "$FULLPATH")
+  local FILENAME=$(basename "$1")
   local FILETYPE=$(file "$FULLPATH")
+  cd $DIR
+  case $FILETYPE in
+      *"Zip archive data"*)
+	unzip -q -j "$FILENAME"
+	;;
+      *"RAR archive data"*)
+	unrar e "$FILENAME" -idq
+	;;
+      *)
+	echo Unknown comic format
+	exit -1
+  	;;
+  esac
+  rm "$FILENAME"
+  find $DIR -type f -print0 | while IFS= read -r -d '' file; do
+    compress_file_destructive "$file"
+  done
 
   case $FILETYPE in
+      *"Zip archive data"*)
+	zip -0 -q "$FILENAME" *
+	;;
+      *"RAR archive data"*)
+	rar a -idq -m0 "$FILENAME" *
+	;;
+      *)
+	echo Unknown comic format
+	exit -1
+  	;;
+  esac
+  find . -type f \! \( -name "$FILENAME" \) -exec rm {} \;
+  cd -
+}
+
+function compress_file_destructive() {
+  local FULLPATH=$(realpath "$1")
+  local FILENAME=$(basename -- "$FULLPATH")
+  local EXTENSION="${FILENAME##*.}"
+  case $(file "$FULLPATH") in
       *"image data"*)
   	magick "$FULLPATH" -strip -interlace Plane -quality 50% -quiet -resize x2160 "$FULLPATH"
   	;;
-      *"Zip archive data"*)
-	compress_cbz_destructive "$1"
+      *"Zip archive data"*|*"RAR archive data"*)
+	case $EXTENSION in
+	    "cbz"|"cbr")
+	      compress_comic_destructive "$1"
+	      ;;
+	    *)
+	      ;;
+	esac
 	;;
       *)
   	;;
@@ -44,36 +84,29 @@ function compress_file_to_output_dir() {
   rm -rf $TEMP
 }
 
-function compress_cbz_destructive() {
-  local FULLPATH=$(realpath "$1")
-  local DIR=$(dirname -- "$FULLPATH")
-  local FILENAME=$(basename "$1")
-  cd $DIR
-  unzip -q -j "$FILENAME"
-  rm "$FILENAME"
-  find $DIR -type f -print0 | while IFS= read -r -d '' file; do
-    compress_file_destructive "$file"
-  done
-  zip -0 -q "$FILENAME" *
-  find . -type f \! \( -name "$FILENAME" \) -exec rm {} \;
-  cd -
-}
-
 function compress_folder_contents() {
-  local DIRPATH=$(realpath "$1")
-  find $DIRPATH -type f -not -path '*/.*' -print0 | while IFS= read -r -d '' file; do
-    local OUTPUTPATH="$PWD"/compressed
-    local FULLPATH=$(realpath "$file")
-    RELATIVE_FILE=$(relpath "$FULLPATH" "$DIRPATH")
-    echo "$OUTPUTPATH"/"$RELATIVE_FILE"
+  local ROOT_PATH=$(realpath "$1")
+  local OUTPUTPATH="$PWD"/$(basename $ROOT_PATH).compressed
+  find $ROOT_PATH -type f -not -path '*/.*' -print0 | while IFS= read -r -d '' file; do
+    local OUTPUT_FILE="$OUTPUTPATH"/"$(relative_path "$(realpath "$file")" "$ROOT_PATH")"
+    if [[ -f "$OUTPUT_FILE" ]]
+    then
+      echo Already compressed: "$OUTPUT_FILE"
+    else
+      local OUTPUT_DIR=$(dirname -- "$OUTPUT_FILE")
+      mkdir -p "$OUTPUT_DIR"
+      compress_file_to_output_dir "$file" "$OUTPUT_DIR"
+    fi
   done
 }
 
-compress_folder_contents $1
-
-exit
-
-
-compress_file_to_output_dir "$1" ./completed
-
-exit
+if [[ -d "$1" ]]
+then
+  compress_folder_contents $1
+elif [[ -f "$1" ]]
+then
+  compress_file_to_output_dir "$1" ./compressed
+else
+  echo "Expecting a directory as input"
+  exit
+fi
