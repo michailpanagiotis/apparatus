@@ -1,0 +1,87 @@
+#!/bin/bash
+set -e
+
+function relative_path() {
+  python -c "import os,sys;print(os.path.relpath(*(sys.argv[1:])))" "$@";
+}
+
+function absolute() {
+  echo "$(cd "$(dirname "$1")"; pwd)/$(basename "$1")"
+}
+
+function get_exif_timestamp() {
+  local FULLPATH=$(realpath "$1")
+  local DIR=$(dirname "$1")
+  local FILENAME=$(basename -- "$FULLPATH")
+  local EXTENSION="${FILENAME##*.}"
+  local FILENAME="${FILENAME%.*}"
+  if [[ "$EXTENSION" =~ original$ ]];
+  then
+    local METADATA_EXTENSION="mp4.json"
+  else
+    local METADATA_EXTENSION=${EXTENSION}.json
+  fi
+  local METADATA_FILE="$DIR"/"$FILENAME".$METADATA_EXTENSION
+
+
+  local EXIF_DATE=$(exiftool -T -DateTimeOriginal "$1")
+  if [ "$EXIF_DATE" == "-" ];
+  then
+    # >&2 echo Checking if "$METADATA_FILE" exists...
+    if [[ -f "$METADATA_FILE" ]]
+    then
+      # >&2 echo Reading timestamp from metadata file...
+      local TIMESTAMP=$(cat "$METADATA_FILE" | jq -r '.photoTakenTime.timestamp // ""')
+      local DATETIME_ORIGINAL=$(date -r $TIMESTAMP "+%Y:%m:%d %H:%M:%S")
+      >&2 echo Setting exif to "$DATETIME_ORIGINAL"
+      exiftool -overwrite_original -delete_original -q -datetimeoriginal="$DATETIME_ORIGINAL" "$FULLPATH"
+      echo ${TIMESTAMP}
+    else
+      >&2 echo Unknown timestamp for $1
+      exit
+    fi
+  else
+    local EXIF_TIMESTAMP=$(date -j -f "%Y:%m:%d %H:%M:%S" "${EXIF_DATE}" +%s)
+    echo $EXIF_TIMESTAMP
+  fi
+}
+
+function categorize_file_to_output_dir() {
+  local FULLPATH=$(realpath "$1")
+  local TIMESTAMP=$(get_exif_timestamp "$FULLPATH")
+  local YEAR=$(date -r $TIMESTAMP "+%Y")
+  local MONTH=$(date -r $TIMESTAMP "+%m")
+  local DAY=$(date -r $TIMESTAMP "+%d")
+  local OUTDIR=$(absolute "$2")/$(date -r $TIMESTAMP "+%Y/%m/%d")
+  local FILENAME=$(basename "$FULLPATH")
+  mkdir -p "$OUTDIR"
+  cp "$FULLPATH" "$OUTDIR/"
+}
+
+function categorize_folder_media() {
+  local ROOT_PATH=$(realpath "$1")
+  local OUTPUTPATH="$PWD"/$(basename $ROOT_PATH).compressed
+  find $ROOT_PATH -type f -not -name "*.json" -not -name "*.html" -not -path '*/.*' -print0 | while IFS= read -r -d '' file; do
+    local OUTPUT_FILE="$OUTPUTPATH"/"$(relative_path "$(realpath "$file")" "$ROOT_PATH")"
+    if [[ -f "$OUTPUT_FILE" ]]
+    then
+      echo Already categorized: "$OUTPUT_FILE"
+    else
+      local OUTPUT_DIR=$(dirname -- "$OUTPUT_FILE")
+      mkdir -p "$OUTPUT_DIR"
+      echo Categorizing "$file"
+      categorize_file_to_output_dir "$file" "$OUTPUT_DIR"
+    fi
+  done
+}
+
+if [[ -d "$1" ]]
+then
+  categorize_folder_media $1
+elif [[ -f "$1" ]]
+then
+  categorize_file_to_output_dir "$1" ./compressed
+else
+  echo "Expecting a directory as input"
+  exit
+fi

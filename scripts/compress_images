@@ -14,6 +14,7 @@ function compress_comic_destructive() {
   local DIR=$(dirname -- "$FULLPATH")
   local FILENAME=$(basename "$1")
   local FILETYPE=$(file "$FULLPATH")
+  local TEMPFILE=".temp"
   cd $DIR
   case $FILETYPE in
       *"Zip archive data"*)
@@ -34,17 +35,18 @@ function compress_comic_destructive() {
 
   case $FILETYPE in
       *"Zip archive data"*)
-	zip -0 -q "$FILENAME" *
+	zip -0 -q "$TEMPFILE" *
 	;;
       *"RAR archive data"*)
-	rar a -idq -m0 "$FILENAME" *
+	rar a -idq -m0 "$TEMPFILE" *
 	;;
       *)
 	echo Unknown comic format
 	exit -1
   	;;
   esac
-  find . -type f \! \( -name "$FILENAME" \) -exec rm {} \;
+  find . -type f \! \( -name "$TEMPFILE" \) -exec rm {} \;
+  mv "$TEMPFILE" "$FILENAME"
   cd -
 }
 
