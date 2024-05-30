@@ -34,7 +34,7 @@ function get_exif_timestamp() {
       local TIMESTAMP=$(cat "$METADATA_FILE" | jq -r '.photoTakenTime.timestamp // ""')
       local DATETIME_ORIGINAL=$(date -r $TIMESTAMP "+%Y:%m:%d %H:%M:%S")
       >&2 echo Setting exif to "$DATETIME_ORIGINAL"
-      exiftool -overwrite_original -delete_original -q -datetimeoriginal="$DATETIME_ORIGINAL" "$FULLPATH"
+      exiftool -overwrite_original -q -datetimeoriginal="$DATETIME_ORIGINAL" "$FULLPATH"
       echo ${TIMESTAMP}
     else
       >&2 echo Unknown timestamp for $1
