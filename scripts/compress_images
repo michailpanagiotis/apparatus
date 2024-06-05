@@ -55,7 +55,6 @@ function compress_file_destructive() {
   local FILENAME=$(basename -- "$FULLPATH")
   local EXTENSION="${FILENAME##*.}"
   local OUTPUT_DIR=$(dirname -- "$FULLPATH")
-  >&2 echo DESTRUCTIVE $(file "$FULLPATH")
   case $(file "$FULLPATH") in
       *"image data"*)
 	local OUTFILE="$OUTPUT_DIR"/"${FILENAME%.*}".webp
@@ -92,7 +91,8 @@ function compress_file_destructive() {
 }
 
 function compress_file_to_output_dir() {
-  local TEMP=$(mktemp -d -p /tmp)
+  export TMPDIR=/tmp
+  local TEMP=$(mktemp -d /tmp/compress.XXXXXX)
   local FULLPATH=$(realpath "$1")
   local OUTDIR=$(absolute "$2")
   local FILENAME=$(basename "$FULLPATH")
