@@ -55,15 +55,25 @@ function compress_file_destructive() {
   local FILENAME=$(basename -- "$FULLPATH")
   local EXTENSION="${FILENAME##*.}"
   local OUTPUT_DIR=$(dirname -- "$FULLPATH")
+  >&2 echo DESTRUCTIVE $(file "$FULLPATH")
   case $(file "$FULLPATH") in
       *"image data"*)
-  	magick "$FULLPATH" -strip -interlace Plane -quality 50% -quiet -resize x2160 "$FULLPATH"
+	local OUTFILE="$OUTPUT_DIR"/"${FILENAME%.*}".webp
+	>&2 echo compressing \'"$FULLPATH"\' to \'"$OUTFILE"\'
+  	magick "$FULLPATH" -strip -interlace Plane -quality 50% -quiet "$OUTFILE"
+	echo "$OUTFILE"
+  	;;
+      *"HEIF Image HEVC"*)
+	local OUTFILE="$OUTPUT_DIR"/"${FILENAME%.*}".webp
+	>&2 echo compressing \'"$FULLPATH"\' to \'"$OUTFILE"\'
+  	magick "$FULLPATH" -profile srgb.icc -strip -interlace Plane -quiet "$OUTFILE"
+	echo "$OUTFILE"
   	;;
       *"Apple QuickTime"*)
 	local OUTFILE="$OUTPUT_DIR"/"${FILENAME%.*}".mp4
 	>&2 echo compressing \'"$FULLPATH"\' to \'"$OUTFILE"\'
 	local EXIF_DATE=$(exiftool -T -CreateDate "$FULLPATH")
-	</dev/null ffmpeg -nostdin -y -i "$FULLPATH" -movflags use_metadata_tags -c:v libx265 -c:a copy -preset slow -x265-params crf=20:no-sao=1:aq-mode=3 -pix_fmt yuv420p10le "$OUTFILE"
+	</dev/null ffmpeg -nostdin -y -i "$FULLPATH" -movflags use_metadata_tags -c:v libx265 -c:a -preset slow copy -x265-params crf=22 "$OUTFILE"
 	exiftool -overwrite_original -q -DateTimeOriginal="$EXIF_DATE" "$OUTFILE"
 	echo "$OUTFILE"
 	;;
