@@ -130,7 +130,7 @@ gunicorn() {
     echo "Usage:\n\tgunicorn [num_workers]"
     return 1
   fi
-  docker exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES -e WEB_CONCURRENCY=$1 opap-api-container-1 gunicorn opap_api.wsgi:application
+  docker exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES -e WEB_CONCURRENCY=$1 opap-api-container-1 gunicorn --log-file "-" --log-level 'debug' --backlog 10 opap_api.wsgi:application
 }
 
 install_nvim() {
