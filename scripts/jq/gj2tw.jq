@@ -37,7 +37,7 @@ def group_by_window(f): reduce .[] as $item (
 | group_by_change(.prev.timestamp == null or (.timestamp | quantize_down(3600)) != (.prev.timestamp | quantize_down(3600)) )
 | map(
   (map(.branch) | unique) as $curr_branches
-  | ($curr_branches | map(branch_to_tags) | flatten | unique | sort_by(. | ascii_downcase)) as $curr_tags
+  | ($curr_branches | map(branch_to_tags) | flatten | unique | sort_by(. // "" | ascii_downcase)) as $curr_tags
   | ((map(.timestamp) | get_quantized_window_of_timestamps) | .tw) as $duration
   | {
       window: (map(.timestamp) | get_quantized_window_of_timestamps),
