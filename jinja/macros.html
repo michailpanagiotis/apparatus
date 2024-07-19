@@ -42,17 +42,26 @@
     </tr>
     <tr>
       <th><span>{{ labels.TOTAL_AMOUNT }}</span></th>
-      <td><span>{{ amounts.total }}</span><span id="prefix">{{ amounts.currencySymbol }}</span></td>
+      <td>
+        {% if documentType == 'invoice' %}
+        <span>{{ amounts.total }}</span>
+        {% else %}
+        <span>{{ amounts.net }}</span>
+        {% endif %}
+        <span id="prefix">{{ amounts.currencySymbol }}</span>
+      </td>
     </tr>
   </table>
 {% endmacro table_meta %}
 
 {% macro payment_details() %}
   <div style="color: #666; font-size: 0.8em; line-height: 1.5">
-    <h4>{{ labels.PAYMENT_DETAILS }}</h4>
-    <p>{{ sender.paymentDetails.beneficiary }}</p>
-    <p>{{ sender.paymentDetails.iban }}</p>
-    <p>{{ sender.paymentDetails.bic }}</p>
+    {% if documentType == 'invoice' %}
+      <h4>{{ labels.PAYMENT_DETAILS }}</h4>
+      <p>{{ sender.paymentDetails.beneficiary }}</p>
+      <p>{{ sender.paymentDetails.iban }}</p>
+      <p>{{ sender.paymentDetails.bic }}</p>
+    {% endif %}
   </div>
 {% endmacro payment_details %}
 
@@ -103,6 +112,7 @@
       <th><span>{{ labels.SUBTOTAL }}</span></th>
       <td><span>{{ amounts.net }}</span><span data-prefix>{{ amounts.currencySymbol }}</span></td>
     </tr>
+    {% if documentType == 'invoice' %}
     <tr>
       <th><span>{{ labels.VAT_AMOUNT }} {{ amounts.vatPercent }}</span></th>
       <td><span>{{ amounts.vat }}</span><span data-prefix>{{ amounts.currencySymbol }}</span></td>
@@ -119,6 +129,7 @@
       <th><strong><span>{{ labels.AMOUNT_DUE }}</span></strong></th>
       <td><strong><span>{{ amounts.due }}</span><span data-prefix>{{ amounts.currencySymbol }}</span></strong></td>
     </tr>
+    {% endif %}
   </table>
 {% endmacro table_balance %}
 

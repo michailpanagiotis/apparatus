@@ -1,0 +1,181 @@
+#!/bin/bash
+# trap "echo ERROR" ERR
+# https://serverfault.com/a/1088115
+# https://midish.org/manual.html#section_21
+# trap 'kill -SIGTERM $(pidof app)' SIGTERM
+session="midish"
+
+ScriptLoc=$(readlink -f "$0")
+
+expected_device="XStation"
+recording=0
+mode=1 # 1 = goto, 2 = select
+
+
+function try_kill_midish() {
+  tmux has-session -t $session 2>/dev/null
+  if [ $? == 0 ]; then
+    echo Killing session $session...
+    tmux kill-session -t $session
+  fi
+}
+
+function shutdown() {
+  echo Shutting down...
+  try_kill_midish
+  exit 0
+}
+
+trap "shutdown" SIGINT
+
+function wait_for_device() {
+  connected_device=$(aseqdump -l | grep $expected_device | awk '{print $1}')
+  until [ ! -z "$connected_device" ]
+  do
+    connected_device=$(aseqdump -l | grep $expected_device | awk '{print $1}')
+    echo Waiting for device "$expected_device" to be ready...
+    sleep 5
+  done
+}
+
+function setup_midish() {
+  tmux send-keys -t $session \
+    "dnew 0 \"$connected_device\" rw" C-m\
+    "t 100" C-m \
+    "m rec" C-m \
+    "loop" C-m \
+    "metrocf {non {0 0} 48 127} {non {0 0} 64 100}" C-m \
+    "setq 16" C-m \
+    "tnew track1" C-m \
+    "g 1" C-m
+}
+
+function start_midish() {
+  tmux new-session -d -s $session "midish"
+  echo Receiving MIDI...
+  sleep 5
+  setup_midish
+}
+
+function start_listening() {
+  aseqdump -p $connected_device | \
+    while read event; do
+      eval_loop "$event"
+    done
+}
+
+function stop() {
+  echo Pressed Stop
+  tmux send-keys -t $session s C-m
+  if [ $recording == 1 ]; then
+    echo Stopping recording
+    tmux send-keys -t $session "setq 16" C-m
+    tmux send-keys -t $session "tquantf 100" C-m
+  fi
+  recording=0
+  tmux send-keys -t $session i C-m
+}
+
+function rec() {
+  echo Pressed Rec
+  stop
+  tmux send-keys -t $session r C-m
+  recording=1
+}
+
+function play() {
+  echo Pressed Play
+  stop
+  tmux send-keys -t $session loop C-m
+  tmux send-keys -t $session p C-m
+}
+
+function clear() {
+  echo Clearing
+  stop
+  tmux send-keys -t $session tclr C-m
+}
+
+function change_tempo() {
+  echo Tempo change to $1
+  stop
+  tmux send-keys -t $session "t $1" C-m
+}
+
+function goto_measure() {
+  echo Going to measure $1
+  stop
+  tmux send-keys -t $session "g $1" C-m
+}
+
+function select_measure() {
+  echo Selecting $1 measures
+  stop
+  tmux send-keys -t $session "sel $1" C-m
+}
+
+function eval_loop() {
+  IFS=" ," read device ev1 ev2 channel label1 data1 label2 data2 rest <<< "$1";
+  event_type="$ev1 $ev2"
+  echo "$1"
+  case "$event_type" in
+    "System exclusive" )
+      IFS=" ," read device ev1 ev2 byte0 byte1 byte2 byte3 byte4 byte5 <<< "$1";
+      case $byte4 in
+        "01" )
+          stop
+          ;;
+        "02" )
+          play
+          ;;
+        "04" )
+          echo Pressed Fw
+          ;;
+        "05" )
+          clear
+          ;;
+        "06" )
+          rec
+          ;;
+        "0C" )
+          echo Pressed Select
+          ;;
+      esac
+      ;;
+    "Port unsubscribed" )
+      echo Device disconnected
+      try_kill_midish
+      exec "$ScriptLoc"
+      ;;
+    "Control change" )
+      case  "$data1" in
+        "9" )
+          num=$(($data2 + 64))
+          change_tempo $num
+          ;;
+        "6" )
+          num=$(($data2 + 0))
+          if [ $mode == 1 ];
+          then
+            goto_measure $num
+          else
+            select_measure $num
+          fi
+          ;;
+        "120" )
+          mode=$(($data2 + 0))
+          echo Changing mode to $mode
+          ;;
+      esac
+      ;;
+    "Note on" )
+      ;;
+    "Note off" )
+      ;;
+  esac
+}
+
+try_kill_midish
+wait_for_device
+start_midish
+start_listening

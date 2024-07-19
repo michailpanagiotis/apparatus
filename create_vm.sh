@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -e
 
 wget -O /tmp/bundle.bash -q https://github.com/timo-reymann/bash-tui-toolkit/releases/download/1.5.1/bundle.bash

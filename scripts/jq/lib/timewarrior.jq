@@ -80,6 +80,7 @@ def get_categories_of_tags:
           "Release": "Releases",
           "Candidate assessment": "Assessments",
           "Assessment": "Assessments",
+          "Multi-tenancy": "Multi-tenancy",
           "Research": "Research",
           "Incident": "Incidents"
         }[$tag] // ""
