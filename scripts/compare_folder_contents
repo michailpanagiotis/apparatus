@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+find "$1" -type f -print0 | while IFS= read -r -d '' file; do
+  FULLPATH=$(realpath "$file")
+  FILENAME=$(basename "$FULLPATH")
+  WITHOUT_EXTENSION="${FILENAME%.*}"
+  found=$(find "$2" -name "$WITHOUT_EXTENSION.*" -print0)
+  echo "file"
+  if [[ -z $found ]]
+  then
+    echo Not found "$file" "$WITHOUT_EXTENSION"
+    # mv "$file" "$1"/pending
+  fi
+done

@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+
+find "$1" -maxdepth 1 -type f -print0 | while IFS= read -r -d '' file; do
+  FULLPATH=$(realpath "$file")
+  FILENAME=$(basename "$FULLPATH")
+  WITHOUT_EXTENSION="${FILENAME%.*}"
+  found=$(find "$2" -name "$WITHOUT_EXTENSION.*" -print0)
+  if [[ -z $found ]]
+  then
+    echo Not found "$file" "$WITHOUT_EXTENSION"
+    # mv "$file" "$1"/pending
+  else
+    ORIGINAL_FRAMES="$(ffprobe -loglevel quiet -select_streams v -show_streams "$file" | grep nb_frames)"
+    ORIGINAL_FRAMES="${ORIGINAL_FRAMES##*=}"
+    COMPRESSED_FRAMES=$(ffprobe -loglevel quiet -select_streams v -show_streams "$found" | grep nb_frames)
+    COMPRESSED_FRAMES="${COMPRESSED_FRAMES##*=}"
+    if (( "$ORIGINAL_FRAMES" > "$COMPRESSED_FRAMES" ));
+    then
+      echo "$WITHOUT_EXTENSION" is problematic: "$ORIGINAL_FRAMES -> $COMPRESSED_FRAMES"
+    else
+      echo Moving "$file" to "./trash" and moving "$found" to "./done"...
+      mv "$file" "./trash"
+      mv "$found" "./done"
+    fi
+  fi
+done
