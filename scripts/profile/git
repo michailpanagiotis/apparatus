@@ -46,6 +46,13 @@ gsquash() {(
   git commit -m "${MESSAGE}"
 )}
 
+gwip() {(
+  set -e
+  git add .
+  git commit -m "WIP"
+  git push
+)}
+
 gsync() {(
   set -e
   __assert_clean
