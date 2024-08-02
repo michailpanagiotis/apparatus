@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+
+read -r FULLPATH DIRECTORY FILENAME EXTENSION <<<$(get_path_info $1)
+
+TIMESTAMP=$(get_exif_timestamp "$FULLPATH")
+
+echo "${TIMESTAMP}_${FILENAME}"

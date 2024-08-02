@@ -1,47 +1,12 @@
 #!/bin/bash
 set -e
 
-function get_exif_timestamp() {
-  local FULLPATH=$(realpath "$1")
-  local DIR=$(dirname "$1")
-  local FILENAME=$(basename -- "$FULLPATH")
-  local EXTENSION="${FILENAME##*.}"
-  local FILENAME="${FILENAME%.*}"
-  if [[ "$EXTENSION" =~ original$ ]];
-  then
-    local METADATA_EXTENSION="mp4.json"
-  else
-    local METADATA_EXTENSION=${EXTENSION}.json
-  fi
-  local METADATA_FILE="$DIR"/"$FILENAME".$METADATA_EXTENSION
+read -r FULLPATH DIRECTORY FILENAME EXTENSION <<<$(get_path_info $1)
 
+EXIF_DATE=$(exiftool -T -DateTimeOriginal "$FULLPATH")
 
-  local EXIF_DATE=$(exiftool -T -DateTimeOriginal "$1")
-  if [ "$EXIF_DATE" == "-" ];
-  then
-    # >&2 echo Checking if "$METADATA_FILE" exists...
-    if [[ -f "$METADATA_FILE" ]]
-    then
-      # >&2 echo Reading timestamp from metadata file...
-      local TIMESTAMP=$(cat "$METADATA_FILE" | jq -r '.photoTakenTime.timestamp // ""')
-      local DATETIME_ORIGINAL=$(date -r $TIMESTAMP "+%Y:%m:%d %H:%M:%S")
-      >&2 echo Setting exif to "$DATETIME_ORIGINAL"
-      exiftool -overwrite_original -q -datetimeoriginal="$DATETIME_ORIGINAL" "$FULLPATH"
-    else
-      >&2 echo Unknown timestamp for $1
-      exit
-    fi
-  else
-    local EXIF_TIMESTAMP=$(date -j -f "%Y:%m:%d %H:%M:%S" "${EXIF_DATE}" +%s)
-    echo $EXIF_TIMESTAMP
-  fi
-}
-
-FULLPATH=$(realpath "$1")
-TIMESTAMP=$(get_exif_timestamp "$FULLPATH")
-if [[ "$TIMESTAMP" ]]; then
-  YEAR=$(date -r $TIMESTAMP "+%Y")
-  MONTH=$(date -r $TIMESTAMP "+%m")
-  DAY=$(date -r $TIMESTAMP "+%d")
+if [ "$EXIF_DATE" != "-" ];
+then
+  TIMESTAMP=$(date -j -f "%Y:%m:%d %H:%M:%S" "${EXIF_DATE}" +%s)
   date -r $TIMESTAMP "+%Y%m%d"
 fi
