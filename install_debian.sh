@@ -4,7 +4,7 @@ set -e
 install_base() {
   echo Installing packages...
   apt-get update
-  apt-get install wget git curl zsh jq wireguard fzf build-essential
+  apt-get install wget git curl zsh jq wireguard fzf build-essential kitty-terminfo
   sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 }
 
@@ -32,14 +32,14 @@ install_apparatus() {
   then
     git clone https://github.com/michailpanagiotis/apparatus $HOME/.apparatus
   else
-    show_success "Apparatus exists"
+    echo "Apparatus exists"
   fi
 
   if [ ! -f "$HOME/.zshrc" ]
   then
     ln -s $HOME/.apparatus/.zshrc $HOME/.zshrc
   else
-    show_success "Zsh config exists"
+    echo "Zsh config exists"
   fi
 
   if [ ! -d "$HOME/.config/nvim" ]
@@ -47,7 +47,7 @@ install_apparatus() {
     mkdir -p $HOME/.config
     ln -s $HOME/.apparatus/nvim $HOME/.config/nvim
   else
-    show_success "Nvim config exists"
+    echo "Nvim config exists"
   fi
 }
 
@@ -71,6 +71,6 @@ install_base
 install_toolkit
 PEER_NUMBER=$(with_validate 'input "Please enter the peer number"' validate_present)
 source <(curl -s https://raw.githubusercontent.com/michailpanagiotis/apparatus/master/scripts/install/install_wireguard.sh)
-install_git
+source <(curl -s https://raw.githubusercontent.com/michailpanagiotis/apparatus/master/scripts/install/install_github.sh)
 install_apparatus
 install_nvim
