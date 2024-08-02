@@ -15,60 +15,6 @@ install_toolkit() {
   source /tmp/bundle.bash
 }
 
-install_wireguard() {
-  if ! test -f /etc/wireguard/private.key; then
-    wg genkey | tee /etc/wireguard/private.key
-    chmod go= /etc/wireguard/private.key
-    show_success "Created wireguard private key"
-  else
-    show_success "Wireguard private key exists"
-  fi
-
-  if ! test -f /etc/wireguard/public.key; then
-    cat /etc/wireguard/private.key | wg pubkey | tee /etc/wireguard/public.key
-    show_success "Created wireguard public key"
-    PUBLIC_KEY=$(cat /etc/wireguard/public.key)
-    echo "Add the following to your Wireguard server configuration:"
-    echo "  [Peer]"
-    echo "  PublicKey=${PUBLIC_KEY}"
-    echo "  AllowedIPs = fda7:bcf9:b71c::${PEER_NUMBER}/128"
-  else
-    show_success "Wireguard public key exists"
-  fi
-
-
-  if ! test -f /etc/wireguard/wg0.conf; then
-    WIREGUARD_ENDPOINT=$(with_validate 'input "Please enter your Wireguard server endpoint"' validate_present)
-    PRIVATE_KEY=$(cat /etc/wireguard/private.key)
-    cat > /etc/wireguard/wg0.conf <<- EOM
-[Interface]
-Address = fda7:bcf9:b71c::${PEER_NUMBER}/64
-ListenPort = 51820
-PrivateKey = ${PRIVATE_KEY}
-
-[Peer]
-PublicKey = EMoxRoV0nQldMzAFjcFa7Rkuk2fMO+83YX3R7ppOMXQ=
-AllowedIPs = fda7:bcf9:b71c::/64
-Endpoint = ${WIREGUARD_ENDPOINT}:51820
-PersistentKeepalive = 25
-EOM
-    show_success "Created wireguard configuration"
-  else
-    show_success "Wireguard configuration exists"
-  fi
-
-  IS_UP=$(wg show)
-
-  if [ -z "$IS_UP" ]; then
-    wg-quick up wg0
-    show_success 'Wireguard is up'
-  else
-    show_success 'Wireguard is up'
-  fi
-  systemctl enable wg-quick@wg0.service
-  systemctl daemon-reload
-}
-
 install_git() {
   wget -O $HOME/.gitconfig -q https://raw.githubusercontent.com/michailpanagiotis/apparatus/master/git/gitconfig
   if ! test -f ~/.ssh/id_ed25519.pub; then
@@ -124,7 +70,7 @@ install_nvim() {
 install_base
 install_toolkit
 PEER_NUMBER=$(with_validate 'input "Please enter the peer number"' validate_present)
-install_wireguard
+source <(curl -s https://raw.githubusercontent.com/michailpanagiotis/apparatus/master/scripts/install/install_wireguard.sh)
 install_git
 install_apparatus
 install_nvim
