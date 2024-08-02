@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+FULLPATH=$(realpath "$1")
+
+filename=$(basename -- "$FULLPATH")
+extension="${filename##*.}"
+filename="${filename%.*}"
+dir=$(dirname "$FULLPATH")
+
+echo "${FULLPATH} ${dir} ${filename} ${extension}"
