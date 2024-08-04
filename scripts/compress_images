@@ -63,7 +63,7 @@ function calc_output_file() {
 	local OUTFILE="$OUTPUT_DIR"/"${FILENAME%.*}".webp
 	echo "$OUTFILE"
   	;;
-      *"Apple QuickTime"*|*"MP4 Base Media"*|*"MP4 v2"*)
+      *"Apple QuickTime"*|*"Apple iTunes Video"*|*"MP4 Base Media"*|*"MP4 v2"*)
 	local OUTFILE="$OUTPUT_DIR"/"${FILENAME%.*}".mp4
 	echo "$OUTFILE"
 	;;
@@ -96,11 +96,11 @@ function compress_file_destructive() {
   	magick "$FULLPATH" -profile srgb.icc -strip -interlace Plane -quiet "$OUTFILE"
 	echo "$OUTFILE"
   	;;
-      *"Apple QuickTime"*|*"MP4 Base Media"*|*"MP4 v2"*)
+      *"Apple QuickTime"*|*"Apple iTunes Video"*|*"MP4 Base Media"*|*"MP4 v2"*)
 	local OUTFILE="$OUTPUT_DIR"/"${FILENAME%.*}".mp4
-	>&2 echo compressing \'"$FULLPATH"\' to \'"$OUTFILE"\'
+	>&2 echo compressing video \'"$FULLPATH"\' to \'"$OUTFILE"\'
 	local EXIF_DATE=$(exiftool -T -CreateDate "$FULLPATH")
-	</dev/null ffmpeg -nostdin -y -i "$FULLPATH" -movflags use_metadata_tags -c:v libx265 -c:a copy -x265-params crf=22 "$OUTFILE"
+	</dev/null ffmpeg -nostdin -y -i "$FULLPATH" -movflags use_metadata_tags -c:v libx265 -c:a copy -preset ultrafast -x265-params crf=22 "$OUTFILE"
 	exiftool -overwrite_original -q -DateTimeOriginal="$EXIF_DATE" "$OUTFILE"
 	echo "$OUTFILE"
 	;;
@@ -136,9 +136,8 @@ function compress_file_to_output_dir() {
 
 function compress_folder_contents() {
   local ROOT_PATH=$(realpath "$1")
-  local OUTPUTPATH="$PWD"/$(basename $ROOT_PATH).compressed
   find "$ROOT_PATH" -type f -not -path '*/.*' -print0 | while IFS= read -r -d '' file; do
-    local OUTPUT_DIR=$(dirname -- "$OUTPUTPATH"/"$(relative_path "$(realpath "$file")" "$ROOT_PATH")")
+    local OUTPUT_DIR="$2"
     local FULLPATH=$(realpath "$file")
     local OUTPUT_FILE=$(calc_output_file "$FULLPATH" "$OUTPUT_DIR")
     if [[ -f "$OUTPUT_FILE" ]]
@@ -154,10 +153,10 @@ function compress_folder_contents() {
 
 if [[ -d "$1" ]]
 then
-  compress_folder_contents "$1"
+  compress_folder_contents "$1" "$2"
 elif [[ -f "$1" ]]
 then
-  compress_file_to_output_dir "$1" ./compressed
+  compress_file_to_output_dir "$1" "$2"
 else
   echo "Expecting a directory as input"
   exit
