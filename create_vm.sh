@@ -2,8 +2,13 @@
 
 set -e
 
+echo 'getting bundle.bash'
+
 wget -O /tmp/bundle.bash -q https://github.com/timo-reymann/bash-tui-toolkit/releases/download/1.5.1/bundle.bash
+echo 'got bundle.bash'
+echo 'sourcing bundle.bash'
 source /tmp/bundle.bash
+
 
 validate_vmid() {
    if (( $1 <= 100 )); then
@@ -23,7 +28,7 @@ EMAIL=$(with_validate 'input "Set your email"' validate_present)
 DISK_SIZE=$(with_validate 'input "Disk size (Gb)"' validate_present)
 
 # Select image
-images=("https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2" "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img" "https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2")
+images=("https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2" "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img" "https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2")
 image_idx=$(list "Select one image" "${images[@]}")
 CLOUD_IMAGE=${images[$image_idx]}
 
@@ -102,3 +107,4 @@ create_vm
 create_disk
 configure_cloud_init
 config_network
+
