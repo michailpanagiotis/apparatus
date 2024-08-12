@@ -25,8 +25,9 @@ for n in $(seq 2 $#); do
   # from=$(date -r $next "+%H:%M:%S")
 done
 
-for file in ${files[@]}; do
-  echo "file $file"
+for ((i = 0; i < ${#files[@]}; i++))
+do
+  echo "file \"${files[$i]}\""
 done > list.txt
 
 output=$(echo "${filename}_cut.${extension}")
@@ -39,9 +40,9 @@ full_command=$(echo ${commands[@]})
 
 echo $full_command
 
-eval $full_command
-
-rm list.txt
-for file in ${files[@]}; do
-  rm "$file"
-done
+# eval $full_command
+#
+# rm list.txt
+# for file in ${files[@]}; do
+#   rm "$file"
+# done
