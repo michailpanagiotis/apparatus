@@ -17,7 +17,8 @@ for n in $(seq 2 $#); do
 
   part=$(($n-1))
   output=$(echo "${filename}_part${part}.${extension}")
-  command=$(echo ffmpeg -i \""$1"\" -ss $from -to $to -c:v libx265 -c:a copy -preset ultrafast -x265-params crf=30 \"$output\" ";")
+  command=$(echo ffmpeg -i \""$1"\" -ss $from -to $to -c:v libx265 -c:a copy -preset ultrafast -x265-params crf=30 -movflags faststart -maxrate 2M -bufsize
+ 2M -tag:v hvc1 \"$output\" ";")
 
   # echo $command
   commands+=( $command )

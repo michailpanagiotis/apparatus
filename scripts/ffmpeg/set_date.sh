@@ -7,6 +7,15 @@ filename="${filename%.*}"
 
 echo Setting date to $filename.$extension
 
+file_digits=${#filename}
+
+if [ "$file_digits" -eq "8" ]; then
+  created_at=$(date -j -f "%Y%m%d %H:%M:%S" "${filename} 00:00:00" +"%m/%d/%Y %H:%M:%S")
+  output_filename=$(date -j -f "%Y%m%d %H:%M:%S" "${filename} 00:00:00" +"%Y%m%d")
+  SetFile -d "$created_at" "$1"
+  exit
+fi
+
 input_date=$2
 date_digits=${#input_date}
 
