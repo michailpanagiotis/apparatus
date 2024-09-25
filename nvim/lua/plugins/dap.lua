@@ -13,7 +13,6 @@ DapPlugin.dependencies = {
   {
     "microsoft/vscode-js-debug",
     -- After install, build it and rename the dist directory to out
-    build = "npm install --legacy-peer-deps --no-save && npx gulp vsDebugServerBundle && rm -rf out && mv dist out",
     version = "1.*",
   },
   {
@@ -28,15 +27,11 @@ DapPlugin.dependencies = {
         -- debugger_path = "/root/Projects/vscode-js-debug/out/src",
 
         -- Command to use to launch the debug server. Takes precedence over "node_path" and "debugger_path"
-        debugger_cmd = { "js-debug-adapter" },
+        debugger_cmd = { "./scripts/run_debugger.sh" },
 
         -- which adapters to register in nvim-dap
         adapters = {
-          "chrome",
           "pwa-node",
-          "pwa-chrome",
-          "pwa-msedge",
-          "pwa-extensionHost",
           "node-terminal",
         },
 
@@ -94,20 +89,38 @@ DapPlugin.config = function()
   for _, language in ipairs(js_based_languages) do
     dap.configurations[language] = {
       {
-        address= "127.0.0.1",
-        name = "Attach: Docker",
         type = "pwa-node",
+        address= "localhost",
+        name = "Attach: Docker",
         request = "attach",
         skipFiles = {"<node_internals>/**"},
-        cwd = "${workspaceFolder}",
-        localRoot = "${workspaceFolder}",
-        remoteRoot = "/app",
+        port = 9229,
+        cwd = "/src",
+        localRoot = "/src",
+        outputCapture = "console",
+        processId = 495,
+        trace = true,
+        -- remoteRoot = "/app",
         restart = true
       }
     }
   end
+  local dapui = require("dapui")
+  dap.listeners.before.attach.dapui_config = function()
+    dapui.open()
+  end
+  dap.listeners.before.launch.dapui_config = function()
+    dapui.open()
+  end
+  dap.listeners.before.event_terminated.dapui_config = function()
+    dapui.close()
+  end
+  dap.listeners.before.event_exited.dapui_config = function()
+    dapui.close()
+  end
 end
 
 return {
-  DapPlugin
+  DapPlugin,
+  { "rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} }
 }
