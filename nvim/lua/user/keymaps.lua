@@ -18,3 +18,14 @@ vim.cmd([[
   " Search/replace
   vnoremap <C-R> "hy:%s/<C-r>h//gc<left><left><left>
 ]])
+
+
+-- center text on search
+local set = vim.keymap.set
+set('n', 'n', 'nzzzv')
+set('n', 'N', 'Nzzzv')
+set('c', '<CR>',
+  function()
+    return vim.fn.getcmdtype() == '/' and '<CR>zzzv' or '<CR>'
+  end,
+  { expr = true })
