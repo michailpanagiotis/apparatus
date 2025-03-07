@@ -62,6 +62,8 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+-- Color column
+vim.api.nvim_set_option_value("colorcolumn", "79", {})
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -94,7 +96,11 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 vim.keymap.set('n', 'Q' , '@q', { desc = 'Replay recording'})
 vim.keymap.set('v', 'Q' , ':norm @q<cr>', { desc = 'Replay recording' })
 
+-- Cursor when selecting
 vim.keymap.set('v', 'y', 'ygv<esc>', { desc = 'Keep cursor at end of selection' })
+
+-- Search/replace
+vim.keymap.set('v', '<C-R>', '"hy:%s/<C-r>h//gc<left><left><left>', { desc = 'Search/replace' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -610,7 +616,8 @@ require('lazy').setup({
             luasnip.lsp_expand(args.body)
           end,
         },
-        completion = { completeopt = 'menu,menuone,noinsert' },
+        -- completion = { completeopt = 'menu,menuone,noinsert' },
+        completion = { completeopt = 'menuone,noselect' },
 
         -- For an understanding of why these mappings were
         -- chosen, you will need to read `:help ins-completion`
