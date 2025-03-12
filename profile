@@ -38,3 +38,5 @@ source $HOME/.apparatus/scripts/profile/hub
 source $HOME/.apparatus/scripts/profile/docker
 source $HOME/.apparatus/scripts/profile/timew
 source $HOME/.apparatus/scripts/profile/projects/*
+
+alias oauth2=~/.apparatus/scripts/oauth2/get_access_token.sh
