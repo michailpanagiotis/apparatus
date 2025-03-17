@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -189,10 +189,10 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+-- vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+-- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+-- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -635,19 +635,7 @@ require('lazy').setup({
             [vim.diagnostic.severity.HINT] = '󰌶 ',
           },
         } or {},
-        virtual_text = {
-          source = 'if_many',
-          spacing = 2,
-          format = function(diagnostic)
-            local diagnostic_message = {
-              [vim.diagnostic.severity.ERROR] = diagnostic.message,
-              [vim.diagnostic.severity.WARN] = diagnostic.message,
-              [vim.diagnostic.severity.INFO] = diagnostic.message,
-              [vim.diagnostic.severity.HINT] = diagnostic.message,
-            }
-            return diagnostic_message[diagnostic.severity]
-          end,
-        },
+        virtual_text = false,
       }
 
       -- LSP servers and clients are able to communicate to each other what features they support.
@@ -725,7 +713,11 @@ require('lazy').setup({
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+            -- because of rustaceanvim
+            if server_name ~= "rust_analyzer"
+            then
+              require('lspconfig')[server_name].setup(server)
+            end
           end,
         },
       }
@@ -973,6 +965,8 @@ require('lazy').setup({
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
 
+  'nvim-tree/nvim-web-devicons',
+
   'tomtom/tcomment_vim',  -- "gc" to comment visual regions/lines
   {
     'goolord/alpha-nvim',
@@ -1032,6 +1026,14 @@ require('lazy').setup({
       require"trouble".setup{}
       vim.keymap.set('n', '<C-l>', ':TroubleToggle document_diagnostics<CR>', { silent = true })
     end
+  },
+  {
+    'mfussenegger/nvim-dap',
+  },
+  {
+    'mrcjkb/rustaceanvim',
+    version = '^5', -- Recommended
+    lazy = false, -- This plugin is already lazy
   },
   {
     'lukas-reineke/indent-blankline.nvim',
@@ -1196,12 +1198,82 @@ vim.keymap.set('v', 'y', 'ygv<esc>', { desc = 'Keep cursor at end of selection' 
 -- Search/replace
 vim.keymap.set('v', '<C-R>', '"hy:%s/<C-r>h//gc<left><left><left>', { desc = 'Search/replace' })
 
+
 vim.api.nvim_create_autocmd('BufWritePre', {
   desc = 'Trim white space',
   pattern = { "*" },
   command = [[%s/\s\+$//e]],
 })
 
+-- Show line diagnostics automatically in hover window
+vim.o.updatetime = 250
+vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
+
+
+-- Prints the first diagnostic for the current line.
+vim.api.nvim_create_autocmd('CursorMoved', {
+  callback = function()
+    -- Location information about the last message printed. The format is
+    -- `(did print, buffer number, line number)`.
+    local last_echo = { false, -1, -1 }
+    -- The timer used for displaying a diagnostic in the commandline.
+    local echo_timer = nil
+    -- The timer after which to display a diagnostic in the commandline.
+    local echo_timeout = 50
+    -- The highlight group to use for warning messages.
+    local warning_hlgroup = 'WarningMsg'
+    -- The highlight group to use for error messages.
+    local error_hlgroup = 'ErrorMsg'
+
+    if echo_timer then
+      echo_timer:stop()
+    end
+
+    echo_timer = vim.defer_fn(
+      function()
+        local line = vim.fn.line('.') - 1
+        local bufnr = vim.api.nvim_win_get_buf(0)
+
+        if last_echo[1] and last_echo[2] == bufnr and last_echo[3] == line then
+          return
+        end
+
+        local diags = vim
+          .lsp
+          .diagnostic
+          .get_line_diagnostics(nil, line, { min=vim.diagnostic.severity.WARN })
+
+        if #diags == 0 then
+          -- If we previously echo'd a message, clear it out by echoing an empty
+          -- message.
+          if last_echo[1] then
+            last_echo = { false, -1, -1 }
+
+            vim.api.nvim_command('echo ""')
+          end
+
+          return
+        end
+
+        last_echo = { true, bufnr, line }
+
+        local diag = diags[1]
+        local kind = 'warning'
+        local hlgroup = warning_hlgroup
+
+        if diag.severity == vim.lsp.protocol.DiagnosticSeverity.Error then
+          kind = 'error'
+          hlgroup = error_hlgroup
+        end
+
+        local message = table.concat(vim.split(diag.message, "\n"), ', ');
+        vim.api.nvim_echo({ { kind .. ': ', hlgroup }, { message } }, false, {})
+      end,
+      echo_timeout
+    )
+  end,
+  pattern = '*',
+})
 
 
 -- The line beneath this is called `modeline`. See `:help modeline`
