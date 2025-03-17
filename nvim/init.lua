@@ -5,7 +5,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -64,6 +64,9 @@ vim.opt.scrolloff = 10
 
 -- Color column
 vim.api.nvim_set_option_value("colorcolumn", "79", {})
+
+-- Loader (https://github.com/neovim/neovim/commit/2257ade3dc2daab5ee12d27807c0b3bcf103cd29)
+vim.loader.enable()
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -187,6 +190,116 @@ require('lazy').setup({
     },
   },
 
+  {
+    'ojroques/nvim-osc52',
+    config = function ()
+      local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
+      vim.api.nvim_create_autocmd('TextYankPost', {
+        callback = function()
+          vim.highlight.on_yank()
+          if vim.v.event.operator == 'y' and vim.v.event.regname == '' then
+            require('osc52').copy_register('"')
+          end
+        end,
+        group = highlight_group,
+        pattern = '*',
+      })
+    end
+  },
+
+  {
+    'AckslD/nvim-trevJ.lua',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    config = function ()
+      require"trevj".setup{}
+      vim.keymap.set('n', 'S', function()
+        require('trevj').format_at_cursor()
+      end)
+    end,
+  },
+
+  { -- Adds git related signs to the gutter, as well as utilities for managing changes
+    'ruifm/gitlinker.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim', 'ojroques/nvim-osc52' },
+    opts = {
+      -- print the url after performing the action
+      print_url = false,
+      action_callback = function(url)
+        -- yank to unnamed register
+        vim.api.nvim_command('let @" = \'' .. url .. '\'')
+        -- copy to the system clipboard using OSC52
+        require('osc52').copy_register('"')
+      end,
+    },
+  },
+
+  {
+    'folke/trouble.nvim',
+    config = function()
+      require"trouble".setup{}
+      vim.keymap.set('n', '<C-l>', ':TroubleToggle document_diagnostics<CR>', { silent = true })
+    end
+  },
+
+  {
+    'lukas-reineke/indent-blankline.nvim',
+    main = "ibl",
+    opts = { indent = { char = '┊' }, scope = { enabled = false }, whitespace = { remove_blankline_trail = false } }
+  },
+
+  { -- File Browser
+    'tamago324/lir.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+    },
+    config = function()
+      local actions = require'lir.actions'
+      local mark_actions = require 'lir.mark.actions'
+      local clipboard_actions = require'lir.clipboard.actions'
+
+      require'lir'.setup {
+        devicons = {
+          enable = true,
+          highlight_dirname = false
+        },
+        hide_cursor = true,
+        mappings = {
+          ['<CR>']  = actions.edit,
+          ['<C-s>'] = actions.split,
+          ['<C-v>'] = actions.vsplit,
+          ['<C-t>'] = actions.tabedit,
+
+          ['<C-n>'] = function()
+            vim.cmd("quit")
+          end,
+          ['<Esc>'] = function()
+            vim.cmd("quit")
+          end,
+          ['K']     = actions.mkdir,
+          ['N']     = actions.newfile,
+          ['R']     = actions.rename,
+          ['.']     = actions.toggle_show_hidden,
+          ['D']     = actions.delete,
+
+          ['<Space>'] = function()
+            mark_actions.toggle_mark()
+            vim.cmd('normal! j')
+          end,
+          ['y'] = clipboard_actions.copy,
+          ['p'] = clipboard_actions.paste,
+        },
+      }
+
+      vim.api.nvim_set_keymap(
+        'n',
+        '<C-n>',
+        ':<C-u>lua require"lir.float".toggle()<CR>',
+        { noremap = true }
+      )
+    end,
+  },
+
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
@@ -248,6 +361,9 @@ require('lazy').setup({
             require('telescope.themes').get_dropdown(),
           },
         },
+        defaults = {
+          sorting_strategy = "ascending",
+        },
       }
 
       -- Enable Telescope extensions if they are installed
@@ -258,7 +374,7 @@ require('lazy').setup({
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<C-p>', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
