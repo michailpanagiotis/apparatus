@@ -1031,11 +1031,92 @@ require('lazy').setup({
   },
   {
     'mfussenegger/nvim-dap',
+    dependencies = { 'williamboman/mason.nvim' },
+    config = function()
+      local dap = require('dap')
+      dap.adapters.codelldb = {
+        type = "server",
+        port = "${port}",
+        executable = {
+          command = "/root/.local/share/nvim/mason/bin/codelldb", -- or if not in $PATH: "/absolute/path/to/codelldb"
+          args = { "--port", "${port}" },
+        },
+      }
+      dap.configurations.rust = {
+        {
+          name = "Rust debug",
+          type = "codelldb",
+          request = "launch",
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/', 'file')
+          end,
+          cwd = '${workspaceFolder}',
+          stopOnEntry = true,
+        },
+      }
+      -- local dap = require('dap')
+      -- local codelldb = require('mason-registry').get_package('codelldb') -- note that this will error if you provide a non-existent package name
+      -- dap.adapters.codelldb = {
+      --   type = "server",
+      --   port = "${port}",
+      --   executable = {
+      --     command = codelldb:get_install_path(),
+      --     args = { "--port", "${port}" },
+      --   },
+      -- }
+      -- dap.configurations.rust = {
+      --   {
+      --     name = "Rust debug",
+      --     type = "codelldb",
+      --     request = "launch",
+      --     program = function()
+      --       vim.fn.jobstart('cargo build')
+      --       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/', 'file')
+      --     end,
+      --     cwd = '${workspaceFolder}',
+      --     stopOnEntry = true,
+      --     showDisassembly = "never",
+      --   },
+      -- }
+    end
   },
   {
     'mrcjkb/rustaceanvim',
     version = '^5', -- Recommended
     lazy = false, -- This plugin is already lazy
+  },
+  {
+    "chrisgrieser/nvim-origami",
+    event = "VeryLazy",
+    opts = {}, -- needed even when using default config
+    config = function()
+      -- default settings
+      require("origami").setup {
+        keepFoldsAcrossSessions = false,
+        pauseFoldsOnSearch = true,
+        setupFoldKeymaps = false,
+
+        -- `h` key opens on first column, not at first non-blank character or before
+        hOnlyOpensOnFirstColumn = false,
+      }
+      vim.keymap.set("n", "<Left>", function() require("origami").h() end)
+      vim.keymap.set("n", "<Right>", function() require("origami").l() end)
+    end
+  },
+  {
+     "m4xshen/hardtime.nvim",
+     dependencies = { "MunifTanjim/nui.nvim" },
+     opts = {
+       max_count = 3,
+       restriction_mode = "hint",
+       disable_mouse = false,
+       disabled_keys = {
+         ["<Up>"] = {},
+         ["<Down>"] = {},
+         ["<Left>"] = {},
+         ["<Right>"] = {},
+       },
+     },
   },
   {
     'lukas-reineke/indent-blankline.nvim',
@@ -1183,6 +1264,7 @@ vim.loader.enable()
 
 vim.opt.expandtab = true;
 vim.opt.termguicolors = true
+vim.opt.foldlevelstart = 99
 vim.o.hlsearch = true;
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -1207,75 +1289,79 @@ vim.api.nvim_create_autocmd('BufWritePre', {
   command = [[%s/\s\+$//e]],
 })
 
+-- Treesitter folding
+vim.wo.foldmethod = 'expr'
+vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
+
 -- Show line diagnostics automatically in hover window
-vim.o.updatetime = 250
-vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
+-- vim.o.updatetime = 250
+-- vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
 
 
 -- Prints the first diagnostic for the current line.
-vim.api.nvim_create_autocmd('CursorMoved', {
-  callback = function()
-    -- Location information about the last message printed. The format is
-    -- `(did print, buffer number, line number)`.
-    local last_echo = { false, -1, -1 }
-    -- The timer used for displaying a diagnostic in the commandline.
-    local echo_timer = nil
-    -- The timer after which to display a diagnostic in the commandline.
-    local echo_timeout = 50
-    -- The highlight group to use for warning messages.
-    local warning_hlgroup = 'WarningMsg'
-    -- The highlight group to use for error messages.
-    local error_hlgroup = 'ErrorMsg'
-
-    if echo_timer then
-      echo_timer:stop()
-    end
-
-    echo_timer = vim.defer_fn(
-      function()
-        local line = vim.fn.line('.') - 1
-        local bufnr = vim.api.nvim_win_get_buf(0)
-
-        if last_echo[1] and last_echo[2] == bufnr and last_echo[3] == line then
-          return
-        end
-
-        local diags = vim
-          .lsp
-          .diagnostic
-          .get_line_diagnostics(nil, line, { min=vim.diagnostic.severity.WARN })
-
-        if #diags == 0 then
-          -- If we previously echo'd a message, clear it out by echoing an empty
-          -- message.
-          if last_echo[1] then
-            last_echo = { false, -1, -1 }
-
-            vim.api.nvim_command('echo ""')
-          end
-
-          return
-        end
-
-        last_echo = { true, bufnr, line }
-
-        local diag = diags[1]
-        local kind = 'warning'
-        local hlgroup = warning_hlgroup
-
-        if diag.severity == vim.lsp.protocol.DiagnosticSeverity.Error then
-          kind = 'error'
-          hlgroup = error_hlgroup
-        end
-
-        local message = table.concat(vim.split(diag.message, "\n"), ', ');
-        vim.api.nvim_echo({ { kind .. ': ', hlgroup }, { message } }, false, {})
-      end,
-      echo_timeout
-    )
-  end,
-  pattern = '*',
-})
+-- vim.api.nvim_create_autocmd('CursorMoved', {
+--   callback = function()
+--     -- Location information about the last message printed. The format is
+--     -- `(did print, buffer number, line number)`.
+--     local last_echo = { false, -1, -1 }
+--     -- The timer used for displaying a diagnostic in the commandline.
+--     local echo_timer = nil
+--     -- The timer after which to display a diagnostic in the commandline.
+--     local echo_timeout = 50
+--     -- The highlight group to use for warning messages.
+--     local warning_hlgroup = 'WarningMsg'
+--     -- The highlight group to use for error messages.
+--     local error_hlgroup = 'ErrorMsg'
+--
+--     if echo_timer then
+--       echo_timer:stop()
+--     end
+--
+--     echo_timer = vim.defer_fn(
+--       function()
+--         local line = vim.fn.line('.') - 1
+--         local bufnr = vim.api.nvim_win_get_buf(0)
+--
+--         if last_echo[1] and last_echo[2] == bufnr and last_echo[3] == line then
+--           return
+--         end
+--
+--         local diags = vim
+--           .lsp
+--           .diagnostic
+--           .get_line_diagnostics(nil, line, { min=vim.diagnostic.severity.WARN })
+--
+--         if #diags == 0 then
+--           -- If we previously echo'd a message, clear it out by echoing an empty
+--           -- message.
+--           if last_echo[1] then
+--             last_echo = { false, -1, -1 }
+--
+--             vim.api.nvim_command('echo ""')
+--           end
+--
+--           return
+--         end
+--
+--         last_echo = { true, bufnr, line }
+--
+--         local diag = diags[1]
+--         local kind = 'warning'
+--         local hlgroup = warning_hlgroup
+--
+--         if diag.severity == vim.lsp.protocol.DiagnosticSeverity.Error then
+--           kind = 'error'
+--           hlgroup = error_hlgroup
+--         end
+--
+--         local message = table.concat(vim.split(diag.message, "\n"), ', ');
+--         vim.api.nvim_echo({ { kind .. ': ', hlgroup }, { message } }, false, {})
+--       end,
+--       echo_timeout
+--     )
+--   end,
+--   pattern = '*',
+-- })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
