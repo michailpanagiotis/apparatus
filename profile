@@ -40,3 +40,9 @@ source $HOME/.apparatus/scripts/profile/timew
 source $HOME/.apparatus/scripts/profile/projects/*
 
 alias oauth2=~/.apparatus/scripts/oauth2/get_access_token.sh
+
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+if ! ssh-add -l &>/dev/null; then
+     echo Adding keys...
+     ssh-add -t 1d ~/.ssh/id_github
+fi
