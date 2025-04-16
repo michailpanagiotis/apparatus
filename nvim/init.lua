@@ -659,8 +659,8 @@ require('lazy').setup({
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
-        -- eslint = {},
-        eslint_d = {},
+        eslint = {},
+        -- eslint_d = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -1029,8 +1029,79 @@ require('lazy').setup({
       vim.keymap.set('n', '<C-l>', ':TroubleToggle document_diagnostics<CR>', { silent = true })
     end
   },
+  -- {
+  --   "jay-babu/mason-nvim-dap.nvim",
+  --   ---@type MasonNvimDapSettings
+  --   opts = {
+  --     -- This line is essential to making automatic installation work
+  --     -- :exploding-brain
+  --     handlers = {},
+  --     automatic_installation = {
+  --       -- These will be configured by separate plugins.
+  --       exclude = {
+  --         "delve",
+  --         "python",
+  --       },
+  --     },
+  --     -- DAP servers: Mason will be invoked to install these if necessary.
+  --     ensure_installed = {
+  --       "bash",
+  --       "codelldb",
+  --       "python",
+  --       "lua",
+  --     },
+  --   },
+  --   dependencies = {
+  --     "mfussenegger/nvim-dap",
+  --     "williamboman/mason.nvim",
+  --   },
+  -- },
   {
     'mfussenegger/nvim-dap',
+    lazy=true,
+    keys = {
+      {
+        "<leader>db",
+        function() require("dap").toggle_breakpoint() end,
+        desc = "Toggle Breakpoint"
+      },
+
+      {
+        "<leader>dc",
+        function() require("dap").continue() end,
+        desc = "Continue"
+      },
+
+      {
+        "<leader>dn",
+        function() require("dap").step_over() end,
+        desc = "Step over"
+      },
+
+      {
+        "<leader>di",
+        function() require("dap").step_into() end,
+        desc = "Step into"
+      },
+
+      {
+        "<leader>do",
+        function() require("dap").step_out() end,
+        desc = "Step out"
+      },
+
+      {
+        "<leader>dC",
+        function() require("dap").run_to_cursor() end,
+        desc = "Run to Cursor"
+      },
+
+      {
+        "<leader>dT",
+        function() require("dap").terminate() end,
+        desc = "Terminate"
+      },
+    },
     dependencies = { 'williamboman/mason.nvim' },
     config = function()
       local dap = require('dap')
@@ -1042,18 +1113,10 @@ require('lazy').setup({
           args = { "--port", "${port}" },
         },
       }
-      dap.configurations.rust = {
-        {
-          name = "Rust debug",
-          type = "codelldb",
-          request = "launch",
-          program = function()
-            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/', 'file')
-          end,
-          cwd = '${workspaceFolder}',
-          stopOnEntry = true,
-        },
-      }
+
+      vim.fn.sign_define('DapBreakpoint',{ text ='🟥', texthl ='', linehl ='', numhl =''})
+      vim.fn.sign_define('DapStopped',{ text ='▶️', texthl ='', linehl ='', numhl =''})
+
       -- local dap = require('dap')
       -- local codelldb = require('mason-registry').get_package('codelldb') -- note that this will error if you provide a non-existent package name
       -- dap.adapters.codelldb = {
@@ -1079,6 +1142,69 @@ require('lazy').setup({
       --   },
       -- }
     end
+  },
+  {
+    "rcarriga/nvim-dap-ui",
+    config = function ()
+      local dap, dapui = require("dap"), require("dapui")
+      dapui.setup({
+        layouts = { {
+          elements = { {
+              id = "scopes",
+              size = 0.25
+            }, {
+              id = "breakpoints",
+              size = 0.25
+            }, {
+              id = "stacks",
+              size = 0.25
+            }, {
+              id = "watches",
+              size = 0.25
+            } },
+          position = "left",
+          size = 40
+        }, {
+          elements = { {
+              id = "repl",
+              size = 0.5
+            }, {
+              id = "console",
+              size = 0.5
+            } },
+          position = "bottom",
+          size = 10
+        } },
+      })
+      dap.listeners.before.attach.dapui_config = function()
+        dapui.open("sidebar")
+      end
+      dap.listeners.before.launch.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated.dapui_config = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited.dapui_config = function()
+        dapui.close()
+      end
+
+    end,
+    keys = {
+      {
+        "<leader>du",
+        function()
+          require("dapui").toggle({})
+        end,
+        desc = "Dap UI"
+      },
+    },
+    dependencies = {
+        -- "jay-babu/mason-nvim-dap.nvim",
+        'mfussenegger/nvim-dap',
+        "nvim-neotest/nvim-nio",
+        "theHamsta/nvim-dap-virtual-text",
+    },
   },
   {
     'mrcjkb/rustaceanvim',
@@ -1292,6 +1418,11 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 -- Treesitter folding
 vim.wo.foldmethod = 'expr'
 vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
+
+
+-- DAP
+vim.fn.sign_define('DapBreakpoint',{ text ='🟥', texthl ='', linehl ='', numhl =''})
+vim.fn.sign_define('DapStopped',{ text ='▶️', texthl ='', linehl ='', numhl =''})
 
 -- Show line diagnostics automatically in hover window
 -- vim.o.updatetime = 250
