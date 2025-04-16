@@ -1057,6 +1057,38 @@ require('lazy').setup({
   --   },
   -- },
   {
+    'jbyuki/one-small-step-for-vimkind',
+    lazy=false,
+    config = function()
+      if init_debug then
+        require"osv".launch({port=8086, blocking=true})
+      end
+    end
+  },
+  {
+    'michailpanagiotis/rustowl',
+    dependencies = {'jbyuki/one-small-step-for-vimkind'},
+    version = '*', -- Latest stable version
+    -- build = 'cd rustowl && cargo install --path . --locked',
+    lazy = false, -- This plugin is already lazy
+    opts = {
+      client = {
+        on_attach = function(_, buffer)
+          require('rustowl').enable(buffer)
+          vim.api.nvim_set_hl(0, "lifetime", { sp = "green", underdotted = true })
+          vim.api.nvim_set_hl(0, "imm_borrow", { sp = "blue", underdotted = true })
+          vim.api.nvim_set_hl(0, "mut_borrow", { sp = "purple", underdotted = true })
+          vim.api.nvim_set_hl(0, "move", { sp = "orange", underline = true })
+          vim.api.nvim_set_hl(0, "call", { sp = "orange", underline = true })
+          vim.api.nvim_set_hl(0, "error", { sp = "red", underline = true })
+          vim.keymap.set('n', '<leader>o', function()
+            require('rustowl').toggle(buffer)
+          end, { buffer = buffer, desc = 'Toggle RustOwl' })
+        end
+      },
+    },
+  },
+  {
     'mfussenegger/nvim-dap',
     lazy=true,
     keys = {
@@ -1116,6 +1148,38 @@ require('lazy').setup({
 
       vim.fn.sign_define('DapBreakpoint',{ text ='🟥', texthl ='', linehl ='', numhl =''})
       vim.fn.sign_define('DapStopped',{ text ='▶️', texthl ='', linehl ='', numhl =''})
+
+      dap.adapters.nlua = function(callback, conf)
+        local adapter = {
+          type = "server",
+          host = conf.host or "127.0.0.1",
+          port = conf.port or 8086,
+        }
+        if conf.start_neovim then
+          local dap_run = dap.run
+          dap.run = function(c)
+            adapter.port = c.port
+            adapter.host = c.host
+          end
+          require("osv").run_this()
+          dap.run = dap_run
+        end
+        callback(adapter)
+      end
+      dap.configurations.lua = {
+        {
+          type = "nlua",
+          request = "attach",
+          name = "Run this file",
+          start_neovim = {},
+        },
+        {
+          type = "nlua",
+          request = "attach",
+          name = "Attach to running Neovim instance (port = 8086)",
+          port = 8086,
+        },
+      }
 
       -- local dap = require('dap')
       -- local codelldb = require('mason-registry').get_package('codelldb') -- note that this will error if you provide a non-existent package name
@@ -1214,6 +1278,7 @@ require('lazy').setup({
   {
     "chrisgrieser/nvim-origami",
     event = "VeryLazy",
+    dependencies = { 'jbyuki/one-small-step-for-vimkind' },
     opts = {}, -- needed even when using default config
     config = function()
       -- default settings
