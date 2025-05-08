@@ -21,3 +21,12 @@ then
 else
   echo "Nvim config exists"
 fi
+
+if [ ! -d "$HOME/.config/mbsync" ]
+then
+  mkdir -p $HOME/.config
+  ln -s $HOME/.apparatus/mail/config/mbsync $HOME/.config/mbsync
+else
+  echo "Mbsync config exists"
+fi
+
