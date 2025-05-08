@@ -1065,29 +1065,29 @@ require('lazy').setup({
       end
     end
   },
-  {
-    'michailpanagiotis/rustowl',
-    dependencies = {'jbyuki/one-small-step-for-vimkind'},
-    version = '*', -- Latest stable version
-    -- build = 'cd rustowl && cargo install --path . --locked',
-    lazy = false, -- This plugin is already lazy
-    opts = {
-      client = {
-        on_attach = function(_, buffer)
-          require('rustowl').enable(buffer)
-          vim.api.nvim_set_hl(0, "lifetime", { sp = "green", underdotted = true })
-          vim.api.nvim_set_hl(0, "imm_borrow", { sp = "blue", underdotted = true })
-          vim.api.nvim_set_hl(0, "mut_borrow", { sp = "purple", underdotted = true })
-          vim.api.nvim_set_hl(0, "move", { sp = "orange", underline = true })
-          vim.api.nvim_set_hl(0, "call", { sp = "orange", underline = true })
-          vim.api.nvim_set_hl(0, "error", { sp = "red", underline = true })
-          vim.keymap.set('n', '<leader>o', function()
-            require('rustowl').toggle(buffer)
-          end, { buffer = buffer, desc = 'Toggle RustOwl' })
-        end
-      },
-    },
-  },
+  -- {
+  --   'michailpanagiotis/rustowl',
+  --   dependencies = {'jbyuki/one-small-step-for-vimkind'},
+  --   version = '*', -- Latest stable version
+  --   -- build = 'cd rustowl && cargo install --path . --locked',
+  --   lazy = false, -- This plugin is already lazy
+  --   opts = {
+  --     client = {
+  --       on_attach = function(_, buffer)
+  --         require('rustowl').enable(buffer)
+  --         vim.api.nvim_set_hl(0, "lifetime", { sp = "green", underdotted = true })
+  --         vim.api.nvim_set_hl(0, "imm_borrow", { sp = "green", underdotted = true })
+  --         vim.api.nvim_set_hl(0, "mut_borrow", { sp = "purple", underdotted = true })
+  --         vim.api.nvim_set_hl(0, "move", { sp = "orange", underline = true })
+  --         vim.api.nvim_set_hl(0, "call", { sp = "orange", underline = true })
+  --         vim.api.nvim_set_hl(0, "error", { sp = "red", underline = true })
+  --         vim.keymap.set('n', '<leader>o', function()
+  --           require('rustowl').toggle(buffer)
+  --         end, { buffer = buffer, desc = 'Toggle RustOwl' })
+  --       end
+  --     },
+  --   },
+  -- },
   {
     'mfussenegger/nvim-dap',
     lazy=true,
@@ -1488,6 +1488,32 @@ vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
 -- DAP
 vim.fn.sign_define('DapBreakpoint',{ text ='🟥', texthl ='', linehl ='', numhl =''})
 vim.fn.sign_define('DapStopped',{ text ='▶️', texthl ='', linehl ='', numhl =''})
+
+
+-- LSP
+
+vim.keymap.set(
+  "n",
+  "L",
+  function()
+    local found_float = false
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+        if vim.api.nvim_win_get_config(win).relative ~= '' then
+            vim.api.nvim_win_close(win, true)
+            found_float = true
+        end
+    end
+
+    if found_float then
+        return
+    end
+
+    vim.diagnostic.open_float(nil, { focus=true })
+  end,
+  { silent = true, buffer = bufnr }
+)
+
+
 
 -- Show line diagnostics automatically in hover window
 -- vim.o.updatetime = 250
