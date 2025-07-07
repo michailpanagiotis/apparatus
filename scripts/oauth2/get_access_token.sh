@@ -15,7 +15,6 @@ then
     exit 1
 fi
 
-
 mkdir -p $HOME/.config/oauth2c
 
 if [ -z ${BW_SESSION+x} ]
@@ -25,9 +24,9 @@ then
 fi
 
 bw sync
-
 BW_ITEM="$1 OAuth"
-BW_ID=$(bw list items --search $BW_ITEM | jq -r ". | map(select(.name==\"$BW_ITEM\"))[0] | .id")
+BW_ITEM=$(bw list items --search $BW_ITEM | jq -r ". | map(select(.name==\"$BW_ITEM\"))[0]")
+BW_ID=$(echo $BW_ITEM | jq -r '.id')
 
 if [ "${BW_ID}" == "null" ]
 then
@@ -36,8 +35,11 @@ then
 fi
 
 echo Found bw id $BW_ID
+CUSTOM_FIELDS=$(echo $BW_ITEM | jq -rc '.fields[0] | select(.name=="oauth2c")')
+OAUTH2C_FIELDS=$(echo $CUSTOM_FIELDS | jq -rc '.| .value')
 
-eval "$(bw get --pretty item $BW_ID | jq -rc '.fields[0] | select(.name=="oauth2c").value | fromjson | to_entries | map_values("export \(.key)=\(.value)") | .[]')"
+# Add env variables
+eval "$(echo $OAUTH2C_FIELDS | jq -rc 'to_entries | map_values("export \(.key)=\(.value)") | .[]')"
 
 if [ -z ${EMAIL_ACCOUNT+x} ]
 then
@@ -72,8 +74,6 @@ else
   OAUTH2_REDIRECT_URL="http://localhost:${OAUTH2_REDIRECT_PORT}"
 fi
 
-output=$HOME/.config/oauth2c/$EMAIL_ACCOUNT.gpg
-
 
 if [[ "$OAUTH2_PROVIDER" == "google" ]]
 then
@@ -84,20 +84,53 @@ else
   OAUTH2_SCOPES="--scopes \"https://outlook.office.com/IMAP.AccessAsUser.All\" --scopes offline_access"
 fi
 
-ACCESS_TOKEN=$(oauth2c \
-  --auth-method client_secret_post \
-  --no-prompt \
-  --no-browser \
-  --grant-type authorization_code \
-  --response-types code \
-  --response-mode query \
-  --redirect-url $OAUTH2_REDIRECT_URL \
-  --client-id $OAUTH2_CLIENT_ID \
-  --client-secret $OAUTH2_CLIENT_SECRET \
-  --login-hint $EMAIL_ACCOUNT \
-  $OAUTH2_SCOPES \
-  $OAUTH2_ENDPOINT | jq -r '.access_token')
 
-echo Storing access token for $EMAIL_ACCOUNT...
+if [ -z ${REFRESH_TOKEN+x} ]
+then
+  echo Getting new access and refresh token
+  RESPONSE=$(oauth2c \
+    --auth-method client_secret_post \
+    --no-prompt \
+    --no-browser \
+    --grant-type authorization_code \
+    --response-types code \
+    --response-mode query \
+    --redirect-url $OAUTH2_REDIRECT_URL \
+    --client-id $OAUTH2_CLIENT_ID \
+    --client-secret $OAUTH2_CLIENT_SECRET \
+    --login-hint $EMAIL_ACCOUNT \
+    $OAUTH2_SCOPES \
+    $OAUTH2_ENDPOINT)
 
-bw get item $BW_ID | jq -c ".notes=\"${ACCESS_TOKEN}\"" | bw encode | bw --quiet edit item $BW_ID
+  ACCESS_TOKEN=$(echo $RESPONSE |jq -r '.access_token')
+  REFRESH_TOKEN=$(echo $RESPONSE |jq -r '.refresh_token')
+
+  NEW_OAUTH2C_FIELDS=$(echo $OAUTH2C_FIELDS | jq --arg REFRESH_TOKEN "$REFRESH_TOKEN" '.REFRESH_TOKEN=$REFRESH_TOKEN')
+  NEW_CUSTOM_FIELDS=$(echo $NEW_OAUTH2C_FIELDS | jq -rc '{name: "oauth2c", value: . | tostring }' )
+  NEW_BW_ITEM=$(echo $BW_ITEM | jq -c --arg ACCESS_TOKEN "$ACCESS_TOKEN" --argjson CUSTOM_FIELDS $NEW_CUSTOM_FIELDS '.notes=$ACCESS_TOKEN | .fields=[$CUSTOM_FIELDS]')
+
+  echo Storing access and refresh token for $EMAIL_ACCOUNT...
+  echo $NEW_BW_ITEM | bw encode | bw edit item $BW_ID
+else
+  echo Getting new access token based on refresh_token
+  RESPONSE=$(oauth2c \
+    --auth-method client_secret_post \
+    --no-prompt \
+    --no-browser \
+    --grant-type refresh_token \
+    --response-types code \
+    --response-mode query \
+    --redirect-url $OAUTH2_REDIRECT_URL \
+    --client-id $OAUTH2_CLIENT_ID \
+    --client-secret $OAUTH2_CLIENT_SECRET \
+    --login-hint $EMAIL_ACCOUNT \
+    --refresh-token $REFRESH_TOKEN \
+    $OAUTH2_SCOPES \
+    $OAUTH2_ENDPOINT)
+
+  ACCESS_TOKEN=$(echo $RESPONSE |jq -r '.access_token')
+  NEW_BW_ITEM=$(echo $BW_ITEM | jq -c --arg ACCESS_TOKEN "$ACCESS_TOKEN" '.notes=$ACCESS_TOKEN')
+
+  echo Storing access token for $EMAIL_ACCOUNT...
+  echo $NEW_BW_ITEM | bw encode | bw edit item $BW_ID
+fi
