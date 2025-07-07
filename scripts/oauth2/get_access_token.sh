@@ -115,17 +115,10 @@ else
   echo Getting new access token based on refresh_token
   RESPONSE=$(oauth2c \
     --auth-method client_secret_post \
-    --no-prompt \
-    --no-browser \
     --grant-type refresh_token \
-    --response-types code \
-    --response-mode query \
-    --redirect-url $OAUTH2_REDIRECT_URL \
     --client-id $OAUTH2_CLIENT_ID \
     --client-secret $OAUTH2_CLIENT_SECRET \
-    --login-hint $EMAIL_ACCOUNT \
     --refresh-token $REFRESH_TOKEN \
-    $OAUTH2_SCOPES \
     $OAUTH2_ENDPOINT)
 
   ACCESS_TOKEN=$(echo $RESPONSE |jq -r '.access_token')
