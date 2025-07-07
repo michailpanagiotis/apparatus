@@ -18,24 +18,26 @@ fi
 
 mkdir -p $HOME/.config/oauth2c
 
-# Read config file of schema:
-# {
-#   "EMAIL_ACCOUNT": ,
-#   "GPG_ID": ,
-#   "OAUTH2_PROVIDER": ,
-#   "OAUTH2_CLIENT_ID": ,
-#   "OAUTH2_CLIENT_SECRET": ,
-#   "OAUTH2_REDIRECT_PORT":
-# }
-CONFIG_FILE=$HOME/.config/oauth2c/${1}.json
-
-if ! [ -f ${CONFIG_FILE} ]
+if [ -z ${BW_SESSION+x} ]
 then
-  echo Unknown config file $CONFIG_FILE
+  echo Please start a bitwarden session with 'bw unlock' and set BW_SESSION
   exit -1
 fi
 
-eval "$( jq -r 'to_entries | map_values(@sh "export \(.key)=\(.value)")[]' $CONFIG_FILE )"
+bw sync
+
+BW_ITEM="$1 OAuth"
+BW_ID=$(bw list items --search $BW_ITEM | jq -r ". | map(select(.name==\"$BW_ITEM\"))[0] | .id")
+
+if [ "${BW_ID}" == "null" ]
+then
+  echo Email $1 not in bitwarden
+  exit -1
+fi
+
+echo Found bw id $BW_ID
+
+eval "$(bw get --pretty item $BW_ID | jq -rc '.fields[0] | select(.name=="oauth2c").value | fromjson | to_entries | map_values("export \(.key)=\(.value)") | .[]')"
 
 if [ -z ${EMAIL_ACCOUNT+x} ]
 then
@@ -70,21 +72,8 @@ else
   OAUTH2_REDIRECT_URL="http://localhost:${OAUTH2_REDIRECT_PORT}"
 fi
 
-if [ -z ${GPG_ID+x} ]
-then
-  echo GPG_ID not found in config
-  exit -1
-fi
-
 output=$HOME/.config/oauth2c/$EMAIL_ACCOUNT.gpg
 
-
-read -p "Have you ssh-ed on this machine using 'ssh -L ${PORT}:localhost:${PORT} <this-machine>? (y/N) " -n 1 -r
-echo    # (optional) move to a new line
-if ! [[ $REPLY =~ ^[Yy]$ ]]
-then
-  exit
-fi
 
 if [[ "$OAUTH2_PROVIDER" == "google" ]]
 then
@@ -95,19 +84,20 @@ else
   OAUTH2_SCOPES="--scopes \"https://outlook.office.com/IMAP.AccessAsUser.All\" --scopes offline_access"
 fi
 
-oauth2c \
+ACCESS_TOKEN=$(oauth2c \
+  --auth-method client_secret_post \
   --no-prompt \
   --no-browser \
   --grant-type authorization_code \
   --response-types code \
   --response-mode query \
-  --auth-method client_secret_post \
   --redirect-url $OAUTH2_REDIRECT_URL \
   --client-id $OAUTH2_CLIENT_ID \
   --client-secret $OAUTH2_CLIENT_SECRET \
   --login-hint $EMAIL_ACCOUNT \
   $OAUTH2_SCOPES \
-  $OAUTH2_ENDPOINT | jq -r '.access_token' | gpg --encrypt --armor --recipient $GPG_ID > $output
+  $OAUTH2_ENDPOINT | jq -r '.access_token')
 
-echo Wrote to ${output}:
-gpg2 -q --for-your-eyes-only --no-tty -d $output
+echo Storing access token for $EMAIL_ACCOUNT...
+
+bw get item $BW_ID | jq -c ".notes=\"${ACCESS_TOKEN}\"" | bw encode | bw --quiet edit item $BW_ID
