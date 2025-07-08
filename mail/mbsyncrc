@@ -4,9 +4,9 @@ SyncState *
 
 IMAPAccount gmail
 Host imap.gmail.com
-UserCmd "~/.apparatus/scripts/oauth2/get_user.sh gmail"
 AuthMechs XOAUTH2
-PassCmd "~/.apparatus/scripts/oauth2/get_access_token.sh gmail"
+UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/gmail.account"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/gmail.access"
 TLSType IMAPS
 
 # REMOTE STORAGE (USE THE IMAP ACCOUNT SPECIFIED ABOVE)
@@ -78,9 +78,9 @@ Channel gmail-starred
 
 IMAPAccount td
 Host imap.gmail.com
-UserCmd "~/.apparatus/scripts/oauth2/get_user.sh td"
 AuthMechs XOAUTH2
-PassCmd "~/.apparatus/scripts/oauth2/get_access_token.sh td"
+UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/td.account"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/td.access"
 TLSType IMAPS
 
 # REMOTE STORAGE (USE THE IMAP ACCOUNT SPECIFIED ABOVE)
@@ -152,9 +152,9 @@ Channel td-starred
 
 IMAPAccount hotmail
 Host outlook.office365.com
-UserCmd "~/.apparatus/scripts/oauth2/get_user.sh hotmail"
 AuthMechs XOAUTH2
-PassCmd "~/.apparatus/scripts/oauth2/get_access_token.sh hotmail"
+UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/hotmail.account"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/hotmail.access"
 TLSType IMAPS
 
 IMAPStore hotmail-remote
@@ -207,3 +207,108 @@ Channel hotmail-sent
 Channel hotmail-trash
 Channel hotmail-drafts
 Channel hotmail-starred
+
+IMAPAccount ceid
+Host mail.ceid.upatras.gr
+AuthMechs PLAIN
+UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/ceid.account"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/ceid.access"
+TLSType IMAPS
+CertificateFile "~/Maildir/ceid/certificate"
+CipherString AES256-SHA256
+
+# REMOTE STORAGE (USE THE IMAP ACCOUNT SPECIFIED ABOVE)
+IMAPStore ceid-remote
+Account ceid
+
+# LOCAL STORAGE (CREATE DIRECTORIES with mkdir -p ~/Maildir/ceid)
+MaildirStore ceid-local
+Path ~/Maildir/ceid/
+Inbox ~/Maildir/ceid/INBOX
+
+Channel ceid-inbox
+Far :ceid-remote:
+Near :ceid-local:
+Patterns "INBOX"
+Create Both
+Expunge Both
+SyncState *
+
+Channel ceid-sent
+Far :ceid-remote:"Sent"
+Near :ceid-local:"Sent"
+Create Both
+Expunge Both
+SyncState *
+
+Channel ceid-trash
+Far :ceid-remote:"Trash"
+Near :ceid-local:"Trash"
+Create Both
+Expunge Both
+SyncState *
+
+Channel ceid-drafts
+Far :ceid-remote:"Drafts"
+Near :ceid-local:"Drafts"
+Create Both
+Expunge Both
+SyncState *
+
+Group ceid
+Channel ceid-inbox
+Channel ceid-sent
+Channel ceid-trash
+Channel ceid-drafts
+
+IMAPAccount duvve
+Host duvve.gr
+AuthMechs PLAIN
+UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/duvve.account"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/duvve.access"
+TLSType IMAPS
+CertificateFile "~/Maildir/duvve/certificate"
+
+# REMOTE STORAGE (USE THE IMAP ACCOUNT SPECIFIED ABOVE)
+IMAPStore duvve-remote
+Account duvve
+
+# LOCAL STORAGE (CREATE DIRECTORIES with mkdir -p ~/Maildir/duvve)
+MaildirStore duvve-local
+Path ~/Maildir/duvve/
+Inbox ~/Maildir/duvve/INBOX
+
+Channel duvve-inbox
+Far :duvve-remote:
+Near :duvve-local:
+Patterns "INBOX"
+Create Both
+Expunge Both
+SyncState *
+
+Channel duvve-sent
+Far :duvve-remote:"Sent"
+Near :duvve-local:"Sent"
+Create Both
+Expunge Both
+SyncState *
+
+Channel duvve-trash
+Far :duvve-remote:"Trash"
+Near :duvve-local:"Trash"
+Create Both
+Expunge Both
+SyncState *
+
+Channel duvve-drafts
+Far :duvve-remote:"Drafts"
+Near :duvve-local:"Drafts"
+Create Both
+Expunge Both
+SyncState *
+
+Group duvve
+Channel duvve-inbox
+Channel duvve-sent
+Channel duvve-trash
+Channel duvve-drafts

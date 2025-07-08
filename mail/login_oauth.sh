@@ -15,8 +15,6 @@ then
     exit 1
 fi
 
-mkdir -p $HOME/.config/oauth2c
-
 BW_STATUS=$(bw --nointeraction status | jq -r '.status')
 
 if [[ "$BW_STATUS" == "locked" ]]
@@ -120,6 +118,7 @@ then
 
   echo Storing access and refresh token for $EMAIL_ACCOUNT...
   echo $NEW_BW_ITEM | bw --session $BW_SESSION encode | bw --session $BW_SESSION edit item $BW_ID
+  echo $ACCESS_TOKEN | gpg --encrypt --armor --recipient Panos > ~/.Maildir/config/$1.access
 else
   echo Getting new access token based on refresh_token
   RESPONSE=$(oauth2c \
@@ -136,3 +135,7 @@ else
   echo Storing access token for $EMAIL_ACCOUNT...
   echo $NEW_BW_ITEM | bw --session $BW_SESSION encode | bw --session $BW_SESSION edit item $BW_ID
 fi
+
+echo Storing gpg encrypted details for $EMAIL_ACCOUNT at ~/Maildir/config/...
+echo $EMAIL_ACCOUNT | gpg --encrypt --armor --recipient Panos > ~/Maildir/config/$1.account
+echo $ACCESS_TOKEN | gpg --encrypt --armor --recipient Panos > ~/Maildir/config/$1.access
