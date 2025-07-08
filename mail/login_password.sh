@@ -22,6 +22,7 @@ then
   BW_SESSION=$(bw unlock --raw)
   echo To keep the Bitwarden session run:
   echo export BW_SESSION=$BW_SESSION
+  bw --session $BW_SESSION sync
 fi
 
 if [ -z ${BW_SESSION+x} ]
@@ -30,7 +31,6 @@ then
   exit -1
 fi
 
-bw --session $BW_SESSION sync
 BW_ITEM="$1 Webmail"
 BW_ITEM=$(bw --session $BW_SESSION list items --search $BW_ITEM | jq -r ". | map(select(.name==\"$BW_ITEM\"))[0]")
 BW_ID=$(echo $BW_ITEM | jq -r '.id')
