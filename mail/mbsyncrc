@@ -1,39 +1,209 @@
-IMAPStore talentdesk-remote
-Host imap.gmail.com
-SSLType IMAPS
-AuthMechs LOGIN
-User panos@talentdesk.io
-PassCmd "gpg -d ~/.mutt/talentdeskpass.gpg"
-
-MaildirStore talentdesk-local
-Path ~/.mail/talentdesk/
-Inbox ~/.mail/talentdesk/INBOX
-Flatten .
-
-Channel talentdesk
-Far :talentdesk-remote:
-Near :talentdesk-local:
-Create Both
-Expunge Both
-Patterns * !"[Gmail]/All Mail" !"[Gmail]/Important" !"[Gmail]/Starred" !"[Gmail]/Bin"
+Expunge None
+Create Near
 SyncState *
 
-IMAPStore gmail-remote
+IMAPAccount gmail
 Host imap.gmail.com
-SSLType IMAPS
-AuthMechs LOGIN
-User michailpanagiotis@gmail.com
-PassCmd "gpg -d ~/.mutt/gmailpass.gpg"
+UserCmd "~/.apparatus/scripts/oauth2/get_user.sh gmail"
+AuthMechs XOAUTH2
+PassCmd "~/.apparatus/scripts/oauth2/get_access_token.sh gmail"
+TLSType IMAPS
 
+# REMOTE STORAGE (USE THE IMAP ACCOUNT SPECIFIED ABOVE)
+IMAPStore gmail-remote
+Account gmail
+
+# LOCAL STORAGE (CREATE DIRECTORIES with mkdir -p ~/Maildir/gmail)
 MaildirStore gmail-local
-Path ~/.mail/gmail/
-Inbox ~/.mail/gmail/INBOX
-Flatten .
+Path ~/Maildir/gmail/
+Inbox ~/Maildir/gmail/INBOX
 
-Channel gmail
+Channel gmail-inbox
 Far :gmail-remote:
 Near :gmail-local:
+Patterns "INBOX"
 Create Both
 Expunge Both
-Patterns * !"[Gmail]/All Mail" !"[Gmail]/Important" !"[Gmail]/Starred" !"[Gmail]/Bin"
 SyncState *
+
+Channel gmail-sent
+Far :gmail-remote:"[Gmail]/Sent Mail"
+Near :gmail-local:"Sent Mail"
+Create Both
+Expunge Both
+SyncState *
+
+Channel gmail-all
+Far :gmail-remote:"[Gmail]/All Mail"
+Near :gmail-local:"All Mail"
+Create Both
+Expunge Both
+SyncState *
+
+Channel gmail-starred
+Far :gmail-remote:"[Gmail]/Starred"
+Near :gmail-local:"Starred"
+Create Both
+Expunge Both
+SyncState *
+
+Channel gmail-trash
+Far :gmail-remote:"[Gmail]/Trash"
+Near :gmail-local:"Trash"
+Create Both
+Expunge Both
+SyncState *
+
+Channel gmail-drafts
+Far :gmail-remote:"[Gmail]/Drafts"
+Near :gmail-local:"Drafts"
+Create Both
+Expunge Both
+SyncState *
+
+# GROUPS PUT TOGETHER CHANNELS, SO THAT WE CAN INVOKE
+# MBSYNC ON A GROUP TO SYNC ALL CHANNELS
+#
+# FOR INSTANCE: "mbsync gmail" GETS MAIL FROM
+# "gmail-inbox", "gmail-sent", and "gmail-trash"
+#
+Group gmail
+Channel gmail-inbox
+Channel gmail-sent
+Channel gmail-trash
+Channel gmail-drafts
+Channel gmail-all
+Channel gmail-starred
+
+
+IMAPAccount td
+Host imap.gmail.com
+UserCmd "~/.apparatus/scripts/oauth2/get_user.sh td"
+AuthMechs XOAUTH2
+PassCmd "~/.apparatus/scripts/oauth2/get_access_token.sh td"
+TLSType IMAPS
+
+# REMOTE STORAGE (USE THE IMAP ACCOUNT SPECIFIED ABOVE)
+IMAPStore td-remote
+Account td
+
+# LOCAL STORAGE (CREATE DIRECTORIES with mkdir -p ~/Maildir/td)
+MaildirStore td-local
+Path ~/Maildir/td/
+Inbox ~/Maildir/td/INBOX
+
+Channel td-inbox
+Far :td-remote:
+Near :td-local:
+Patterns "INBOX"
+Create Both
+Expunge Both
+SyncState *
+
+Channel td-sent
+Far :td-remote:"[Gmail]/Sent Mail"
+Near :td-local:"Sent Mail"
+Create Both
+Expunge Both
+SyncState *
+
+Channel td-all
+Far :td-remote:"[Gmail]/All Mail"
+Near :td-local:"All Mail"
+Create Both
+Expunge Both
+SyncState *
+
+Channel td-starred
+Far :td-remote:"[Gmail]/Starred"
+Near :td-local:"Starred"
+Create Both
+Expunge Both
+SyncState *
+
+Channel td-trash
+Far :td-remote:"[Gmail]/Trash"
+Near :td-local:"Trash"
+Create Both
+Expunge Both
+SyncState *
+
+Channel td-drafts
+Far :td-remote:"[Gmail]/Drafts"
+Near :td-local:"Drafts"
+Create Both
+Expunge Both
+SyncState *
+
+# GROUPS PUT TOGETHER CHANNELS, SO THAT WE CAN INVOKE
+# MBSYNC ON A GROUP TO SYNC ALL CHANNELS
+#
+# FOR INSTANCE: "mbsync td" GETS MAIL FROM
+# "td-inbox", "td-sent", and "td-trash"
+#
+Group td
+Channel td-inbox
+Channel td-sent
+Channel td-trash
+Channel td-drafts
+Channel td-all
+Channel td-starred
+
+
+IMAPAccount hotmail
+Host outlook.office365.com
+UserCmd "~/.apparatus/scripts/oauth2/get_user.sh hotmail"
+AuthMechs XOAUTH2
+PassCmd "~/.apparatus/scripts/oauth2/get_access_token.sh hotmail"
+TLSType IMAPS
+
+IMAPStore hotmail-remote
+Account hotmail
+
+# LOCAL STORAGE (CREATE DIRECTORIES with mkdir -p ~/Maildir/td)
+MaildirStore hotmail-local
+Path ~/Maildir/hotmail/
+Inbox ~/Maildir/hotmail/INBOX
+
+Channel hotmail-inbox
+Far :hotmail-remote:
+Near :hotmail-local:
+Patterns "INBOX"
+Create Both
+Expunge Both
+SyncState *
+
+Channel hotmail-sent
+Far :hotmail-remote:"Sent"
+Near :hotmail-local:"Sent"
+Create Both
+Expunge Both
+SyncState *
+
+Channel hotmail-trash
+Far :hotmail-remote:"Deleted Messages"
+Near :hotmail-local:"Trash"
+Create Both
+Expunge Both
+SyncState *
+
+Channel hotmail-drafts
+Far :hotmail-remote:"Drafts"
+Near :hotmail-local:"Drafts"
+Create Both
+Expunge Both
+SyncState *
+
+Channel hotmail-starred
+Far :hotmail-remote:"Starred"
+Near :hotmail-local:"Starred"
+Create Both
+Expunge Both
+SyncState *
+
+Group hotmail
+Channel hotmail-inbox
+Channel hotmail-sent
+Channel hotmail-trash
+Channel hotmail-drafts
+Channel hotmail-starred

@@ -33,4 +33,6 @@ fi
 
 BW_ITEM="$1 OAuth"
 # bw unlock --session $BW_SESSION
-bw --session $BW_SESSION list items --search $BW_ITEM | jq -r ". | map(select(.name==\"$BW_ITEM\"))[0].notes"
+BW_ITEM=$(bw --session $BW_SESSION list items --search $BW_ITEM | jq -r ". | map(select(.name==\"$BW_ITEM\"))[0]")
+
+echo $BW_ITEM | jq -r '.fields[0].value | fromjson | .EMAIL_ACCOUNT'
