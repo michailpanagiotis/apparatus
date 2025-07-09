@@ -23,3 +23,5 @@ else
   echo Syncing $1...
   mbsync -c ~/.apparatus/mail/mbsyncrc $1
 fi
+
+notmuch new

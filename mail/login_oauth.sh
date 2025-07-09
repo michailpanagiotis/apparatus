@@ -15,6 +15,17 @@ then
     exit 1
 fi
 
+TIMESTAMP=$(date +%s)
+
+if test -f ~/Maildir/config/$1.conf; then
+  EXPIRES_AT=$(gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/$1.conf | jq -r '.expires_at')
+
+  if (( EXPIRES_AT > TIMESTAMP )); then
+    echo Already logged in
+    exit 0
+  fi
+fi
+
 BW_STATUS=$(bw --nointeraction status | jq -r '.status')
 
 if [[ "$BW_STATUS" == "locked" ]]
@@ -41,7 +52,9 @@ then
   exit -1
 fi
 
+
 echo Found bw id $BW_ID
+REFRESH_TOKEN=$(echo $BW_ITEM | jq -r '.notes')
 CUSTOM_FIELDS=$(echo $BW_ITEM | jq -rc '.fields[0] | select(.name=="oauth2c")')
 OAUTH2C_FIELDS=$(echo $CUSTOM_FIELDS | jq -rc '.| .value')
 
@@ -92,7 +105,7 @@ else
 fi
 
 
-if [ -z ${REFRESH_TOKEN+x} ]
+if [ -z ${REFRESH_TOKEN+x} ] || [ "${REFRESH_TOKEN}" == "null" ]
 then
   echo Getting new access and refresh token
   RESPONSE=$(oauth2c \
@@ -109,16 +122,14 @@ then
     $OAUTH2_SCOPES \
     $OAUTH2_ENDPOINT)
 
+  EXPIRES_IN=$(echo $RESPONSE |jq -r '.expires_in')
   ACCESS_TOKEN=$(echo $RESPONSE |jq -r '.access_token')
   REFRESH_TOKEN=$(echo $RESPONSE |jq -r '.refresh_token')
 
-  NEW_OAUTH2C_FIELDS=$(echo $OAUTH2C_FIELDS | jq --arg REFRESH_TOKEN "$REFRESH_TOKEN" '.REFRESH_TOKEN=$REFRESH_TOKEN')
-  NEW_CUSTOM_FIELDS=$(echo $NEW_OAUTH2C_FIELDS | jq -rc '{name: "oauth2c", value: . | tostring }' )
-  NEW_BW_ITEM=$(echo $BW_ITEM | jq -c --arg ACCESS_TOKEN "$ACCESS_TOKEN" --argjson CUSTOM_FIELDS $NEW_CUSTOM_FIELDS '.notes=$ACCESS_TOKEN | .fields=[$CUSTOM_FIELDS]')
+  NEW_BW_ITEM=$(echo $BW_ITEM | jq -c --arg REFRESH_TOKEN "$REFRESH_TOKEN" '.notes=$REFRESH_TOKEN')
 
-  echo Storing access and refresh token for $EMAIL_ACCOUNT...
+  echo Storing refresh token for $EMAIL_ACCOUNT...
   echo $NEW_BW_ITEM | bw --session $BW_SESSION encode | bw --session $BW_SESSION edit item $BW_ID
-  echo $ACCESS_TOKEN | gpg --encrypt --armor --recipient Panos > ~/.Maildir/config/$1.access
 else
   echo Getting new access token based on refresh_token
   RESPONSE=$(oauth2c \
@@ -129,13 +140,21 @@ else
     --refresh-token $REFRESH_TOKEN \
     $OAUTH2_ENDPOINT)
 
+  EXPIRES_IN=$(echo $RESPONSE |jq -r '.expires_in')
   ACCESS_TOKEN=$(echo $RESPONSE |jq -r '.access_token')
-  NEW_BW_ITEM=$(echo $BW_ITEM | jq -c --arg ACCESS_TOKEN "$ACCESS_TOKEN" '.notes=$ACCESS_TOKEN')
-
-  echo Storing access token for $EMAIL_ACCOUNT...
-  echo $NEW_BW_ITEM | bw --session $BW_SESSION encode | bw --session $BW_SESSION edit item $BW_ID
 fi
 
+if [ -z ${EXPIRES_IN+x} ]
+then
+  echo EXPIRES_IN not found
+  exit -1
+fi
+
+EXPIRES_AT=$((TIMESTAMP + EXPIRES_IN))
+
 echo Storing gpg encrypted details for $EMAIL_ACCOUNT at ~/Maildir/config/...
-echo $EMAIL_ACCOUNT | gpg --encrypt --armor --recipient Panos > ~/Maildir/config/$1.account
-echo $ACCESS_TOKEN | gpg --encrypt --armor --recipient Panos > ~/Maildir/config/$1.access
+jq -n \
+  --arg EMAIL_ACCOUNT "$EMAIL_ACCOUNT" \
+  --arg ACCESS_TOKEN "$ACCESS_TOKEN" \
+  --arg EXPIRES_AT "$EXPIRES_AT" \
+'{ token: $ACCESS_TOKEN, account: $EMAIL_ACCOUNT, expires_at: $EXPIRES_AT }' | gpg --encrypt --armor --recipient Panos > ~/Maildir/config/$1.conf

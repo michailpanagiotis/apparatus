@@ -5,8 +5,8 @@ SyncState *
 IMAPAccount gmail
 Host imap.gmail.com
 AuthMechs XOAUTH2
-UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/gmail.account"
-PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/gmail.access"
+UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/gmail.conf | jq -r '.account'"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/gmail.conf | jq -r '.token'"
 TLSType IMAPS
 
 # REMOTE STORAGE (USE THE IMAP ACCOUNT SPECIFIED ABOVE)
@@ -29,13 +29,6 @@ SyncState *
 Channel gmail-sent
 Far :gmail-remote:"[Gmail]/Sent Mail"
 Near :gmail-local:"Sent Mail"
-Create Both
-Expunge Both
-SyncState *
-
-Channel gmail-all
-Far :gmail-remote:"[Gmail]/All Mail"
-Near :gmail-local:"All Mail"
 Create Both
 Expunge Both
 SyncState *
@@ -72,15 +65,14 @@ Channel gmail-inbox
 Channel gmail-sent
 Channel gmail-trash
 Channel gmail-drafts
-Channel gmail-all
 Channel gmail-starred
 
 
 IMAPAccount td
 Host imap.gmail.com
 AuthMechs XOAUTH2
-UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/td.account"
-PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/td.access"
+UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/td.conf | jq -r '.account'"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/td.conf | jq -r '.token'"
 TLSType IMAPS
 
 # REMOTE STORAGE (USE THE IMAP ACCOUNT SPECIFIED ABOVE)
@@ -103,13 +95,6 @@ SyncState *
 Channel td-sent
 Far :td-remote:"[Gmail]/Sent Mail"
 Near :td-local:"Sent Mail"
-Create Both
-Expunge Both
-SyncState *
-
-Channel td-all
-Far :td-remote:"[Gmail]/All Mail"
-Near :td-local:"All Mail"
 Create Both
 Expunge Both
 SyncState *
@@ -146,15 +131,14 @@ Channel td-inbox
 Channel td-sent
 Channel td-trash
 Channel td-drafts
-Channel td-all
 Channel td-starred
 
 
 IMAPAccount hotmail
 Host outlook.office365.com
 AuthMechs XOAUTH2
-UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/hotmail.account"
-PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/hotmail.access"
+UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/hotmail.conf | jq -r '.account'"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/hotmail.conf | jq -r '.token'"
 TLSType IMAPS
 
 IMAPStore hotmail-remote
@@ -211,8 +195,8 @@ Channel hotmail-starred
 IMAPAccount ceid
 Host mail.ceid.upatras.gr
 AuthMechs PLAIN
-UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/ceid.account"
-PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/ceid.access"
+UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/ceid.conf | jq -r '.account'"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/ceid.conf | jq -r '.token'"
 TLSType IMAPS
 CertificateFile "~/Maildir/ceid/certificate"
 CipherString AES256-SHA256
@@ -264,8 +248,8 @@ Channel ceid-drafts
 IMAPAccount duvve
 Host duvve.gr
 AuthMechs PLAIN
-UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/duvve.account"
-PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/duvve.access"
+UserCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/duvve.conf | jq -r '.account'"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/duvve.conf | jq -r '.token'"
 TLSType IMAPS
 CertificateFile "~/Maildir/duvve/certificate"
 

@@ -15,6 +15,17 @@ then
     exit 1
 fi
 
+TIMESTAMP=$(date +%s)
+
+if test -f ~/Maildir/config/$1.conf; then
+  EXPIRES_AT=$(gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/$1.conf | jq -r '.expires_at')
+
+  if (( EXPIRES_AT > TIMESTAMP )); then
+    echo Already logged in
+    exit 0
+  fi
+fi
+
 BW_STATUS=$(bw --nointeraction status | jq -r '.status')
 
 if [[ "$BW_STATUS" == "locked" ]]
@@ -60,6 +71,14 @@ then
   exit -1
 fi
 
+
+EXPIRES_IN=3600
+
+EXPIRES_AT=$((TIMESTAMP + EXPIRES_IN))
+
 echo Storing gpg encrypted details for $EMAIL_ACCOUNT at ~/Maildir/config/...
-echo $EMAIL_ACCOUNT | gpg --encrypt --armor --recipient Panos > ~/Maildir/config/$1.account
-echo $PASSWORD | gpg --encrypt --armor --recipient Panos > ~/Maildir/config/$1.access
+jq -n \
+  --arg EMAIL_ACCOUNT "$EMAIL_ACCOUNT" \
+  --arg ACCESS_TOKEN "$PASSWORD" \
+  --arg EXPIRES_AT "$EXPIRES_AT" \
+'{ token: $ACCESS_TOKEN, account: $EMAIL_ACCOUNT, expires_at: $EXPIRES_AT }' | gpg --encrypt --armor --recipient Panos > ~/Maildir/config/$1.conf
