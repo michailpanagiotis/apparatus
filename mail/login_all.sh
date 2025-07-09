@@ -18,8 +18,8 @@ then
   exit -1
 fi
 
-BW_SESSION=$BW_SESSION ~/.apparatus/mail/login_oauth.sh gmail
-BW_SESSION=$BW_SESSION ~/.apparatus/mail/login_oauth.sh td
-BW_SESSION=$BW_SESSION ~/.apparatus/mail/login_oauth.sh hotmail
-BW_SESSION=$BW_SESSION ~/.apparatus/mail/login_password.sh ceid
-BW_SESSION=$BW_SESSION ~/.apparatus/mail/login_password.sh duvve
+BW_SESSION=$BW_SESSION ~/.apparatus/mail/login.sh gmail
+BW_SESSION=$BW_SESSION ~/.apparatus/mail/login.sh td
+BW_SESSION=$BW_SESSION ~/.apparatus/mail/login.sh hotmail
+BW_SESSION=$BW_SESSION ~/.apparatus/mail/login.sh ceid
+BW_SESSION=$BW_SESSION ~/.apparatus/mail/login.sh duvve

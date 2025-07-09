@@ -73,7 +73,6 @@ fi
 
 
 EXPIRES_IN=3600
-
 EXPIRES_AT=$((TIMESTAMP + EXPIRES_IN))
 
 echo Storing gpg encrypted details for $EMAIL_ACCOUNT at ~/Maildir/config/...

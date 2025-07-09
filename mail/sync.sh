@@ -8,19 +8,18 @@ then
   exit -1
 fi
 
-
-
-
 if ! [ "$#" -eq 1 ]
 then
   declare -a arr=("gmail" "td" "hotmail" "ceid" "duvve")
   for i in "${arr[@]}"
   do
      echo Syncing $i...
+     ~/.apparatus/mail/login.sh $i
      mbsync -c ~/.apparatus/mail/mbsyncrc $i
   done
 else
   echo Syncing $1...
+  ~/.apparatus/mail/login.sh $1
   mbsync -c ~/.apparatus/mail/mbsyncrc $1
 fi
 
