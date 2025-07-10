@@ -15,6 +15,7 @@ Account gmail
 
 # LOCAL STORAGE (CREATE DIRECTORIES with mkdir -p ~/Maildir/gmail)
 MaildirStore gmail-local
+Subfolders Verbatim
 Path ~/Maildir/gmail/
 Inbox ~/Maildir/gmail/INBOX
 
@@ -81,6 +82,7 @@ Account td
 
 # LOCAL STORAGE (CREATE DIRECTORIES with mkdir -p ~/Maildir/td)
 MaildirStore td-local
+Subfolders Verbatim
 Path ~/Maildir/td/
 Inbox ~/Maildir/td/INBOX
 
@@ -146,6 +148,7 @@ Account hotmail
 
 # LOCAL STORAGE (CREATE DIRECTORIES with mkdir -p ~/Maildir/td)
 MaildirStore hotmail-local
+Subfolders Verbatim
 Path ~/Maildir/hotmail/
 Inbox ~/Maildir/hotmail/INBOX
 
@@ -207,6 +210,7 @@ Account ceid
 
 # LOCAL STORAGE (CREATE DIRECTORIES with mkdir -p ~/Maildir/ceid)
 MaildirStore ceid-local
+Subfolders Verbatim
 Path ~/Maildir/ceid/
 Inbox ~/Maildir/ceid/INBOX
 
@@ -259,6 +263,7 @@ Account duvve
 
 # LOCAL STORAGE (CREATE DIRECTORIES with mkdir -p ~/Maildir/duvve)
 MaildirStore duvve-local
+Subfolders Verbatim
 Path ~/Maildir/duvve/
 Inbox ~/Maildir/duvve/INBOX
 

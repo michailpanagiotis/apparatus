@@ -11,10 +11,10 @@ fi
 if ! [ "$#" -eq 1 ]
 then
   declare -a arr=("gmail" "td" "hotmail" "ceid" "duvve")
+  ~/.apparatus/mail/login_all.sh
   for i in "${arr[@]}"
   do
      echo Syncing $i...
-     ~/.apparatus/mail/login.sh $i
      mbsync -c ~/.apparatus/mail/mbsyncrc $i
   done
 else

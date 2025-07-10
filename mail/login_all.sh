@@ -6,7 +6,8 @@ BW_STATUS=$(bw --nointeraction status | jq -r '.status')
 
 if [[ "$BW_STATUS" == "locked" ]]
 then
-  BW_SESSION=$(bw unlock --raw)
+  BW_PASSWORD=$(gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/bw)
+  BW_SESSION=$(bw unlock --raw "$BW_PASSWORD")
   echo To keep the Bitwarden session run:
   echo export BW_SESSION=$BW_SESSION
   bw --session $BW_SESSION sync
