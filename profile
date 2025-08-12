@@ -46,3 +46,8 @@ if ! ssh-add -l &>/dev/null; then
      echo Adding keys...
      ssh-add -t 1d ~/.ssh/id_github
 fi
+
+keyring () {
+    eval "$(ssh-agent -s)"
+    ssh-add ~/.ssh/id_github
+}
