@@ -19,7 +19,7 @@ then
   done
 else
   echo Syncing $1...
-  ~/.apparatus/mail/login.sh $1
+  ~/.apparatus/mail/login.sh $1 > ~/out 2>error
   mbsync -c ~/.apparatus/mail/mbsyncrc $1
 fi
 

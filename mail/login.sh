@@ -27,11 +27,14 @@ if test -f ~/Maildir/config/$1.conf; then
   fi
 fi
 
+>&2 echo checking status
+
 BW_STATUS=$(bw --nointeraction status | jq -r '.status')
 
 if [[ "$BW_STATUS" == "locked" ]]
 then
-  BW_SESSION=$(bw unlock --raw)
+  BW_PASSWORD=$(gpg -q --for-your-eyes-only --no-tty -d ~/Maildir/config/bw)
+  BW_SESSION=$(bw unlock --raw "$BW_PASSWORD")
   echo To keep the Bitwarden session run:
   echo export BW_SESSION=$BW_SESSION
   bw --session $BW_SESSION sync
@@ -79,6 +82,8 @@ else
   REFRESH_TOKEN=$(echo $BW_ITEM | jq -r '.notes')
   CUSTOM_FIELDS=$(echo $BW_ITEM | jq -rc '.fields[0] | select(.name=="oauth2c")')
   OAUTH2C_FIELDS=$(echo $CUSTOM_FIELDS | jq -rc '.| .value')
+
+  >&2 echo $OAUTH2C_FIELDS
 
   # Add env variables
   eval "$(echo $OAUTH2C_FIELDS | jq -rc 'to_entries | map_values("export \(.key)=\(.value)") | .[]')"

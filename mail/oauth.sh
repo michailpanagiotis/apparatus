@@ -56,6 +56,7 @@ then
 else
   >&2 echo Getting new access token based on refresh_token
   RESPONSE=$(oauth2c \
+    -s \
     --auth-method client_secret_post \
     --grant-type refresh_token \
     --refresh-token $REFRESH_TOKEN \

@@ -1,0 +1,5 @@
+INBOX = tag:inbox and not tag:archived and not from:"piraeusbank.gr"
+GITHUB = from:"notifications@github.com"
+FILTERED_INBOX = not from:"piraeusbank.gr"
+WINBANK = from:"piraeusbank.gr"
+TD = from:"talentdesk.atlassian.net"
