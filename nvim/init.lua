@@ -58,6 +58,27 @@ require('lazy').setup({
     end
   },
   {
+    'nvim-telescope/telescope.nvim', tag = '0.1.8',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('telescope').setup({
+        pickers = {
+            find_files = {
+                layout_config = {
+                    prompt_position = 'top',
+                },
+                sorting_strategy = 'ascending',
+                previewer = false,
+                layout_strategy = "horizontal",
+                cwd = require('lspconfig.util').root_pattern(".git")(vim.fn.expand("%:p")),
+            },
+        },
+      })
+      local builtin = require('telescope.builtin')
+      vim.keymap.set('n', '<C-p>', builtin.find_files, { desc = 'Telescope find files' })
+    end,
+  },
+  {
     "ibhagwan/fzf-lua",
     opts = {
       file_icon_padding = '',

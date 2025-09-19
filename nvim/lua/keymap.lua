@@ -4,7 +4,10 @@ vim.keymap.set('n', '<leader>date', ":put =strftime('%c')<CR>", {})
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<C-l>', ':Trouble diagnostics toggle filter.buf=0 focus=true<CR>', { silent = true })
-vim.keymap.set('n', '<C-p>', ':FzfLua files <CR>', { silent = true })
+-- vim.keymap.set('n', '<C-p>', ':FzfLua files <CR>', { silent = true })
+
+-- local builtin = require('telescope.builtin')
+-- vim.keymap.set('n', '<C-p>', builtin.find_files, { desc = 'Telescope find files' })
 
 -- qq starts recording, q stops, Q runs it.
 vim.keymap.set('n', 'Q' , '@q', { desc = 'Replay recording'})
