@@ -45,7 +45,7 @@ alias oauth2=~/.apparatus/scripts/oauth2/get_access_token.sh
 # if ! ps -ef | grep "[s]sh-agent" &>/dev/null; then
     echo Starting SSH Agent
     eval $(ssh-agent -s)
-    ssh-add -t 1d /home/wert/.ssh/id_github
+    ssh-add -t 1d ~/.ssh/id_github
 # fi
 
 # export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
