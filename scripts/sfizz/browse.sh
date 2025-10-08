@@ -50,4 +50,4 @@ screen -dmS "${BROWSER_SCREEN}" bash -c "$BROWSER_COMMAND"
 sleep 1
 screen -S "${BROWSER_SCREEN}" -p 0 -X stuff "^M"
 
-screen -r "${BROWSER_SCREEN}"
+# screen -r "${BROWSER_SCREEN}"
