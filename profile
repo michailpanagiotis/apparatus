@@ -27,6 +27,8 @@ standup () {
 
 alias vim="nvim"
 alias vi="nvim"
+alias userlog="journalctl --boot --lines=all --follow --user-unit"
+alias systemlog="journalctl --boot --lines=all --follow --unit"
 
 export INVOICE_VAT_PERCENT=24
 export INVOICE_RATE_AMOUNT=50

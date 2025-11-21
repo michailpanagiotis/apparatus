@@ -1,0 +1,6 @@
+[Unit]
+PartOf=sfizz@%i.service
+
+[Socket]
+Service=sfizz@%i.service
+ListenFIFO=%t/sfizz-%i.stdin

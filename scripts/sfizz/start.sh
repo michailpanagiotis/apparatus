@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+SFIZZ_NAME=$1
+
 function check_input {
   if [[ -z "${SFIZZ_NAME}" ]]; then
     echo Variable SFIZZ_NAME is required
@@ -30,5 +32,5 @@ function connect_jack {
 }
 
 check_input
-connect_jack &
+# connect_jack &
 sfizz_jack --client_name "$SFIZZ_NAME"

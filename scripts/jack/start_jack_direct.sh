@@ -2,5 +2,5 @@
 /usr/bin/jackd -R -dalsa -d $ALSA_DEFAULT -p512 -n3 -P -o2 &
 sleep 2
 a2jmidid -e &
-sleep 1
-mplayer -nolirc -ao jack plug.wav &
+# sleep 1
+# mplayer -nolirc -ao jack plug.wav &

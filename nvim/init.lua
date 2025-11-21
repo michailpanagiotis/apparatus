@@ -146,6 +146,27 @@ require('lazy').setup({
     },
   },
   {
+    'mfussenegger/nvim-dap',
+    dependencies = {
+      'rcarriga/nvim-dap-ui',
+      'nvim-neotest/nvim-nio',
+      'Weissle/persistent-breakpoints.nvim',
+    },
+    config = function()
+      require('dap_config')
+    end
+  },
+  {
+    'rcarriga/nvim-dap-ui',
+    dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' },
+  },
+  {
+    'Weissle/persistent-breakpoints.nvim',
+    opts = {
+      load_breakpoints_event = { 'BufReadPost' }
+    }
+  },
+  {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
     event = {'BufReadPre', 'BufNewFile'},
@@ -195,6 +216,7 @@ require('lazy').setup({
       vim.lsp.enable('quick_lint_js')
       vim.lsp.enable('json_ls')
       vim.lsp.enable('rust_analyzer')
+      vim.lsp.enable('ruff')
     end,
   },
   {

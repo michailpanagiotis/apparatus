@@ -1,14 +1,14 @@
 [Unit]
-Description=MIDI monitor
+Description=Sfizz %i
 After=sound.target local-fs.target jack.service
 BindsTo=jack.service
-Requires=sfizz.socket
+Requires=sfizz@%i.socket
 
 [Service]
 Type=simple
-ExecStart=/bin/bash %h/.apparatus/scripts/sfizz/start.sh
-Sockets=sfizz.socket
-StandardInput=fd:sfizz.socket
+ExecStart=/bin/bash -c 'sfizz_jack --client_name %i'
+Sockets=sfizz@%i.socket
+StandardInput=fd:sfizz@%i.socket
 StandardOutput=journal
 StandardError=journal
 TimeoutSec=3

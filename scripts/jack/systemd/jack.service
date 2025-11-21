@@ -4,9 +4,8 @@ Documentation=man:jackd(1)
 After=sound.target local-fs.target
 
 [Service]
-Type=forking
-ExecStart=/bin/bash %h/.apparatus/scripts/jack/start_jack_direct.sh
-ExecStop=/bin/bash %h/.apparatus/scripts/jack/stop_jack_direct.sh
+Type=simple
+ExecStart=/bin/bash %h/Projects/osc-listener/start_jack_direct.sh
 LimitRTPRIO=95
 LimitRTTIME=infinity
 LimitMEMLOCK=infinity
