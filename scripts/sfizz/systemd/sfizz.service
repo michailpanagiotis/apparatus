@@ -1,0 +1,18 @@
+[Unit]
+Description=MIDI monitor
+After=sound.target local-fs.target jack.service
+BindsTo=jack.service
+Requires=sfizz.socket
+
+[Service]
+Type=simple
+ExecStart=/bin/bash %h/.apparatus/scripts/sfizz/start.sh
+Sockets=sfizz.socket
+StandardInput=fd:sfizz.socket
+StandardOutput=journal
+StandardError=journal
+ExecStopPost=systemctl --user stop sfizz.socket
+TimeoutSec=10
+
+[Install]
+WantedBy=default.target jack.service

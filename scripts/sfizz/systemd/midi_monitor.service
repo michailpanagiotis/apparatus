@@ -1,0 +1,10 @@
+[Unit]
+Description=MIDI monitor
+After=sound.target local-fs.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash %h/.apparatus/scripts/sfizz/midi_monitor.sh
+
+[Install]
+WantedBy=default.target

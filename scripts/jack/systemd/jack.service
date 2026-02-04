@@ -1,0 +1,15 @@
+[Unit]
+Description=JACK server
+Documentation=man:jackd(1)
+After=sound.target local-fs.target
+
+[Service]
+Type=forking
+ExecStart=/bin/bash %h/.apparatus/scripts/jack/start_jack_direct.sh
+ExecStop=/bin/bash %h/.apparatus/scripts/jack/stop_jack_direct.sh
+LimitRTPRIO=95
+LimitRTTIME=infinity
+LimitMEMLOCK=infinity
+
+[Install]
+WantedBy=default.target

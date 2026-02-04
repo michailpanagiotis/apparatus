@@ -1,0 +1,4 @@
+[Socket]
+ListenFIFO=%t/sfizz.stdin
+Service=sfizz.service
+PartOf=sfizz.service
