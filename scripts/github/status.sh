@@ -107,8 +107,14 @@ done < "$tmp_approved"
 
 # Print QA branches not in Approved
 echo '  QA:'
+# Write QA tickets to temp file for jira script
+qa_tickets_file="/tmp/qa_jira_tickets"
+> "$qa_tickets_file"
 while read -r branch; do
   if ! grep -q "^$branch"$'\t' "$tmp_approved" 2>/dev/null; then
     printf '\t%s\n' "$branch"
   fi
+  # Extract ticket from branch name (e.g., pmichail_BT-1234 -> BT-1234)
+  ticket=$(echo "$branch" | sed 's/^[^_]*_//' | grep -oE '^[A-Z]+-[0-9]+')
+  [[ -n "$ticket" ]] && echo "$ticket" >> "$qa_tickets_file"
 done < "$tmp_qa"
