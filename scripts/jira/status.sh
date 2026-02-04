@@ -27,5 +27,12 @@ curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" 
 if [ ! -z "${SHOW_BUGBOARD}" ];
 then
     echo '  Bug board:'
-    curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json '{"fields": ["key","url","priority"], "jql":"status NOT IN (Done, Closed) AND project IN (BT) AND assignee IN (currentUser(), empty) AND type != \"New Feature\" AND status != \"Blocked / On Hold\" AND \"Team[Dropdown]\" = \"Payments development\" ORDER BY created DESC"}' |  jq -r '.issues | map({ key: .key, url: "https:\/\/talentdesk.atlassian.net\/browse\/\(.key)", priority: .fields.priority.name } | "\t\(.url) \(.priority)") []'
+    curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json '{"fields": ["key","url","priority","assignee"], "jql":"status NOT IN (Done, Closed) AND project IN (BT) AND assignee IN (currentUser(), empty) AND type != \"New Feature\" AND status != \"Blocked / On Hold\" AND \"Team[Dropdown]\" = \"Payments development\" ORDER BY created DESC"}' | jq -r '.issues[] | "\(.key)\t\(.fields.priority.name)\t\(.fields.assignee.emailAddress // "")"' | while IFS=$'\t' read -r key priority assignee_email; do
+      url="https://talentdesk.atlassian.net/browse/${key}"
+      mine_marker=""
+      qa_marker=""
+      [[ "$assignee_email" == "$JIRA_API_USER" ]] && mine_marker=" ▶"
+      [[ -f "$qa_tickets_file" ]] && grep -qx "$key" "$qa_tickets_file" 2>/dev/null && qa_marker=" [QA]"
+      printf '\t%s %s%s%s\n' "$url" "$priority" "$mine_marker" "$qa_marker"
+    done
 fi
