@@ -74,8 +74,12 @@ require('lazy').setup({
             },
         },
       })
-      local builtin = require('telescope.builtin')
-      vim.keymap.set('n', '<C-p>', builtin.find_files, { desc = 'Telescope find files' })
+      local find_files_in_git_root = function(opts)
+        opts = opts or {}
+        opts.cwd = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
+        require'telescope.builtin'.find_files(opts)
+      end
+      vim.keymap.set('n', '<C-p>', find_files_in_git_root, { desc = 'Telescope find files' })
     end,
   },
   {
