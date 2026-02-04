@@ -3,7 +3,7 @@ set -e
 
 echo 'Github'
 echo '  Requested:'
-hub api -X GET search/issues -f q='repo:TalentDeskApp/talentdesk.io updated:>2025-01-01 is:pr is:open author:GeorgeLinardis author:willbell71 review:required' | jq -r '.items[].html_url' | sed 's/^/\t/g'
+hub api -X GET search/issues -f q='repo:TalentDeskApp/talentdesk.io updated:>2025-01-01 is:pr is:open author:GeorgeLinardis author:willbell71 user-review-requested:@me' | jq -r '.items[].html_url' | sed 's/^/\t/g'
 
 echo '  Pending:'
 hub api -X GET search/issues -f q='repo:TalentDeskApp/talentdesk.io updated:>2025-01-01 is:pr is:open author:michailpanagiotis review:required' | jq -r '.items[].html_url' | sed 's/^/\t/g'
