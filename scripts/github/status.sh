@@ -107,9 +107,11 @@ done < "$tmp_approved"
 
 # Print QA branches not in Approved
 echo '  QA:'
-# Write QA tickets to temp file for jira script
+# Write QA tickets and commits to temp files for jira/circleci scripts
 qa_tickets_file="/tmp/qa_jira_tickets"
+qa_commits_file="/tmp/qa_commits"
 > "$qa_tickets_file"
+> "$qa_commits_file"
 while read -r branch; do
   if ! grep -q "^$branch"$'\t' "$tmp_approved" 2>/dev/null; then
     printf '\t%s\n' "$branch"
@@ -117,4 +119,7 @@ while read -r branch; do
   # Extract ticket from branch name (e.g., pmichail_BT-1234 -> BT-1234)
   ticket=$(echo "$branch" | sed 's/^[^_]*_//' | grep -oE '^[A-Z]+-[0-9]+')
   [[ -n "$ticket" ]] && echo "$ticket" >> "$qa_tickets_file"
+  # Get commit SHA for the branch
+  commit=$(git rev-parse "origin/$branch" 2>/dev/null)
+  [[ -n "$commit" ]] && echo "$commit	$branch" >> "$qa_commits_file"
 done < "$tmp_qa"
