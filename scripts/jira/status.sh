@@ -71,9 +71,41 @@ print_weekly_tickets() {
 
 if [ ! -z "${SHOW_WEEK}" ];
 then
+    # Fetch working tickets (non-Done/Closed, non-QA Testing)
+    working_tickets=$(curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json '{"fields": ["key","summary"], "jql":"assignee changed TO currentUser() AFTER startOfWeek() AND status NOT IN (Done, Closed, \"QA Testing\") AND project IN (BT, PAYM) ORDER BY updated DESC"}' | jq -r '.issues[] | "\(.key)\t\((.fields.summary // "") | @base64)"')
+
+    # Fetch QA Testing tickets separately
+    qa_tickets=$(curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json '{"fields": ["key","summary"], "jql":"assignee changed TO currentUser() AFTER startOfWeek() AND status = \"QA Testing\" AND project IN (BT, PAYM) ORDER BY updated DESC"}' | jq -r '.issues[] | "\(.key)\t\((.fields.summary // "") | @base64)"')
+
     echo '  Working on this week:'
-    curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json '{"fields": ["key","summary"], "jql":"assignee changed TO currentUser() AFTER startOfWeek() AND status NOT IN (Done, Closed) AND project IN (BT, PAYM) ORDER BY updated DESC"}' | jq -r '.issues[] | "\(.key)\t\((.fields.summary // "") | @base64)"' | print_weekly_tickets
+    # Print non-QA working tickets
+    echo "$working_tickets" | print_weekly_tickets
+    # Print QA tickets that are NOT merged to master
+    echo "$qa_tickets" | while read -r line; do
+      [[ -z "$line" ]] && continue
+      key=$(printf '%s' "$line" | cut -f1)
+      if ! echo "$branches_merged_master" | grep -qi "$key"; then
+        summary_b64=$(printf '%s' "$line" | cut -f2)
+        url="https://talentdesk.atlassian.net/browse/${key}"
+        summary=$(printf '%s' "$summary_b64" | base64 -d 2>/dev/null || echo "")
+        printf '\t%s\n' "$url"
+        printf '\t\t%s\n' "$summary"
+      fi
+    done
 
     echo '  Done this week:'
+    # Print actual Done/Closed tickets
     curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json '{"fields": ["key","summary"], "jql":"assignee changed TO currentUser() AFTER startOfWeek() AND status IN (Done, Closed) AND project IN (BT, PAYM) ORDER BY updated DESC"}' | jq -r '.issues[] | "\(.key)\t\((.fields.summary // "") | @base64)"' | print_weekly_tickets
+    # Print QA tickets that ARE merged to master
+    echo "$qa_tickets" | while read -r line; do
+      [[ -z "$line" ]] && continue
+      key=$(printf '%s' "$line" | cut -f1)
+      if echo "$branches_merged_master" | grep -qi "$key"; then
+        summary_b64=$(printf '%s' "$line" | cut -f2)
+        url="https://talentdesk.atlassian.net/browse/${key}"
+        summary=$(printf '%s' "$summary_b64" | base64 -d 2>/dev/null || echo "")
+        printf '\t%s\n' "$url"
+        printf '\t\t%s\n' "$summary"
+      fi
+    done
 fi
