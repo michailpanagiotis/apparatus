@@ -15,7 +15,7 @@ function compress_comic_destructive() {
   local FILENAME=$(basename "$1")
   local FILETYPE=$(file "$FULLPATH")
   local TEMPFILE=".temp"
-  cd $DIR
+  cd "$DIR"
   case $FILETYPE in
       *"Zip archive data"*)
 	unzip -q -j "$FILENAME"
@@ -29,16 +29,16 @@ function compress_comic_destructive() {
   	;;
   esac
   rm "$FILENAME"
-  find $DIR -type f -print0 | while IFS= read -r -d '' file; do
+  find "$DIR" -type f -print0 | while IFS= read -r -d '' file; do
     compress_file_destructive "$file"
   done
 
   case $FILETYPE in
       *"Zip archive data"*)
-	zip -0 -q "$TEMPFILE" *
+	zip -1 -q "$TEMPFILE" *
 	;;
       *"RAR archive data"*)
-	rar a -idq -m0 "$TEMPFILE" *
+	rar a -idq -m1 "$TEMPFILE" *
 	;;
       *)
 	echo Unknown comic format
@@ -47,7 +47,7 @@ function compress_comic_destructive() {
   esac
   find . -type f \! \( -name "$TEMPFILE" \) -exec rm {} \;
   mv "$TEMPFILE" "$FILENAME"
-  cd -
+  cd - > /dev/null
 }
 
 function calc_output_file() {
@@ -88,12 +88,14 @@ function compress_file_destructive() {
 	local OUTFILE="$OUTPUT_DIR"/"${FILENAME%.*}".webp
 	>&2 echo compressing \'"$FULLPATH"\' to \'"$OUTFILE"\'
   	magick "$FULLPATH" -strip -interlace Plane -quality 50% -quiet "$OUTFILE"
+	[[ "$FULLPATH" != "$OUTFILE" ]] && rm "$FULLPATH"
 	echo "$OUTFILE"
   	;;
       *"HEIF Image HEVC"*)
 	local OUTFILE="$OUTPUT_DIR"/"${FILENAME%.*}".webp
 	>&2 echo compressing \'"$FULLPATH"\' to \'"$OUTFILE"\'
   	magick "$FULLPATH" -profile srgb.icc -strip -interlace Plane -quiet "$OUTFILE"
+	[[ "$FULLPATH" != "$OUTFILE" ]] && rm "$FULLPATH"
 	echo "$OUTFILE"
   	;;
       *"Apple QuickTime"*|*"Apple iTunes Video"*|*"MP4 Base Media"*|*"MP4 v2"*)
@@ -102,12 +104,14 @@ function compress_file_destructive() {
 	local EXIF_DATE=$(exiftool -T -CreateDate "$FULLPATH")
 	</dev/null ffmpeg -nostdin -y -i "$FULLPATH" -movflags use_metadata_tags -c:v libx265 -c:a copy -preset ultrafast -x265-params crf=22 "$OUTFILE"
 	exiftool -overwrite_original -q -DateTimeOriginal="$EXIF_DATE" "$OUTFILE"
+	[[ "$FULLPATH" != "$OUTFILE" ]] && rm "$FULLPATH"
 	echo "$OUTFILE"
 	;;
       *"Zip archive data"*|*"RAR archive data"*)
 	case $EXTENSION in
 	    "cbz"|"cbr")
 	      compress_comic_destructive "$1"
+	      echo "$FULLPATH"
 	      ;;
 	    *)
 	      ;;
@@ -125,13 +129,13 @@ function compress_file_to_output_dir() {
   local OUTDIR=$(absolute "$2")
   local FILENAME=$(basename "$FULLPATH")
   local OUTPUT_FILE=$(calc_output_file "$FULLPATH" "$OUTDIR")
-  echo Compressing \'"$FULLPATH"\' to \'"$OUTPUT_FILE"\'through $TEMP...
-  mkdir -p $TEMP
-  cp "$FULLPATH" $TEMP/"$FILENAME"
-  COMPRESSED=$(compress_file_destructive $TEMP/"$FILENAME")
+  echo Compressing \'"$FULLPATH"\' to \'"$OUTPUT_FILE"\' through "$TEMP"...
+  mkdir -p "$TEMP"
+  cp "$FULLPATH" "$TEMP"/"$FILENAME"
+  COMPRESSED=$(compress_file_destructive "$TEMP"/"$FILENAME")
   mkdir -p "$OUTDIR"
   cp "$COMPRESSED" "$OUTPUT_FILE"
-  rm -rf $TEMP
+  rm -rf "$TEMP"
 }
 
 function compress_folder_contents() {
