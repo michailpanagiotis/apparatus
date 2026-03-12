@@ -47,14 +47,24 @@ curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" 
 if [ ! -z "${SHOW_BUGBOARD}" ];
 then
     echo '  Bug board:'
-    curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json '{"fields": ["key","url","priority","assignee"], "jql":"status NOT IN (Done, Closed) AND project IN (BT) AND assignee IN (currentUser(), empty) AND type != \"New Feature\" AND status != \"Blocked / On Hold\" AND \"Team[Dropdown]\" = \"Payments development\" ORDER BY created DESC"}' | jq -r '.issues[] | "\(.key)\t\(.fields.priority.name)\t\(.fields.assignee.emailAddress // "")"' | while IFS=$'\t' read -r key priority assignee_email; do
+    curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json '{"fields": ["key","url","priority","assignee","status"], "jql":"status NOT IN (Done, Closed) AND project IN (BT) AND assignee IN (currentUser(), empty) AND type != \"New Feature\" AND status != \"Blocked / On Hold\" AND \"Team[Dropdown]\" = \"Payments development\" ORDER BY created DESC"}' | jq -r '.issues[] | "\(.key)\t\(.fields.priority.name)\t\(.fields.assignee.emailAddress // "")\t\(.fields.status.name // "")"' | while IFS=$'\t' read -r key priority assignee_email status_name; do
       url="https://talentdesk.atlassian.net/browse/${key}"
       mine_marker=""
+      cr_marker=""
       qa_marker=""
       merge_status=$(get_merge_status "$key")
       [[ "$assignee_email" == "$JIRA_API_USER" ]] && mine_marker=" ▶"
+      [[ "$status_name" == "Code Review" ]] && cr_marker=" 🔎"
       [[ -f "$qa_tickets_file" ]] && grep -qx "$key" "$qa_tickets_file" 2>/dev/null && qa_marker=" [QA]"
-      printf '\t%s %s%s%s%s\n' "$url" "$priority" "$mine_marker" "${merge_status:+ $merge_status}" "$qa_marker"
+      case "$priority" in
+        "Low")      priority_icon="🔵" ;;
+        "Medium")   priority_icon="🟢" ;;
+        "High")     priority_icon="🟡" ;;
+        "Highest")  priority_icon="🟠" ;;
+        "Critical") priority_icon="🔴" ;;
+        *)          priority_icon="" ;;
+      esac
+      printf '\t%s %s%s%s%s%s\n' "$priority_icon" "$url" "$mine_marker" "$cr_marker" "${merge_status:+ $merge_status}" "$qa_marker"
     done
 fi
 
@@ -79,9 +89,10 @@ then
     if [[ "$SHOW_WEEK" =~ ^([0-9]{4}-[0-9]{2}-[0-9]{2}):([0-9]{4}-[0-9]{2}-[0-9]{2})$ ]]; then
       start_date="${BASH_REMATCH[1]}"
       end_date="${BASH_REMATCH[2]}"
-      # JIRA BEFORE is exclusive, so add 1 day to include the end date
+      # JIRA AFTER and BEFORE are both exclusive, so adjust both ends by 1 day
+      start_date_exclusive=$(date -d "${start_date} - 1 day" +%Y-%m-%d)
       end_date_exclusive=$(date -d "${end_date} + 1 day" +%Y-%m-%d)
-      after_clause="AFTER \\\"${start_date}\\\""
+      after_clause="AFTER \\\"${start_date_exclusive}\\\""
       before_clause="BEFORE \\\"${end_date_exclusive}\\\""
       week_label="${start_date} to ${end_date}"
     else
