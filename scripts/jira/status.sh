@@ -4,6 +4,13 @@ set -e
 # Load QA tickets from github script
 qa_tickets_file="/tmp/qa_jira_tickets"
 
+# Pre-fetch QA Testing tickets from Jira
+jira_qa_tickets=$(curl -s -X POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" \
+  -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" \
+  -H "Content-Type: application/json" \
+  --data '{"fields": ["key"], "jql":"project IN (BT, PAYM) AND status = \"QA Testing\""}' \
+  | jq -r '.issues[].key' 2>/dev/null || echo "")
+
 # Cache merged branches for performance
 branches_merged_master=$(git branch --merged master 2>/dev/null || echo "")
 branches_merged_staging2=$(git branch --merged staging2 2>/dev/null || echo "")
@@ -28,7 +35,7 @@ print_ticket_with_qa_marker() {
     url="https://talentdesk.atlassian.net/browse/${key}"
     merge_status=$(get_merge_status "$key")
     qa_marker=""
-    if [[ -f "$qa_tickets_file" ]] && grep -qx "$key" "$qa_tickets_file" 2>/dev/null; then
+    if echo "$jira_qa_tickets" | grep -qx "$key" 2>/dev/null || { [[ -f "$qa_tickets_file" ]] && grep -qx "$key" "$qa_tickets_file" 2>/dev/null; }; then
       qa_marker=" [QA]"
     fi
     printf '\t%s%s%s\n' "$url" "${merge_status:+ $merge_status}" "$qa_marker"
@@ -38,11 +45,11 @@ print_ticket_with_qa_marker() {
 echo 'JIRA'
 echo '  My bugs:'
 
-curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json '{"fields": ["key"], "jql":"status NOT IN (Done, Closed) AND project IN (BT) AND assignee = currentUser() AND status != \"Blocked / On Hold\" ORDER BY created DESC"}' | jq -r '.issues[].key' | print_ticket_with_qa_marker
+curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json '{"fields": ["key"], "jql":"statusCategory != Done AND project IN (BT) AND assignee = currentUser() AND status != \"Blocked / On Hold\" ORDER BY created DESC"}' | jq -r '.issues[].key' | print_ticket_with_qa_marker
 
 
 echo '  My features:'
-curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json '{"fields": ["key"], "jql":"status NOT IN (Done, Closed) AND project IN (PAYM) AND assignee = currentUser() AND status != \"Blocked / On Hold\" ORDER BY created DESC"}' | jq -r '.issues[].key' | print_ticket_with_qa_marker
+curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json '{"fields": ["key"], "jql":"statusCategory != Done AND project IN (PAYM) AND assignee = currentUser() AND status != \"Blocked / On Hold\" ORDER BY created DESC"}' | jq -r '.issues[].key' | print_ticket_with_qa_marker
 
 if [ ! -z "${SHOW_BUGBOARD}" ];
 then
@@ -55,7 +62,7 @@ then
       merge_status=$(get_merge_status "$key")
       [[ "$assignee_email" == "$JIRA_API_USER" ]] && mine_marker=" ▶"
       [[ "$status_name" == "Code Review" ]] && cr_marker=" 🔎"
-      [[ -f "$qa_tickets_file" ]] && grep -qx "$key" "$qa_tickets_file" 2>/dev/null && qa_marker=" [QA]"
+      if echo "$jira_qa_tickets" | grep -qx "$key" 2>/dev/null || { [[ -f "$qa_tickets_file" ]] && grep -qx "$key" "$qa_tickets_file" 2>/dev/null; }; then qa_marker=" [QA]"; fi
       case "$priority" in
         "Low")      priority_icon="🔵" ;;
         "Medium")   priority_icon="🟢" ;;
@@ -140,6 +147,82 @@ then
     done
 
     echo "  Done ${week_label}:"
+    # Print actual Done/Closed tickets
+    curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json "{\"fields\": [\"key\",\"summary\"], \"jql\":\"assignee changed TO currentUser() ${after_clause}${before_clause:+ ${before_clause}} AND status IN (Done, Closed) AND project IN (BT, PAYM) ORDER BY updated DESC\"}" | jq -r '.issues[] | "\(.key)\t\((.fields.summary // "") | @base64)"' | print_weekly_tickets
+    # Print QA tickets that ARE merged to master
+    echo "$qa_tickets" | while read -r line; do
+      [[ -z "$line" ]] && continue
+      key=$(printf '%s' "$line" | cut -f1)
+      if echo "$branches_merged_master" | grep -qi "$key"; then
+        summary_b64=$(printf '%s' "$line" | cut -f2)
+        url="https://talentdesk.atlassian.net/browse/${key}"
+        summary=$(printf '%s' "$summary_b64" | base64 -d 2>/dev/null || echo "")
+        printf '\t%s\n' "$url"
+        printf '\t\t%s\n' "$summary"
+      fi
+    done
+fi
+
+if [ ! -z "${SHOW_MONTH}" ];
+then
+    # SHOW_MONTH accepts:
+    #   - A date range: "2026-02-01:2026-02-28" (inclusive, shows that exact period)
+    #   - A number of months back: 0 = current month, 1 = last month, 2 = two months ago
+    #   - Any other truthy value (e.g. "true"): current month
+    if [[ "$SHOW_MONTH" =~ ^([0-9]{4}-[0-9]{2}-[0-9]{2}):([0-9]{4}-[0-9]{2}-[0-9]{2})$ ]]; then
+      start_date="${BASH_REMATCH[1]}"
+      end_date="${BASH_REMATCH[2]}"
+      # JIRA AFTER and BEFORE are both exclusive, so adjust both ends by 1 day
+      start_date_exclusive=$(date -d "${start_date} - 1 day" +%Y-%m-%d)
+      end_date_exclusive=$(date -d "${end_date} + 1 day" +%Y-%m-%d)
+      after_clause="AFTER \\\"${start_date_exclusive}\\\""
+      before_clause="BEFORE \\\"${end_date_exclusive}\\\""
+      month_label="${start_date} to ${end_date}"
+    else
+      month_offset="${SHOW_MONTH}"
+      if ! [[ "$month_offset" =~ ^[0-9]+$ ]]; then
+        month_offset=0
+      fi
+
+      if [ "$month_offset" -eq 0 ]; then
+        after_clause="AFTER startOfMonth()"
+        before_clause=""
+        month_label="this month"
+      else
+        after_clause="AFTER startOfMonth(-${month_offset}M)"
+        before_end=$((month_offset - 1))
+        if [ "$before_end" -eq 0 ]; then
+          before_clause="BEFORE startOfMonth()"
+        else
+          before_clause="BEFORE startOfMonth(-${before_end}M)"
+        fi
+        month_label="${month_offset} month(s) ago"
+      fi
+    fi
+
+    # Fetch working tickets (non-Done/Closed, non-QA Testing)
+    working_tickets=$(curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json "{\"fields\": [\"key\",\"summary\"], \"jql\":\"assignee changed TO currentUser() ${after_clause}${before_clause:+ ${before_clause}} AND status NOT IN (Done, Closed, \\\"QA Testing\\\") AND project IN (BT, PAYM) ORDER BY updated DESC\"}" | jq -r '.issues[] | "\(.key)\t\((.fields.summary // "") | @base64)"')
+
+    # Fetch QA Testing tickets separately
+    qa_tickets=$(curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json "{\"fields\": [\"key\",\"summary\"], \"jql\":\"assignee changed TO currentUser() ${after_clause}${before_clause:+ ${before_clause}} AND status = \\\"QA Testing\\\" AND project IN (BT, PAYM) ORDER BY updated DESC\"}" | jq -r '.issues[] | "\(.key)\t\((.fields.summary // "") | @base64)"')
+
+    echo "  Working on ${month_label}:"
+    # Print non-QA working tickets
+    echo "$working_tickets" | print_weekly_tickets
+    # Print QA tickets that are NOT merged to master
+    echo "$qa_tickets" | while read -r line; do
+      [[ -z "$line" ]] && continue
+      key=$(printf '%s' "$line" | cut -f1)
+      if ! echo "$branches_merged_master" | grep -qi "$key"; then
+        summary_b64=$(printf '%s' "$line" | cut -f2)
+        url="https://talentdesk.atlassian.net/browse/${key}"
+        summary=$(printf '%s' "$summary_b64" | base64 -d 2>/dev/null || echo "")
+        printf '\t%s\n' "$url"
+        printf '\t\t%s\n' "$summary"
+      fi
+    done
+
+    echo "  Done ${month_label}:"
     # Print actual Done/Closed tickets
     curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" --json "{\"fields\": [\"key\",\"summary\"], \"jql\":\"assignee changed TO currentUser() ${after_clause}${before_clause:+ ${before_clause}} AND status IN (Done, Closed) AND project IN (BT, PAYM) ORDER BY updated DESC\"}" | jq -r '.issues[] | "\(.key)\t\((.fields.summary // "") | @base64)"' | print_weekly_tickets
     # Print QA tickets that ARE merged to master
