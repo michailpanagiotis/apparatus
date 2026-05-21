@@ -32,6 +32,14 @@ fetch_tickets() {
     | jq -r '(.issues // [])[] | "\(.key)\t\(.fields.summary // "")"'
 }
 
+fetch_history_tickets() {
+  local status_filter="$1"
+  curl -s --request POST "https://talentdesk.atlassian.net/rest/api/3/search/jql" \
+    -u "${JIRA_API_USER}:${JIRA_API_TOKEN}" \
+    --json "{\"fields\": [\"key\",\"summary\"], \"maxResults\": 100, \"jql\":\"issue in issueHistory() AND updated >= \\\"${PERIOD_START}\\\" AND ${status_filter} AND project IN (BT, PAYM) ORDER BY updated DESC\"}" \
+    | jq -r '(.issues // [])[] | "\(.key)\t\(.fields.summary // "")"'
+}
+
 declare -A seen_keys
 declare -a tickets
 declare -a done_ticket_keys=()
@@ -50,6 +58,9 @@ add_tickets() {
 add_tickets "false" "$(fetch_tickets "status NOT IN (Done, Closed, 'QA Testing')")"
 add_tickets "false" "$(fetch_tickets "status = 'QA Testing'")"
 add_tickets "true"  "$(fetch_tickets "status IN (Done, Closed)")"
+add_tickets "false" "$(fetch_history_tickets "status NOT IN (Done, Closed, 'QA Testing')")"
+add_tickets "false" "$(fetch_history_tickets "status = 'QA Testing'")"
+add_tickets "true"  "$(fetch_history_tickets "status IN (Done, Closed)")"
 
 if [ ${#tickets[@]} -eq 0 ]; then
   echo "No tickets found for ${PERIOD_LABEL}."
@@ -120,12 +131,13 @@ replace_hours() {
   local tags_json="$1"
   local is_ticket="$2"
   local hours="$3"
+  local entry_date="${4:-$record_date}"
   log_data=$(echo "$log_data" | jq \
     --arg from "$PERIOD_START" --arg to "$PERIOD_END" \
     --argjson tags "$tags_json" \
     --argjson is_ticket "$is_ticket" \
     --argjson hours "$hours" \
-    --arg date "$record_date" '
+    --arg date "$entry_date" '
     [.[] | select(
       (.date >= $from and .date <= $to and
        (($tags - .tags | length) == 0) and
@@ -149,13 +161,14 @@ if [[ -n "$CALENDAR_SECRET_ICAL" ]]; then
     period_from="${PERIOD_START//-/}"
     period_to="${PERIOD_END//-/}"
 
-    while IFS=$'\t' read -r s h; do
+    while IFS=$'\t' read -r d s h; do
       [[ -z "$s" ]] && continue
-      if [[ -z "${cal_hours[$s]+x}" ]]; then
-        cal_summaries+=("$s")
-        cal_hours[$s]="$h"
+      key="$d"$'\t'"$s"
+      if [[ -z "${cal_hours[$key]+x}" ]]; then
+        cal_summaries+=("$key")
+        cal_hours[$key]="$h"
       else
-        cal_hours[$s]=$(awk "BEGIN { printf \"%g\", ${cal_hours[$s]} + $h }")
+        cal_hours[$key]=$(awk "BEGIN { printf \"%g\", ${cal_hours[$key]} + $h }")
       fi
     done < <(
       echo "$ical_raw" | tr -d '\r' \
@@ -166,6 +179,12 @@ if [[ -n "$CALENDAR_SECRET_ICAL" ]]; then
             return d+int((153*m+2)/5)+365*y+int(y/4)-int(y/100)+int(y/400)-32045
           }
           function sjdn(s) { return jdn(substr(s,1,4)+0,substr(s,5,2)+0,substr(s,7,2)+0) }
+          function jdn2date(J,  f,e,g,h,D,M,Y) {
+            f=J+1401+int(int((4*J+274277)/146097)*3/4)-38
+            e=4*f+3; g=int((e%1461)/4); h=5*g+2
+            D=int((h%153)/5)+1; M=(int(h/153)+2)%12+1; Y=int(e/1461)-4716+int((14-M)/12)
+            return sprintf("%04d-%02d-%02d",Y,M,D)
+          }
           BEGIN {
             fj=sjdn(from); tj=sjdn(to)
             dm["MO"]=0;dm["TU"]=1;dm["WE"]=2;dm["TH"]=3;dm["FR"]=4;dm["SA"]=5;dm["SU"]=6
@@ -175,6 +194,7 @@ if [[ -n "$CALENDAR_SECRET_ICAL" ]]; then
             if (in_event && summary!="" && dtstart!="" && dtend!="" &&
                 summary!="Out of office" && summary!~/^Programming Stint/ && partstat!="DECLINED") {
               ds8=substr(dtstart,1,8)
+              inst_jdn=sjdn(ds8)
               in_p=(ds8>=from && ds8<=to)
               if (!in_p && rrule!="" && ds8<=to) {
                 freq=""; until=""; intv=1; byday=""
@@ -193,11 +213,13 @@ if [[ -n "$CALENDAR_SECRET_ICAL" ]]; then
                     off=fj-sj; if(off<0)off=0
                     inst=sj+int(off/intv)*intv; if(inst<fj)inst+=intv
                     in_p=(inst<=tj && inst<=uj)
+                    if (in_p) inst_jdn=inst
                   } else if (freq=="WEEKLY") {
                     if (byday=="") {
                       off=fj-sj; if(off<0)off=0
                       inst=sj+int(off/(7*intv))*7*intv; if(inst<fj)inst+=7*intv
                       in_p=(inst<=tj && inst<=uj)
+                      if (in_p) inst_jdn=inst
                     } else {
                       nb=split(byday,bds,","); in_p=0; sdow=sj%7
                       for (b=1;b<=nb&&!in_p;b++) {
@@ -206,6 +228,7 @@ if [[ -n "$CALENDAR_SECRET_ICAL" ]]; then
                         d2f=(dm[bd]-sdow+7)%7; fst=sj+d2f
                         if (fst<fj) { wk=int((fj-fst+intv*7-1)/(intv*7)); fst+=wk*intv*7 }
                         in_p=(fst>=fj && fst<=tj && fst<=uj)
+                        if (in_p) inst_jdn=fst
                       }
                     }
                   }
@@ -216,7 +239,8 @@ if [[ -n "$CALENDAR_SECRET_ICAL" ]]; then
                 eh=substr(dtend,9,2)+0;   em=substr(dtend,11,2)+0
                 mins=eh*60+em-sh*60-sm
                 dur=int((mins+59)/60)
-                if (dur>0) print summary "\t" dur
+                edate=jdn2date(inst_jdn)
+                if (dur>0) print edate "\t" summary "\t" dur
               }
             }
             in_event=0
@@ -260,15 +284,17 @@ if [[ ${#cal_summaries[@]} -gt 0 ]]; then
   echo ""
   echo "── Meetings ──"
 
-  for s in "${cal_summaries[@]}"; do
+  for key in "${cal_summaries[@]}"; do
+    cal_date="${key%%$'\t'*}"
+    s="${key#*$'\t'}"
     tags_json=$(jq -cn --arg s "$s" '["meeting", $s]')
     current=$(existing_hours "$tags_json" "false")
-    [[ -n "$current" ]] && default=$(parse_hours "${current}h") || default="${cal_hours[$s]}"
-    printf "  %s [%sh]: " "$(truncate "$s" 50)" "$default"
+    [[ -n "$current" ]] && default=$(parse_hours "${current}h") || default="${cal_hours[$key]}"
+    printf "  [%s] %s [%sh]: " "$cal_date" "$(truncate "$s" 50)" "$default"
     read -r input
     hours=$(parse_hours "$input")
     [[ -z "$hours" ]] && hours="$default"
-    replace_hours "$tags_json" "false" "$hours"
+    replace_hours "$tags_json" "false" "$hours" "$cal_date"
   done
 fi
 

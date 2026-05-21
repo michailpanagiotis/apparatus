@@ -2,7 +2,7 @@
 set -e
 
 # Usage:
-#   report.sh [week|month|N|Nm|START:END]  (default: week)
+#   report.sh [--md] [week|month|N|Nm|START:END]  (default: week)
 #
 # Ticket list comes from the sync cache (sync.sh).
 # Hours come from ~/.hours.json (log.sh).
@@ -10,8 +10,18 @@ set -e
 CACHE_FILE="${HOME}/.jira-tickets.json"
 LOG_FILE="${HOME}/.hours.json"
 
+MD_MODE=0
+PERIOD_ARG=""
+for arg in "$@"; do
+  if [[ "$arg" == "--md" ]]; then
+    MD_MODE=1
+  else
+    PERIOD_ARG="$arg"
+  fi
+done
+
 source "$(dirname "$0")/_period.sh"
-setup_period "${1:-week}"
+setup_period "${PERIOD_ARG:-week}"
 
 # Fixed sections: "Display Name:canonical_tag"
 SECTIONS=(
@@ -94,6 +104,107 @@ fmt_hours() {
   awk "BEGIN { h=$h; printf (h == int(h)) ? \"%gh\" : \"%.2gh\", h }"
 }
 
+declare -a in_progress_keys=()
+declare -a done_keys_arr=()
+for key in "${ticket_keys[@]}"; do
+  if [[ -n "${done_set[$key]}" ]]; then
+    done_keys_arr+=("$key")
+  else
+    in_progress_keys+=("$key")
+  fi
+done
+
+# ── Total calculation (shared) ────────────────────────────────────────────────
+
+total=0
+for key in "${ticket_keys[@]}"; do
+  h="${ticket_hours[$key]:-0}"
+  total=$(awk "BEGIN { printf \"%.4f\", $total + $h }")
+done
+for key in "${meeting_item_keys[@]}"; do
+  h="${meeting_item_hours[$key]:-0}"
+  total=$(awk "BEGIN { printf \"%.4f\", $total + $h }")
+done
+for entry in "${SECTIONS[@]}"; do
+  tag="${entry##*:}"
+  [[ "$tag" == "meeting" && ${#meeting_item_keys[@]} -gt 0 ]] && continue
+  h="${section_hours[$tag]:-0}"
+  total=$(awk "BEGIN { printf \"%.4f\", $total + $h }")
+done
+for row in "${other_rows[@]}"; do
+  h="${row#*$'\t'}"
+  total=$(awk "BEGIN { printf \"%.4f\", $total + $h }")
+done
+
+# ── Markdown output ───────────────────────────────────────────────────────────
+
+if [[ "$MD_MODE" -eq 1 ]]; then
+  printf "## Report: %s\n" "$PERIOD_LABEL"
+
+  if [ ${#ticket_keys[@]} -gt 0 ]; then
+    if [ ${#in_progress_keys[@]} -gt 0 ]; then
+      printf "\n### Tickets — Assigned\n\n"
+      printf "| Ticket | Title | Hours |\n"
+      printf "| --- | --- | --- |\n"
+      for key in "${in_progress_keys[@]}"; do
+        summary=$(echo "$cache" | jq -r --arg k "$key" '.summaries[$k] // ""')
+        printf "| %s | %s | %s |\n" "$key" "$summary" "$(fmt_hours "${ticket_hours[$key]:-}")"
+      done
+    fi
+    if [ ${#done_keys_arr[@]} -gt 0 ]; then
+      printf "\n### Tickets — Delivered\n\n"
+      printf "| Ticket | Title | Hours |\n"
+      printf "| --- | --- | --- |\n"
+      for key in "${done_keys_arr[@]}"; do
+        summary=$(echo "$cache" | jq -r --arg k "$key" '.summaries[$k] // ""')
+        printf "| %s | %s | %s |\n" "$key" "$summary" "$(fmt_hours "${ticket_hours[$key]:-}")"
+      done
+    fi
+  fi
+
+  if [ ${#meeting_item_keys[@]} -gt 0 ]; then
+    printf "\n### Meetings\n\n"
+    printf "| Date | Meeting | Hours |\n"
+    printf "| --- | --- | --- |\n"
+    for key in "${meeting_item_keys[@]}"; do
+      [[ "${meeting_item_hours[$key]:-0}" == "0" ]] && continue
+      meeting_date="${key%%|*}"
+      meeting_name="${key#*|}"
+      printf "| %s | %s | %s |\n" "$meeting_date" "$meeting_name" "$(fmt_hours "${meeting_item_hours[$key]:-}")"
+    done
+  fi
+
+  has_activities=0
+  for entry in "${SECTIONS[@]}"; do
+    tag="${entry##*:}"
+    [[ "$tag" == "meeting" && ${#meeting_item_keys[@]} -gt 0 ]] && continue
+    [[ -n "${section_hours[$tag]}" ]] && has_activities=1 && break
+  done
+  [[ ${#other_rows[@]} -gt 0 ]] && has_activities=1
+
+  if [[ "$has_activities" -eq 1 ]]; then
+    printf "\n### Activities\n\n"
+    printf "| Activity | Hours |\n"
+    printf "| --- | --- |\n"
+    for entry in "${SECTIONS[@]}"; do
+      label="${entry%%:*}"
+      tag="${entry##*:}"
+      [[ "$tag" == "meeting" && ${#meeting_item_keys[@]} -gt 0 ]] && continue
+      [[ -z "${section_hours[$tag]}" ]] && continue
+      printf "| %s | %s |\n" "$label" "$(fmt_hours "${section_hours[$tag]:-}")"
+    done
+    for row in "${other_rows[@]}"; do
+      tags="${row%%$'\t'*}"
+      printf "| %s | %s |\n" "$tags" "$(fmt_hours "${row#*$'\t'}")"
+    done
+  fi
+
+  printf "\n**Total: %s**\n" "$(fmt_hours "$total")"
+  exit 0
+fi
+
+# ── ASCII table output ────────────────────────────────────────────────────────
+
 # Determine column widths
 max_key=6
 max_desc=5
@@ -123,16 +234,6 @@ sep_hours=$(printf '%*s' "$max_hours" '' | tr ' ' '-')
 
 print_sep()     { printf "|-%s-|-%s-|-%s-|\n" "$sep_key" "$sep_desc" "$sep_hours"; }
 print_section() { printf "| %-*s | %-*s | %-*s |\n" "$max_key" "$1" "$max_desc" "$2" "$max_hours" "$3"; }
-
-declare -a in_progress_keys=()
-declare -a done_keys_arr=()
-for key in "${ticket_keys[@]}"; do
-  if [[ -n "${done_set[$key]}" ]]; then
-    done_keys_arr+=("$key")
-  else
-    in_progress_keys+=("$key")
-  fi
-done
 
 printf "Report: %s\n\n" "$PERIOD_LABEL"
 print_section "Ticket" "Title" "Hours"
@@ -187,27 +288,6 @@ if [ ${#other_rows[@]} -gt 0 ]; then
     print_section "$tags" "" "$(fmt_hours "${row#*$'\t'}")"
   done
 fi
-
-# Total
-total=0
-for key in "${ticket_keys[@]}"; do
-  h="${ticket_hours[$key]:-0}"
-  total=$(awk "BEGIN { printf \"%.4f\", $total + $h }")
-done
-for key in "${meeting_item_keys[@]}"; do
-  h="${meeting_item_hours[$key]:-0}"
-  total=$(awk "BEGIN { printf \"%.4f\", $total + $h }")
-done
-for entry in "${SECTIONS[@]}"; do
-  tag="${entry##*:}"
-  [[ "$tag" == "meeting" && ${#meeting_item_keys[@]} -gt 0 ]] && continue
-  h="${section_hours[$tag]:-0}"
-  total=$(awk "BEGIN { printf \"%.4f\", $total + $h }")
-done
-for row in "${other_rows[@]}"; do
-  h="${row#*$'\t'}"
-  total=$(awk "BEGIN { printf \"%.4f\", $total + $h }")
-done
 
 print_sep
 print_section "Total" "" "$(fmt_hours "$total")"
