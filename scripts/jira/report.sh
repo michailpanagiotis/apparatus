@@ -154,6 +154,7 @@ if [[ "$MD_MODE" -eq 1 ]]; then
       printf "| Ticket | Title | Hours |\n"
       printf "| --- | --- | --- |\n"
       for key in "${in_progress_keys[@]}"; do
+        [[ "${ticket_hours[$key]:-0}" == "0" || -z "${ticket_hours[$key]:-}" ]] && continue
         summary=$(echo "$cache" | jq -r --arg k "$key" '.summaries[$k] // ""')
         printf "| %s | %s | %s |\n" "$key" "$summary" "$(fmt_hours "${ticket_hours[$key]:-}")"
       done
@@ -163,6 +164,7 @@ if [[ "$MD_MODE" -eq 1 ]]; then
       printf "| Ticket | Title | Hours |\n"
       printf "| --- | --- | --- |\n"
       for key in "${done_keys_arr[@]}"; do
+        [[ "${ticket_hours[$key]:-0}" == "0" || -z "${ticket_hours[$key]:-}" ]] && continue
         summary=$(echo "$cache" | jq -r --arg k "$key" '.summaries[$k] // ""')
         printf "| %s | %s | %s |\n" "$key" "$summary" "$(fmt_hours "${ticket_hours[$key]:-}")"
       done
@@ -185,9 +187,11 @@ if [[ "$MD_MODE" -eq 1 ]]; then
   for entry in "${SECTIONS[@]}"; do
     tag="${entry##*:}"
     [[ "$tag" == "meeting" && ${#meeting_item_keys[@]} -gt 0 ]] && continue
-    [[ -n "${section_hours[$tag]}" ]] && has_activities=1 && break
+    [[ -n "${section_hours[$tag]}" && "${section_hours[$tag]}" != "0" ]] && has_activities=1 && break
   done
-  [[ ${#other_rows[@]} -gt 0 ]] && has_activities=1
+  for row in "${other_rows[@]}"; do
+    h="${row#*$'\t'}"; [[ -n "$h" && "$h" != "0" ]] && has_activities=1 && break
+  done
 
   if [[ "$has_activities" -eq 1 ]]; then
     printf "\n### Activities\n\n"
@@ -197,12 +201,13 @@ if [[ "$MD_MODE" -eq 1 ]]; then
       label="${entry%%:*}"
       tag="${entry##*:}"
       [[ "$tag" == "meeting" && ${#meeting_item_keys[@]} -gt 0 ]] && continue
-      [[ -z "${section_hours[$tag]}" ]] && continue
+      [[ -z "${section_hours[$tag]}" || "${section_hours[$tag]}" == "0" ]] && continue
       printf "| %s | %s |\n" "$label" "$(fmt_hours "${section_hours[$tag]:-}")"
     done
     for row in "${other_rows[@]}"; do
+      h="${row#*$'\t'}"; [[ -z "$h" || "$h" == "0" ]] && continue
       tags="${row%%$'\t'*}"
-      printf "| %s | %s |\n" "$tags" "$(fmt_hours "${row#*$'\t'}")"
+      printf "| %s | %s |\n" "$tags" "$(fmt_hours "$h")"
     done
   fi
 
@@ -253,6 +258,7 @@ else
     print_section "Assigned" "" ""
     print_sep
     for key in "${in_progress_keys[@]}"; do
+      [[ "${ticket_hours[$key]:-0}" == "0" || -z "${ticket_hours[$key]:-}" ]] && continue
       summary=$(echo "$cache" | jq -r --arg k "$key" '.summaries[$k] // ""')
       print_section "$key" "$summary" "$(fmt_hours "${ticket_hours[$key]:-}")"
     done
@@ -262,6 +268,7 @@ else
     print_section "Delivered" "" ""
     print_sep
     for key in "${done_keys_arr[@]}"; do
+      [[ "${ticket_hours[$key]:-0}" == "0" || -z "${ticket_hours[$key]:-}" ]] && continue
       summary=$(echo "$cache" | jq -r --arg k "$key" '.summaries[$k] // ""')
       print_section "$key" "$summary" "$(fmt_hours "${ticket_hours[$key]:-}")"
     done
@@ -286,13 +293,15 @@ for entry in "${SECTIONS[@]}"; do
   label="${entry%%:*}"
   tag="${entry##*:}"
   [[ "$tag" == "meeting" && ${#meeting_item_keys[@]} -gt 0 ]] && continue
+  [[ -z "${section_hours[$tag]:-}" || "${section_hours[$tag]}" == "0" ]] && continue
   print_section "$label" "" "$(fmt_hours "${section_hours[$tag]:-}")"
 done
 
 if [ ${#other_rows[@]} -gt 0 ]; then
   for row in "${other_rows[@]}"; do
+    h="${row#*$'\t'}"; [[ -z "$h" || "$h" == "0" ]] && continue
     tags="${row%%$'\t'*}"
-    print_section "$tags" "" "$(fmt_hours "${row#*$'\t'}")"
+    print_section "$tags" "" "$(fmt_hours "$h")"
   done
 fi
 
