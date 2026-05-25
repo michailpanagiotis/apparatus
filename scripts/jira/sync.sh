@@ -17,6 +17,7 @@ SECTIONS=(
   "Reporting:reporting"
   "Designing:designing"
   "Administration:administration"
+  "Incidents:incidents"
 )
 
 source "$(dirname "$0")/_period.sh"

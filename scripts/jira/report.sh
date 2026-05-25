@@ -32,6 +32,7 @@ SECTIONS=(
   "Reporting:reporting"
   "Designing:designing"
   "Administration:administration"
+  "Incidents:incidents"
 )
 
 # Load ticket cache
@@ -81,12 +82,18 @@ declare -a other_rows
 while read -r key; do
   [[ -z "$key" ]] && continue
   ticket_keys+=("$key")
-done < <(echo "$cache" | jq -r --arg p "$period_key" '.periods[$p] // [] | .[]')
+done < <(echo "$cache" | jq -r --arg from "$PERIOD_START" --arg to "$PERIOD_END" '
+  .periods | to_entries |
+  map(select((.key | split(":")[0]) <= $to and (.key | split(":")[1]) >= $from)) |
+  map(.value[]) | unique | .[]')
 
 declare -A done_set
 while read -r key; do
   [[ -n "$key" ]] && done_set[$key]=1
-done < <(echo "$cache" | jq -r --arg p "$period_key" '.done_periods[$p] // [] | .[]')
+done < <(echo "$cache" | jq -r --arg from "$PERIOD_START" --arg to "$PERIOD_END" '
+  .done_periods | to_entries |
+  map(select((.key | split(":")[0]) <= $to and (.key | split(":")[1]) >= $from)) |
+  map(.value[]) | unique | .[]')
 
 while IFS=$'\t' read -r type key hours; do
   [[ -z "$key" ]] && continue
