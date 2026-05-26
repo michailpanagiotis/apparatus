@@ -105,6 +105,24 @@ while IFS=$'\t' read -r type key hours; do
   esac
 done <<< "$log_agg"
 
+# Returns display column width, counting wide chars (emoji, CJK, etc.) as 2
+_col_width() {
+  # Fast path: byte count == char count means pure ASCII
+  (( $(printf '%s' "$1" | wc -c) == ${#1} )) && { echo "${#1}"; return; }
+  python3 -c "import unicodedata,sys; print(sum(2 if unicodedata.east_asian_width(c) in ('W','F') else 1 for c in sys.argv[1]))" "$1" 2>/dev/null || echo "${#1}"
+}
+
+# Returns the printf field width needed so that "$1" renders at exactly $2 display columns.
+# bash's printf pads by bytes, not chars; wide chars add an extra display column each.
+# Formula: target + (bytes - chars) - wide_count
+_printf_width() {
+  local s="$1" target="$2"
+  local bytes=$(printf '%s' "$s" | wc -c) chars=${#s}
+  (( bytes == chars )) && { echo "$target"; return; }
+  local wide=$(python3 -c "import unicodedata,sys; print(sum(1 for c in sys.argv[1] if unicodedata.east_asian_width(c) in ('W','F')))" "$s" 2>/dev/null || echo 0)
+  echo $(( target + bytes - chars - wide ))
+}
+
 fmt_hours() {
   local h="$1"
   [[ -z "$h" ]] && return
@@ -228,16 +246,16 @@ done
 for key in "${ticket_keys[@]}"; do
   summary=$(echo "$cache" | jq -r --arg k "$key" '.summaries[$k] // ""')
   (( ${#key} > max_key )) && max_key=${#key}
-  (( ${#summary} > max_desc )) && max_desc=${#summary}
+  w=$(_col_width "$summary"); (( w > max_desc )) && max_desc=$w
 done
 for key in "${meeting_item_keys[@]}"; do
   meeting_name="${key#*|}"
   (( 10 > max_key )) && max_key=10
-  (( ${#meeting_name} > max_desc )) && max_desc=${#meeting_name}
+  w=$(_col_width "$meeting_name"); (( w > max_desc )) && max_desc=$w
 done
 for row in "${other_rows[@]}"; do
   tags="${row%%$'\t'*}"
-  (( ${#tags} > max_desc )) && max_desc=${#tags}
+  w=$(_col_width "$tags"); (( w > max_desc )) && max_desc=$w
 done
 
 sep_key=$(printf '%*s' "$max_key" '' | tr ' ' '-')
@@ -245,7 +263,12 @@ sep_desc=$(printf '%*s' "$max_desc" '' | tr ' ' '-')
 sep_hours=$(printf '%*s' "$max_hours" '' | tr ' ' '-')
 
 print_sep()     { printf "|-%s-|-%s-|-%s-|\n" "$sep_key" "$sep_desc" "$sep_hours"; }
-print_section() { printf "| %-*s | %-*s | %-*s |\n" "$max_key" "$1" "$max_desc" "$2" "$max_hours" "$3"; }
+print_section() {
+  printf "| %-*s | %-*s | %-*s |\n" \
+    $(_printf_width "$1" $max_key) "$1" \
+    $(_printf_width "$2" $max_desc) "$2" \
+    $(_printf_width "$3" $max_hours) "$3"
+}
 
 printf "Report: %s\n\n" "$PERIOD_LABEL"
 print_section "Ticket" "Title" "Hours"
