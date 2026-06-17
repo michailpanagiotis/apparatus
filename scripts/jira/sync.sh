@@ -101,10 +101,7 @@ echo "Synced ${#tickets[@]} ticket(s) for ${PERIOD_LABEL}."
 [[ -f "$LOG_FILE" ]] || echo "[]" > "$LOG_FILE"
 log_data=$(cat "$LOG_FILE")
 
-# Date to record against: today if within period, else PERIOD_END
-record_date=$(date +%Y-%m-%d)
-[[ "$record_date" > "$PERIOD_END" ]] && record_date="$PERIOD_END"
-[[ "$record_date" < "$PERIOD_START" ]] && record_date="$PERIOD_START"
+record_date="$PERIOD_START"
 
 parse_hours() {
   local raw="${1%h}"
@@ -141,6 +138,42 @@ replace_hours() {
     --arg date "$entry_date" '
     [.[] | select(
       (.date >= $from and .date <= $to and
+       (($tags - .tags | length) == 0) and
+       (if $is_ticket then .tags | contains(["JIRA"]) else (.tags | contains(["JIRA"]) | not) end)
+      ) | not
+    )] + [{"date": $date, "hours": $hours, "tags": $tags}]')
+}
+
+# Like existing_hours but scoped to a single date instead of the full period
+existing_hours_on_date() {
+  local tags_json="$1"
+  local is_ticket="$2"
+  local date="$3"
+  echo "$log_data" | jq -r \
+    --arg date "$date" \
+    --argjson tags "$tags_json" \
+    --argjson is_ticket "$is_ticket" '
+    [.[] |
+      select(.date == $date) |
+      select(($tags - .tags | length) == 0) |
+      if $is_ticket then select(.tags | contains(["JIRA"])) else select(.tags | contains(["JIRA"]) | not) end |
+      .hours
+    ] | if length == 0 then "" else (add | tostring) end'
+}
+
+# Like replace_hours but scoped to a single date instead of the full period
+replace_hours_on_date() {
+  local tags_json="$1"
+  local is_ticket="$2"
+  local hours="$3"
+  local entry_date="$4"
+  log_data=$(echo "$log_data" | jq \
+    --arg date "$entry_date" \
+    --argjson tags "$tags_json" \
+    --argjson is_ticket "$is_ticket" \
+    --argjson hours "$hours" '
+    [.[] | select(
+      (.date == $date and
        (($tags - .tags | length) == 0) and
        (if $is_ticket then .tags | contains(["JIRA"]) else (.tags | contains(["JIRA"]) | not) end)
       ) | not
@@ -289,13 +322,13 @@ if [[ ${#cal_summaries[@]} -gt 0 ]]; then
     cal_date="${key%%$'\t'*}"
     s="${key#*$'\t'}"
     tags_json=$(jq -cn --arg s "$s" '["meeting", $s]')
-    current=$(existing_hours "$tags_json" "false")
+    current=$(existing_hours_on_date "$tags_json" "false" "$cal_date")
     [[ -n "$current" ]] && default=$(parse_hours "${current}h") || default="${cal_hours[$key]}"
     printf "  [%s] %s [%sh]: " "$cal_date" "$(truncate "$s" 50)" "$default"
     read -r input
     hours=$(parse_hours "$input")
     [[ -z "$hours" ]] && hours="$default"
-    replace_hours "$tags_json" "false" "$hours" "$cal_date"
+    replace_hours_on_date "$tags_json" "false" "$hours" "$cal_date"
   done
 fi
 
