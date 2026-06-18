@@ -74,8 +74,12 @@ require('lazy').setup({
             },
         },
       })
-      local builtin = require('telescope.builtin')
-      vim.keymap.set('n', '<C-p>', builtin.find_files, { desc = 'Telescope find files' })
+      local find_files_in_git_root = function(opts)
+        opts = opts or {}
+        opts.cwd = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
+        require'telescope.builtin'.find_files(opts)
+      end
+      vim.keymap.set('n', '<C-p>', find_files_in_git_root, { desc = 'Telescope find files' })
     end,
   },
   {
@@ -135,7 +139,7 @@ require('lazy').setup({
   {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    main = 'nvim-treesitter.configs',
     opts = {
       ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'javascript', 'typescript', 'rust' },
       auto_install = true,
@@ -316,7 +320,14 @@ require('lazy').setup({
       fuzzy = { implementation = "prefer_rust_with_warning" }
     },
     opts_extend = { "sources.default" }
-  }
+  },
+  -- {
+  --   'MeanderingProgrammer/render-markdown.nvim',
+  --   dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+  --   ---@module 'render-markdown'
+  --   ---@type render.md.UserConfig
+  --   opts = {},
+  -- }
 })
 
 vim.cmd.colorscheme 'everforest'

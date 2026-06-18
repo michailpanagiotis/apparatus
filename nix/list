@@ -195,3 +195,4 @@ Flake attribute:    legacyPackages.aarch64-darwin.yt-dlp
 Original flake URL: flake:nixpkgs
 Locked flake URL:   github:NixOS/nixpkgs/d55716bb59b91ae9d1ced4b1ccdea7a442ecbfdb?narHash=sha256-QWJ%2BNQbMU%2BNcU2xiyo7SNox1fAuwksGlQhpzBl76g1I%3D
 Store paths:        /nix/store/0a8a0ax8zw9g45g2il4f9mm9wprsrl3n-yt-dlp-2025.6.30
+
