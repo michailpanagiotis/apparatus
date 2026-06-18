@@ -211,6 +211,16 @@ require('lazy').setup({
         }
       })
 
+      -- Route rust-analyzer through lspmux so nvim, Claude Code, and other
+      -- editors share one server instance per workspace (lspmux runs as a
+      -- systemd user service). This must be an explicit vim.lsp.config() call
+      -- rather than editing lsp/rust_analyzer.lua: nvim-lspconfig ships its own
+      -- lsp/rust_analyzer.lua which sits later in the runtimepath and would
+      -- override the `cmd` key from our copy. Explicit config wins over rtp files.
+      vim.lsp.config('rust_analyzer', {
+        cmd = { 'lspmux', 'client', '--server-path', 'rust-analyzer' },
+      })
+
       vim.lsp.enable('eslint')
       vim.lsp.enable('lua_ls')
       vim.lsp.enable('quick_lint_js')

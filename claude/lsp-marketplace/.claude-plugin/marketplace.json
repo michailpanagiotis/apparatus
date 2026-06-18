@@ -1,0 +1,26 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "local-lsp",
+  "description": "Local LSP overrides for Claude Code",
+  "owner": {
+    "name": "michailpanagiotis"
+  },
+  "plugins": [
+    {
+      "name": "rust-analyzer-lspmux",
+      "description": "rust-analyzer routed through lspmux so editors and Claude Code share one instance",
+      "version": "1.0.0",
+      "source": "./plugins/rust-analyzer-lspmux",
+      "strict": false,
+      "lspServers": {
+        "rust-analyzer": {
+          "command": "lspmux",
+          "args": ["client", "--server-path", "rust-analyzer"],
+          "extensionToLanguage": {
+            ".rs": "rust"
+          }
+        }
+      }
+    }
+  ]
+}

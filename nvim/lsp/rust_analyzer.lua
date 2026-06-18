@@ -118,6 +118,10 @@ return {
   end,
   settings = {
     ["rust-analyzer"] = {
+      cargo = {
+        targetDir = "target/ra-nvim",
+        allTargets = false,
+      },
       check = {
         command = "clippy",
       },

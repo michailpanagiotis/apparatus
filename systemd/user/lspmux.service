@@ -1,0 +1,21 @@
+[Unit]
+Description=Language server multiplexer (lspmux)
+Documentation=https://codeberg.org/p2502/lspmux
+
+[Service]
+Type=simple
+# systemd user services get a minimal PATH that lacks ~/.cargo/bin, so the
+# server cannot find rust-analyzer to spawn, and rust-analyzer itself needs
+# cargo/rustc on PATH to load a workspace. Put the cargo bin dir up front.
+Environment=PATH=%h/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+ExecStart=%h/.cargo/bin/lspmux server
+Restart=on-failure
+RestartSec=5
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=lspmux
+
+[Install]
+WantedBy=default.target
